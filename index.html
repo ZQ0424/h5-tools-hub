@@ -66,7 +66,7 @@ function render(list,updated){
   document.getElementById('upd').textContent=updated||'今日';
   const g=document.getElementById('grid');g.innerHTML='';
   list.forEach((t,i)=>{
-    const a=document.createElement('a');a.className='tool';a.href=t.path;a.style.animationDelay=(i*0.04)+'s';
+    const a=document.createElement('a');a.className='tool';a.href=t.path;a.target='_blank';a.rel='noopener';a.style.animationDelay=(i*0.04)+'s';
     a.innerHTML=`<div class="ic">${t.icon||'🛠️'}</div><div class="nm">${t.name}</div>
       <div class="ds">${t.desc||''}</div><div class="kw">${(t.keywords||[]).join(' / ')||''}</div>
       <div class="go">打开工具 ↗</div>`;
