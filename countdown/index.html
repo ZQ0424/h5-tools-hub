@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>倒计时 · 纪念日提醒 · 实时倒数</title>
+<meta name="description" content="添加重要日期，实时秒级倒计时，支持分类与本地保存，纯前端免费工具。">
+<style>
+:root{
+  --bg1:#fff1e6; --bg2:#ffe9ef; --card:#fff; --primary:#ff8a3d; --primary-2:#ff5e7e;
+  --primary-soft:#ffe3cc; --text:#33272a; --muted:#a08e92; --radius:20px;
+  --shadow:0 14px 40px rgba(255,138,61,.16);
+}
+*{box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;
+  background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--text);
+  padding:22px 16px 48px;line-height:1.6;min-height:100vh}
+.wrap{max-width:680px;margin:0 auto}
+header{text-align:center;margin-bottom:22px;animation:fadeUp .5s ease both}
+header h1{font-size:26px;margin:0}
+header .tag{display:inline-block;margin-top:8px;font-size:12px;color:var(--primary);
+  background:var(--primary-soft);padding:4px 12px;border-radius:999px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;
+  margin-bottom:16px;animation:fadeUp .5s ease both}
+.card:nth-child(2){animation-delay:.06s}.card:nth-child(3){animation-delay:.12s}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:8px;font-weight:600}
+input,select{width:100%;border:1.5px solid #f3e3da;border-radius:14px;padding:13px;font-size:15px;
+  font-family:inherit;background:#fffaf6;color:var(--text);transition:.18s}
+input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid .full{grid-column:1/3}
+.row{display:flex;gap:10px;margin-top:14px}
+button{flex:1;border:none;border-radius:14px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;
+  background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;transition:transform .12s,box-shadow .18s}
+button:active{transform:scale(.96)}button:hover{box-shadow:0 14px 26px rgba(255,138,61,.34)}
+.event{display:flex;justify-content:space-between;align-items:center;padding:16px;border-radius:16px;
+  background:linear-gradient(135deg,#fff7f0,#fff0f4);margin-bottom:12px;animation:slideIn .35s ease both;
+  border-left:5px solid var(--primary)}
+.event.soon{background:linear-gradient(135deg,#fff3e0,#ffe6ec);border-left-color:#ff4d6d;box-shadow:0 6px 18px rgba(255,77,109,.18)}
+.event.past{opacity:.7;background:#f4f0f2;border-left-color:#bbb}
+.event .name{font-weight:700;font-size:16px}
+.event .date{font-size:12px;color:var(--muted);margin-top:3px}
+.big{font-weight:800;font-size:22px;color:var(--primary);text-align:right;line-height:1.1}
+.big small{display:block;font-size:11px;color:var(--muted);font-weight:500}
+.bar{height:6px;border-radius:999px;background:#f0e4dc;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--primary-2));transition:width .6s}
+.del{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:4px 0 0 10px;flex:0}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+footer{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>⏳ 倒计时 · 纪念日</h1>
+    <span class="tag">实时倒数 · 分类标签 · 本地保存</span>
+  </header>
+
+  <div class="card">
+    <label>事件名称</label>
+    <input id="name" placeholder="比如：考研 / 生日 / 项目上线">
+    <div class="grid" style="margin-top:12px">
+      <div><label>目标日期</label><input id="date" type="date"></div>
+      <div><label>分类</label>
+        <select id="cat"><option>🎯 目标</option><option>🎂 生日</option><option>💞 纪念日</option><option>🏖️ 假期</option><option>📦 其他</option></select>
+      </div>
+    </div>
+    <div class="row"><button onclick="add()">＋ 添加倒计时</button></div>
+  </div>
+
+  <div id="list"></div>
+</div>
+<footer>纯前端工具 · 数据仅存本地浏览器</footer>
+<script>
+const KEY='cd_events_v2';
+let timer=null;
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
+function add(){
+  const name=document.getElementById('name').value.trim();
+  const date=document.getElementById('date').value;
+  const cat=document.getElementById('cat').value;
+  if(!name||!date){alert('填一下名称和日期～');return;}
+  const a=load();a.push({name,date,cat});save(a);
+  document.getElementById('name').value='';document.getElementById('date').value='';
+  render();
+}
+function del(i){const a=load();a.splice(i,1);save(a);render()}
+function diff(d){const now=new Date();const t=new Date(d+'T23:59:59');
+  return Math.round((t-now)/1000);}
+function render(){
+  const a=load().sort((x,y)=>new Date(x.date)-new Date(y.date));
+  const box=document.getElementById('list');box.innerHTML='';
+  if(!a.length){box.innerHTML='<div class="card" style="text-align:center;color:var(--muted)">还没有倒计时，添加一个开始倒数吧 ⏰</div>';return;}
+  a.forEach((e,i)=>{
+    const s=diff(e.date);const abs=Math.abs(s);
+    const d=Math.floor(abs/86400),h=Math.floor(abs%86400/3600),m=Math.floor(abs%3600/60),sec=abs%60;
+    const soon=s>0&&s<7*86400;
+    const div=document.createElement('div');
+    div.className='event'+(soon?' soon':'')+(s<0?' past':'');
+    let txt=s>0?`还有 ${d} 天`:(s===0?'就是今天 🎉':'已过去 '+d+' 天');
+    let live=s>0?`${d}天 ${h}时 ${m}分 ${sec}秒`:txt;
+    div.innerHTML=`<div><div class="name">${e.cat} ${e.name}</div>
+      <div class="date">${e.date}</div>
+      <div class="bar"><i style="width:${Math.min(100,soon?s/604800*100:0)}%"></i></div></div>
+      <div style="display:flex;align-items:center"><div class="big">${live}<small>${txt}</small></div>
+      <button class="del" onclick="del(${i})">删除</button></div>`;
+    box.appendChild(div);
+  });
+}
+render();
+clearInterval(timer);timer=setInterval(render,1000);
+</script>
+</body>
+</html>
