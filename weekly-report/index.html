@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 周报生成器 · 一键生成规范周报日报</title>
+<meta name="description" content="输入工作要点，自动生成格式规范的周报/日报，支持正式、轻松、向上管理多种风格与历史记录，纯前端免费。">
+<style>
+:root{
+  --bg1:#e9f0ff; --bg2:#f3edff; --card:rgba(255,255,255,.78); --primary:#4b6bff; --primary-2:#8a5bff;
+  --primary-soft:#e3e9ff; --text:#23263a; --muted:#8a8fb0; --radius:20px;
+  --shadow:0 14px 40px rgba(75,107,255,.14); --ok:#1fb56b;
+}
+*{box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;
+  background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--text);
+  padding:22px 16px 48px;line-height:1.65;min-height:100vh}
+.wrap{max-width:680px;margin:0 auto}
+header{text-align:center;margin-bottom:22px;animation:fadeUp .5s ease both}
+header h1{font-size:26px;margin:0}
+header .tag{display:inline-block;margin-top:8px;font-size:12px;color:var(--primary);
+  background:var(--primary-soft);padding:4px 12px;border-radius:999px}
+.glass{background:var(--card);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.6);
+  border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;animation:fadeUp .5s ease both}
+.glass:nth-child(2){animation-delay:.06s}.glass:nth-child(3){animation-delay:.12s}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:8px;font-weight:600}
+textarea,select{width:100%;border:1.5px solid #e6e9f5;border-radius:14px;padding:13px;
+  font-size:15px;font-family:inherit;resize:vertical;background:rgba(255,255,255,.7);color:var(--text);transition:.18s}
+textarea:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.seg div{flex:1;min-width:90px;text-align:center;padding:10px;border-radius:12px;background:rgba(255,255,255,.7);
+  border:1.5px solid #e6e9f5;font-size:13px;cursor:pointer;transition:.18s;user-select:none}
+.seg div.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:transparent;box-shadow:0 8px 18px rgba(75,107,255,.28)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button{flex:1;min-width:110px;border:none;border-radius:14px;padding:13px 16px;font-size:15px;
+  font-weight:700;cursor:pointer;color:#fff;transition:transform .12s,box-shadow .18s}
+.btn-main{background:linear-gradient(135deg,var(--primary),var(--primary-2));box-shadow:0 10px 22px rgba(75,107,255,.3)}
+.btn-ghost{background:#e8ebf6;color:var(--text)}
+button:active{transform:scale(.96)}button:hover{box-shadow:0 14px 26px rgba(75,107,255,.34)}
+.preview{background:linear-gradient(135deg,#fff,#f4f0ff);border:1.5px dashed #cfd6ff;border-radius:16px;
+  padding:18px;min-height:130px;white-space:pre-wrap;font-size:15px;animation:pop .25s ease}
+.hist{margin-top:14px}
+.hist .item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;
+  background:rgba(255,255,255,.6);margin-bottom:8px;font-size:13px;cursor:pointer;transition:.15s}
+.hist .item:hover{background:#fff}
+.tip{font-size:12px;color:var(--ok);margin-top:8px;min-height:16px;font-weight:600}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:.4;transform:scale(.98)}to{opacity:1;transform:none}}
+footer{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>📝 AI 周报生成器</h1>
+    <span class="tag">多风格模板 · 历史留存 · 一键导出</span>
+  </header>
+
+  <div class="glass">
+    <label>① 本周完成（每行一件）</label>
+    <textarea id="done" rows="4" placeholder="上线了用户中心模块&#10;修复了登录异常 bug&#10;完成竞品调研报告"></textarea>
+    <label style="margin-top:14px">② 遇到的问题</label>
+    <textarea id="prob" rows="3" placeholder="第三方接口偶发超时"></textarea>
+    <label style="margin-top:14px">③ 下周计划</label>
+    <textarea id="plan" rows="3" placeholder="推进支付闭环&#10;优化首页加载速度"></textarea>
+    <label style="margin-top:14px">④ 选择风格</label>
+    <div class="seg" id="seg">
+      <div class="active" data-s="formal">📊 正式汇报</div>
+      <div data-s="light">😎 轻松口语</div>
+      <div data-s="up">🚀 向上管理</div>
+    </div>
+    <div class="row">
+      <button class="btn-main" onclick="gen()">✨ 生成周报</button>
+      <button class="btn-ghost" onclick="copy()">📋 复制</button>
+      <button class="btn-ghost" onclick="dl()">⬇️ 导出</button>
+    </div>
+    <div class="tip" id="tip"></div>
+  </div>
+
+  <div class="glass">
+    <label>⑤ 生成结果</label>
+    <div id="out" class="preview">（填写要点并选择风格，点「生成周报」即可获得可复制的规范周报）</div>
+  </div>
+
+  <div class="glass hist">
+    <label>⑥ 历史记录（本地保存，点击回填）</label>
+    <div id="histList"><div style="font-size:13px;color:var(--muted)">暂无记录</div></div>
+  </div>
+</div>
+<footer>纯前端工具 · 数据仅存本地浏览器 · 不联网上传</footer>
+<script>
+let style="formal";
+document.querySelectorAll('#seg div').forEach(d=>d.onclick=()=>{
+  document.querySelectorAll('#seg div').forEach(x=>x.classList.remove('active'));
+  d.classList.add('active');style=d.dataset.s;
+});
+function get(a){return document.getElementById(a).value.trim();}
+function arr(s){return s?get(s).split('\n').map(x=>x.trim()).filter(Boolean):[];}
+function gen(){
+  const d=arr('done');if(!d.length){document.getElementById('tip').textContent='先填写本周完成～';return;}
+  const p=arr('prob'),n=arr('plan');let out='';
+  if(style==='formal'){
+    out='【本周工作汇报】\n\n一、本周完成\n'+d.map(x=>'• '+x).join('\n');
+    if(p.length)out+='\n\n二、问题与风险\n'+p.map(x=>'• '+x).join('\n');
+    if(n.length)out+='\n\n三、下周计划\n'+n.map(x=>'• '+x).join('\n');
+  }else if(style==='light'){
+    out='本周碎碎念 📮\n\n✅ 搞定的事\n'+d.map(x=>'• '+x).join('\n');
+    if(p.length)out+='\n\n😅 踩的坑\n'+p.map(x=>'• '+x).join('\n');
+    if(n.length)out+='\n\n🔜 下周冲\n'+n.map(x=>'• '+x).join('\n');
+  }else{
+    out='本周进展同步 🚀\n\n▎核心交付\n'+d.map(x=>'✔ '+x).join('\n');
+    if(p.length)out+='\n\n⚠️ 需支持\n'+p.map(x=>'• '+x).join('\n');
+    if(n.length)out+='\n\n🎯 下周重点\n'+n.map(x=>'▸ '+x).join('\n');
+  }
+  document.getElementById('out').textContent=out;
+  document.getElementById('tip').textContent='已生成 ✓ 可复制或导出';
+  save(out);
+}
+function save(out){
+  try{const k='wr_hist';const h=JSON.parse(localStorage.getItem(k)||'[]');
+    h.unshift({t:new Date().toLocaleString('zh-CN'),c:out});localStorage.setItem(k,JSON.stringify(h.slice(0,8)));
+    renderHist();}catch(e){}
+}
+function renderHist(){
+  const h=JSON.parse(localStorage.getItem('wr_hist')||'[]');const box=document.getElementById('histList');
+  if(!h.length){box.innerHTML='<div style="font-size:13px;color:var(--muted)">暂无记录</div>';return;}
+  box.innerHTML='';h.forEach((it,i)=>{const d=document.createElement('div');d.className='item';
+    d.innerHTML='<span>'+it.t+'</span><span style="color:var(--primary)">回填 ›</span>';
+    d.onclick=()=>{document.getElementById('out').textContent=it.c;document.getElementById('tip').textContent='已回填历史记录';};
+    box.appendChild(d);});
+}
+function copy(){const t=document.getElementById('out').textContent;
+  if(!t||t.startsWith('（'))return;
+  navigator.clipboard.writeText(t).then(()=>document.getElementById('tip').textContent='已复制 ✅');}
+function dl(){const t=document.getElementById('out').textContent;
+  if(!t||t.startsWith('（'))return;const b=new Blob([t],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='周报.txt';a.click();}
+renderHist();
+</script>
+</body>
+</html>
