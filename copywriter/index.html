@@ -139,5 +139,24 @@ function copyThis(el){
 }
 $('gen').onclick=gen;renderChips();
 </script>
+
+<div id="likeBar" style="position:fixed;right:16px;bottom:16px;z-index:99"></div>
+<script>
+(function(){
+  var p=location.pathname.split('/').filter(Boolean);var slug=p[p.length-1]||'home';
+  if(!slug||slug==='h5-tools-hub'||slug==='index.html')return;
+  var VKEY='h5hub_votes';
+  function gv(){try{return JSON.parse(localStorage.getItem(VKEY)||'{}')}catch(e){return{}}}
+  function sv(v){localStorage.setItem(VKEY,JSON.stringify(v))}
+  function paint(){
+    var v=gv();var c=v[slug]||0;
+    var b=document.getElementById('likeBar');
+    b.innerHTML='<button id="lk" style="border:none;cursor:pointer;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,#5b6bff,#ff6bb0);padding:12px 18px;border-radius:999px;box-shadow:0 8px 24px rgba(91,107,255,.35)">👍 喜欢 '+ (c||'') +'</button>';
+    document.getElementById('lk').onclick=function(){var vv=gv();vv[slug]=(vv[slug]||0)+1;sv(vv);paint();};
+  }
+  paint();
+})();
+</script>
+
 </body>
 </html>
