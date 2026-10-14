@@ -4,40 +4,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>我的工具箱 · H5 工具矩阵</title>
-<meta name="description" content="每日自动新增的免费 H5 小工具矩阵：小红书排版、周报生成、倒计时等，纯前端、即开即用。">
+<meta name="description" content="每日自动新增的免费 H5 小工具矩阵：小红书排版、周报生成、倒计时、单位换算、文案生成等，纯前端、即开即用。">
 <style>
 :root{
   --bg1:#eef1ff; --bg2:#fdeef6; --card:#fff; --primary:#5b6bff; --primary-2:#ff6bb0;
-  --primary-soft:#e6e9ff; --text:#23263a; --muted:#8a8fb0; --radius:22px;
-  --shadow:0 16px 44px rgba(91,107,255,.14);
+  --primary-soft:#e6e9ff; --text:#23263a; --muted:#8a8fb0; --line:#eef0f7; --radius:16px;
+  --shadow:0 10px 30px rgba(91,107,255,.10);
 }
 *{box-sizing:border-box}
 body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;
   background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--text);
-  padding:24px 16px 56px;min-height:100vh}
-.wrap{max-width:760px;margin:0 auto}
-header{text-align:center;margin-bottom:8px;animation:fadeUp .5s ease both}
-header h1{font-size:30px;margin:0;background:linear-gradient(135deg,var(--primary),var(--primary-2));
+  padding:18px 14px 60px;min-height:100vh}
+.wrap{max-width:880px;margin:0 auto}
+header{text-align:center;margin-bottom:12px;animation:fadeUp .5s ease both}
+header h1{font-size:25px;margin:0;background:linear-gradient(135deg,var(--primary),var(--primary-2));
   -webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.5px}
-header .sub{color:var(--muted);font-size:14px;margin-top:8px}
-.badge{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:12px;color:var(--primary);
-  background:var(--primary-soft);padding:6px 14px;border-radius:999px;animation:fadeUp .6s ease both}
-.stat{display:flex;justify-content:center;gap:26px;margin:20px 0 8px}
+header .sub{color:var(--muted);font-size:12.5px;margin-top:6px}
+.stat{display:flex;justify-content:center;gap:22px;margin:12px 0 4px}
 .stat div{text-align:center}
-.stat b{display:block;font-size:26px;font-weight:800;color:var(--primary)}
-.stat span{font-size:12px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:18px}
-.tool{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;
-  text-decoration:none;color:inherit;display:block;transition:transform .18s,box-shadow .18s;animation:fadeUp .5s ease both}
-.tool:hover{transform:translateY(-5px);box-shadow:0 22px 50px rgba(91,107,255,.22)}
-.tool .ic{font-size:34px}
-.tool .nm{font-size:17px;font-weight:700;margin:10px 0 6px}
-.tool .ds{font-size:13px;color:var(--muted);line-height:1.5;min-height:42px}
-.tool .go{margin-top:12px;font-size:13px;font-weight:700;color:var(--primary)}
-.tool .kw{margin-top:8px;font-size:11px;color:#b0b4cc}
-.loading,.err{padding:40px;text-align:center;color:var(--muted)}
-footer{text-align:center;font-size:12px;color:var(--muted);margin-top:28px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.stat b{display:block;font-size:21px;font-weight:800;color:var(--primary)}
+.stat span{font-size:11px;color:var(--muted)}
+
+.search{position:sticky;top:8px;z-index:20;margin:12px 0 10px}
+.search input{width:100%;padding:12px 16px;border:1px solid var(--line);border-radius:999px;
+  font-size:15px;background:rgba(255,255,255,.92);outline:none;box-shadow:var(--shadow);backdrop-filter:blur(6px)}
+.search input:focus{border-color:var(--primary)}
+
+.tabs{display:flex;gap:8px;margin:0 0 12px}
+.tab{flex:1;text-align:center;padding:9px;border-radius:12px;font-size:13px;font-weight:700;
+  background:#fff;color:var(--muted);cursor:pointer;border:1px solid var(--line);transition:.15s}
+.tab.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:transparent}
+
+.hot{display:none;margin-bottom:14px}
+.hot.show{display:block}
+.hot h3{font-size:12.5px;color:var(--muted);margin:0 0 8px;font-weight:700}
+.hot-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.hot-card{flex:0 0 auto;min-width:138px;background:#fff;border-radius:14px;padding:11px 13px;
+  box-shadow:var(--shadow);text-decoration:none;color:inherit;border:1px solid var(--line)}
+.hot-card .rk{font-size:12px;color:var(--primary);font-weight:800}
+.hot-card .nm{font-size:13.5px;font-weight:700;margin:3px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hot-card .vt{font-size:12px;color:var(--muted)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.tool{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 15px;
+  text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);
+  transition:transform .15s,box-shadow .15s}
+.tool:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(91,107,255,.18)}
+.tool .top{display:flex;align-items:center;gap:8px}
+.tool .ic{font-size:23px}
+.tool .nm{font-size:15px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tool .ds{font-size:12.5px;color:var(--muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tool .kw{font-size:11px;color:#b0b4cc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tool .bot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.tool .like{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--primary);
+  background:var(--primary-soft);border:none;padding:6px 12px;border-radius:999px;cursor:pointer;transition:.12s}
+.tool .like:active{transform:scale(.94)}
+.tool .like.liked{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff}
+.tool .cnt{font-size:11.5px;color:var(--muted)}
+.empty{padding:38px;text-align:center;color:var(--muted)}
+footer{text-align:center;font-size:11.5px;color:var(--muted);margin-top:24px;line-height:1.6}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -45,37 +71,85 @@ footer{text-align:center;font-size:12px;color:var(--muted);margin-top:28px}
   <header>
     <h1>🧰 我的工具箱</h1>
     <div class="sub">每天 06:00 自动新增的免费 H5 小工具 · 即开即用 · 数据不上传</div>
-    <div class="badge">⚡ 由 AI 每日自动构建</div>
   </header>
   <div class="stat">
-    <div><b id="cnt">…</b><span>已上线工具</span></div>
-    <div><b>0</b><span>付费</span></div>
-    <div><b id="upd">—</b><span>最近更新</span></div>
+    <div><b id="cnt">…</b><span>工具</span></div>
+    <div><b id="vcnt">0</b><span>总赞</span></div>
+    <div><b id="upd">—</b><span>更新</span></div>
   </div>
-  <div id="grid" class="grid"><div class="loading">正在加载工具列表…</div></div>
-  <footer>纯前端工具矩阵 · 无需登录 · 链接长期有效</footer>
+  <div class="search"><input id="q" type="search" placeholder="🔍 搜索工具（名称 / 关键词）" autocomplete="off"></div>
+  <div class="tabs">
+    <div class="tab active" data-mode="new">🆕 最新</div>
+    <div class="tab" data-mode="hot">🔥 最热</div>
+  </div>
+  <div class="hot" id="hot"><h3>🔥 本机热度榜</h3><div class="hot-row" id="hotRow"></div></div>
+  <div id="grid" class="grid"><div class="empty">正在加载工具列表…</div></div>
+  <footer>纯前端工具矩阵 · 无需登录 · 链接长期有效<br>👍 点赞在同设备累计；想做全站真实排行榜可加轻量后端</footer>
 </div>
 <script>
 const FALLBACK=[
-  {icon:"📒",name:"小红书笔记排版器",desc:"一键生成带 emoji、分段、话题标签的爆款排版",path:"xiaohongshu-formatter/",kw:"小红书排版 / 笔记排版"},
-  {icon:"📝",name:"AI 周报生成器",desc:"输入要点，自动生成规范周报，多风格可切换",path:"weekly-report/",kw:"周报生成器 / 日报"},
-  {icon:"⏳",name:"倒计时 · 纪念日",desc:"实时秒级倒数，支持分类与本地保存",path:"countdown/",kw:"倒计时 / 考研倒计时"}
+  {icon:"📒",name:"小红书笔记排版器",desc:"一键生成带 emoji、分段、话题标签的爆款排版",path:"xiaohongshu-formatter/",kw:"小红书排版 / 笔记排版",generated:"2026-10-15"},
+  {icon:"📝",name:"AI 周报生成器",desc:"输入要点，自动生成规范周报，多风格可切换",path:"weekly-report/",kw:"周报生成器 / 日报",generated:"2026-10-15"},
+  {icon:"⏳",name:"倒计时 · 纪念日",desc:"实时秒级倒数，支持分类与本地保存",path:"countdown/",kw:"倒计时 / 考研倒计时",generated:"2026-10-15"},
+  {icon:"📐",name:"单位换算器",desc:"长度/重量/温度/面积/体积/时间等实时换算",path:"unit-converter/",kw:"单位换算 / 长度换算",generated:"2026-10-15"},
+  {icon:"✍️",name:"爆款文案生成器",desc:"小红书标题/电商卖点/朋友圈文案/短视频钩子",path:"copywriter/",kw:"文案生成器 / 标题生成",generated:"2026-10-15"}
 ];
-function render(list,updated){
-  document.getElementById('cnt').textContent=list.length;
-  document.getElementById('upd').textContent=updated||'今日';
-  const g=document.getElementById('grid');g.innerHTML='';
+const VKEY='h5hub_votes';
+function getVotes(){try{return JSON.parse(localStorage.getItem(VKEY)||'{}')}catch(e){return{}}}
+function setVotes(v){localStorage.setItem(VKEY,JSON.stringify(v))}
+function slugOf(t){return t.slug||(t.path||'').replace(/\//g,'')}
+let APPS=[], MODE='new', Q='';
+function totalVotes(){const v=getVotes();return Object.values(v).reduce((a,b)=>a+b,0)}
+function render(){
+  const v=getVotes();
+  document.getElementById('cnt').textContent=APPS.length;
+  document.getElementById('vcnt').textContent=totalVotes();
+  let list=APPS.filter(t=>{
+    if(!Q)return true;
+    const hay=(t.name+' '+(t.keywords||[]).join(' ')+' '+(t.desc||'')).toLowerCase();
+    return hay.includes(Q.toLowerCase());
+  });
+  if(MODE==='hot') list=list.slice().sort((a,b)=>(v[slugOf(b)]||0)-(v[slugOf(a)]||0));
+  const hot=APPS.map(t=>({t,c:v[slugOf(t)]||0})).filter(x=>x.c>0).sort((a,b)=>b.c-a.c).slice(0,5);
+  const hotBox=document.getElementById('hot');
+  if(MODE==='hot'&&hot.length){
+    hotBox.classList.add('show');
+    document.getElementById('hotRow').innerHTML=hot.map((x,i)=>{
+      const t=x.t;
+      return `<a class="hot-card" href="${t.path}" target="_blank" rel="noopener">
+        <div class="rk">#${i+1}</div><div class="nm">${t.icon||'🛠️'} ${t.name}</div>
+        <div class="vt">👍 ${x.c}</div></a>`;
+    }).join('');
+  } else hotBox.classList.remove('show');
+  const g=document.getElementById('grid');
+  if(!list.length){g.innerHTML='<div class="empty">没有匹配的工具</div>';return;}
+  g.innerHTML='';
   list.forEach((t,i)=>{
-    const a=document.createElement('a');a.className='tool';a.href=t.path;a.target='_blank';a.rel='noopener';a.style.animationDelay=(i*0.04)+'s';
-    a.innerHTML=`<div class="ic">${t.icon||'🛠️'}</div><div class="nm">${t.name}</div>
-      <div class="ds">${t.desc||''}</div><div class="kw">${(t.keywords||[]).join(' / ')||''}</div>
-      <div class="go">打开工具 ↗</div>`;
+    const s=slugOf(t), c=v[s]||0, liked=c>0;
+    const a=document.createElement('a');a.className='tool';a.href=t.path;a.target='_blank';a.rel='noopener';
+    a.style.animation=`fadeUp .35s ease both`;a.style.animationDelay=(i*0.03)+'s';
+    a.innerHTML=`<div class="top"><div class="ic">${t.icon||'🛠️'}</div><div class="nm">${t.name}</div></div>
+      <div class="ds">${t.desc||''}</div>
+      <div class="kw">${(t.keywords||[]).join(' · ')||''}</div>
+      <div class="bot">
+        <button class="like${liked?' liked':''}" data-slug="${s}">👍 <span>${c||''}</span></button>
+        <span class="cnt">${t.generated||''}</span>
+      </div>`;
     g.appendChild(a);
   });
 }
+document.getElementById('grid').addEventListener('click',e=>{
+  const b=e.target.closest('.like');if(!b)return;e.preventDefault();e.stopPropagation();
+  const s=b.dataset.slug,v=getVotes();v[s]=(v[s]||0)+1;setVotes(v);render();
+});
+document.getElementById('q').addEventListener('input',e=>{Q=e.target.value.trim();render()});
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');MODE=t.dataset.mode;render();
+}));
 fetch('./manifest.json').then(r=>r.json()).then(m=>{
-  render(m.apps||FALLBACK, m.updated);
-}).catch(()=>render(FALLBACK,'今日'));
+  APPS=m.apps||FALLBACK;document.getElementById('upd').textContent=m.updated||'今日';render();
+}).catch(()=>{APPS=FALLBACK;render()});
 </script>
 </body>
 </html>
