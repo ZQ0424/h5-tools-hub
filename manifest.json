@@ -1,0 +1,52 @@
+{
+  "portal": "（待部署到你的公网托管后填写）",
+  "updated": "2026-10-15",
+  "note": "本清单由 AI 每日生产线维护。当前 5 个工具为首批验证集，后续按数据筛选赢家并沉淀小程序。",
+  "apps": [
+    {
+      "slug": "xiaohongshu-formatter",
+      "name": "小红书笔记排版器",
+      "desc": "一键生成带 emoji、分段、话题标签的爆款排版，支持多套风格与实时预览",
+      "icon": "📒",
+      "keywords": ["小红书排版", "笔记排版工具", "小红书笔记生成"],
+      "path": "xiaohongshu-formatter/",
+      "generated": "2026-10-15"
+    },
+    {
+      "slug": "weekly-report",
+      "name": "AI 周报生成器",
+      "desc": "输入工作要点，自动生成规范周报/日报，支持正式/轻松/向上管理风格与历史留存",
+      "icon": "📝",
+      "keywords": ["周报生成器", "日报生成", "AI 周报"],
+      "path": "weekly-report/",
+      "generated": "2026-10-15"
+    },
+    {
+      "slug": "countdown",
+      "name": "倒计时 · 纪念日",
+      "desc": "实时秒级倒数，支持分类标签与本地保存，适合考研/生日/假期",
+      "icon": "⏳",
+      "keywords": ["倒计时工具", "考研倒计时", "纪念日提醒"],
+      "path": "countdown/",
+      "generated": "2026-10-15"
+    },
+    {
+      "slug": "unit-converter",
+      "name": "单位换算器",
+      "desc": "长度/重量/温度/面积/体积/时间/速度/数据实时换算，支持全部单位对照",
+      "icon": "📐",
+      "keywords": ["单位换算", "单位换算器", "长度换算"],
+      "path": "unit-converter/",
+      "generated": "2026-10-15"
+    },
+    {
+      "slug": "copywriter",
+      "name": "爆款文案生成器",
+      "desc": "输入产品与卖点，一键生成小红书标题/电商卖点/朋友圈文案/短视频钩子",
+      "icon": "✍️",
+      "keywords": ["文案生成器", "标题生成器", "小红书标题"],
+      "path": "copywriter/",
+      "generated": "2026-10-15"
+    }
+  ]
+}
