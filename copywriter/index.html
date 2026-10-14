@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>爆款文案生成器 - 小红书标题/电商卖点/朋友圈文案一键生成</title>
+<meta name="description" content="免费在线文案生成工具：输入产品与卖点，一键生成小红书标题、电商卖点文案、朋友圈种草文案、短视频钩子，多风格可选，复制即用。">
+<style>
+:root{
+  --bg1:#1a0b2e;--bg2:#3b0764;--bg3:#c026d3;
+  --accent:#e879f9;--accent2:#f0abfc;--accent-soft:rgba(232,121,249,.16);
+  --text:#fdf4ff;--muted:#e9b8f5;--card:rgba(255,255,255,.07);
+  --border:rgba(232,121,249,.3);--radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  color:var(--text);min-height:100vh;background:linear-gradient(135deg,var(--bg1),var(--bg2) 60%,var(--bg3));
+  background-attachment:fixed;padding:24px 16px 48px}
+.wrap{max-width:660px;margin:0 auto}
+header{text-align:center;margin-bottom:22px;animation:fade .6s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+h1{font-size:26px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);font-size:13px;margin-top:6px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;backdrop-filter:blur(10px);box-shadow:0 10px 40px rgba(0,0,0,.3);animation:pop .4s ease}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.field{margin-bottom:16px}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+input,select,textarea{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.22);color:var(--text);font-size:15px;outline:none;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea{resize:vertical;min-height:64px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;cursor:pointer;transition:.25s}
+.chip:hover{transform:translateY(-2px);color:var(--text)}
+.chip.on{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#2a0a33;border-color:transparent;font-weight:700}
+.btn{width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#2a0a33;font-size:16px;font-weight:800;cursor:pointer;transition:.25s;letter-spacing:1px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--accent-soft)}
+.btn:active{transform:scale(.98)}
+.out{margin-top:20px;display:none}
+.out.show{display:block;animation:pop .4s ease}
+.out h3{font-size:14px;color:var(--muted);margin:16px 0 8px;font-weight:600}
+.item{position:relative;padding:13px 44px 13px 14px;border-radius:12px;background:rgba(0,0,0,.18);border:1px solid var(--border);margin-bottom:10px;font-size:15px;line-height:1.6;animation:slide .35s ease}
+@keyframes slide{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+.copy{position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--accent-soft);color:var(--accent);font-size:12px;cursor:pointer;transition:.2s}
+.copy:hover{background:var(--accent);color:#2a0a33}
+.foot{text-align:center;color:var(--muted);font-size:12px;margin-top:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>爆款文案生成器</h1>
+    <div class="sub">小红书标题 · 电商卖点 · 朋友圈种草 · 短视频钩子，输入即出</div>
+  </header>
+  <div class="card">
+    <div class="field">
+      <label>产品 / 主题</label>
+      <input id="product" placeholder="例：熬夜修复面膜">
+    </div>
+    <div class="field">
+      <label>核心卖点（逗号分隔）</label>
+      <input id="sell" placeholder="例：补水,平价,敏感肌可用">
+    </div>
+    <div class="field">
+      <label>目标人群 / 场景（可选）</label>
+      <input id="aud" placeholder="例：学生党,换季">
+    </div>
+    <div class="chips" id="chips"></div>
+    <button class="btn" id="gen">✨ 一键生成</button>
+    <div class="out" id="out"></div>
+  </div>
+  <div class="foot">纯前端模板生成 · 不联网 · 可无限次使用</div>
+</div>
+<script>
+const TYPES={
+  xhs:{label:'小红书标题',hooks:['绝了','后悔没早买','谁懂啊','挖到宝','亲测','姐妹们冲','天花板','闭眼入','真香','封神'],
+    tpl:[
+      '{h}！这款{pro}真的{p}',
+      '换季必囤｜{pro}{s}太绝了',
+      '学生党狂喜😭{pro}{s}平价又好用',
+      '被问爆的{pro}，{s}才是真原因',
+      '别再乱买！{pro}凭{p}封神',
+      '素人测评｜{pro}{s}真实体验'
+    ]},
+  ec:{label:'电商卖点',hooks:['限时','热销','正品','新品','爆款','官方','甄选'],
+    tpl:[
+      '【{pro}】{s}，{h}特惠中',
+      '{pro}·{p}·{s}，闭眼入不踩雷',
+      '热卖{pro}：{s}，用过都说好',
+      '{h}{pro}，{s}，性价比之选'
+    ]},
+  pyq:{label:'朋友圈文案',hooks:['今天','最近','终于','安利','种草','回购','真香'],
+    tpl:[
+      '{h}挖到{s}的{pro}，后悔没早用🥺',
+      '被{p}的{pro}圈粉了，{s}真的绝',
+      '日常安利｜{pro}{s}，闭眼冲',
+      '用过就回不去的{pro}，{s}太顶了'
+    ]},
+  short:{label:'短视频钩子',hooks:['注意','别划走','听劝','揭秘','暴利','真相','内行'],
+    tpl:[
+      '别划走！{pro}{s}的{p}很多人不知道',
+      '听劝：{pro}认准{s}，少走弯路',
+      '内行才说的{pro}{s}，{p}是关键',
+      '揭秘{pro}：{s}才是{p}的真相'
+    ]}
+};
+let sel='xhs';
+const $=id=>document.getElementById(id);
+function renderChips(){
+  $('chips').innerHTML='';
+  Object.entries(TYPES).forEach(([k,v])=>{
+    const b=document.createElement('div');b.className='chip'+(k===sel?' on':'');b.textContent=v.label;
+    b.onclick=()=>{sel=k;renderChips();};$('chips').appendChild(b);
+  });
+}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function fill(t,pro,s,aud){
+  const p=pick(['好用','划算','靠谱','惊艳','上头','绝绝子','神仙','宝藏']);
+  const sells=(s||'效果出众').split(/[,，]/).map(x=>x.trim()).filter(Boolean);
+  const sTxt=sells.length?pick(sells):'体验感拉满';
+  const audTxt=aud?('｜'+aud):'';
+  return t.replaceAll('{pro}',pro||'这款好物').replaceAll('{s}',sTxt).replaceAll('{p}',p).replaceAll('{h}',pick(TYPES[sel].hooks)).replaceAll('{aud}',audTxt);
+}
+function gen(){
+  const pro=$('product').value.trim()||'这款好物';
+  const s=$('sell').value.trim();
+  const aud=$('aud').value.trim();
+  const tpls=TYPES[sel].tpl;
+  let html='<h3>'+TYPES[sel].label+'（点击右侧复制）</h3>';
+  tpls.forEach(t=>{
+    const txt=fill(t,pro,s,aud);
+    html+=`<div class="item">${txt}<span class="copy" onclick="copyThis(this)">复制</span></div>`;
+  });
+  const out=$('out');out.innerHTML=html;out.classList.add('show');
+}
+function copyThis(el){
+  const txt=el.parentElement.childNodes[0].textContent.trim();
+  navigator.clipboard?.writeText(txt);
+  el.textContent='已复制';setTimeout(()=>el.textContent='复制',1200);
+}
+$('gen').onclick=gen;renderChips();
+</script>
+</body>
+</html>
