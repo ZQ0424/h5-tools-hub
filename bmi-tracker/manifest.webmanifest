@@ -1,0 +1,1 @@
+{"name":"BMI计算器","short_name":"BMI","description":"BMI体质指数计算与每日健康打卡","start_url":"./","display":"standalone","background_color":"#f0fdf4","theme_color":"#10b981","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]}
