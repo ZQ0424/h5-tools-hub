@@ -619,7 +619,11 @@ ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("sh_lang",lang);
 })();
 })();
 </script>
-<!--WB_WIDGET_V2 v=6-->
+
+
+
+
+<!--WB_WIDGET_V2 v=7-->
 
 <script>
 (function(){
@@ -629,6 +633,67 @@ ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("sh_lang",lang);
   var SITE='https://zq0424.github.io/h5-tools-hub/';
   /* ★ 站长配置：把两张收款码图片的公网URL填到这里（可用 GitHub 仓库里的图片） */
   var PAY={wechat:'',alipay:'',year:'¥19.9/年',life:'¥49.9/永久',free:10};
+  /* ---- 组件 i18n（跟随浏览器语言自动切换，14 语言） ---- */
+  var WB_I18N={
+    zh:{back:'返回工具箱首页',like:'点赞',fav:'收藏',share:'分享',comment:'评论',vip:'解锁会员',views:'浏览',
+        commentTitle:'对「X」说点什么',nick:'昵称（可留空）',body:'使用感受 / 建议 / 想要的新功能…',send:'发表',guest:'访客',loading:'加载中…',empty:'还没有评论，来抢沙发～',fail:'发表失败，请稍后再试',need:'写点内容再发表吧',
+        freeLeft:'免费额度剩 N 次',freeOver:'已达免费上限，点💎解锁',pro:'会员已解锁 · 感谢支持',
+        payTitle:'免费额度已用完 · 解锁后继续使用',payDesc:'你已免费使用 N 次。解锁后无限次使用本站全部工具（含每日新增）。',payYear:'年度会员',payLife:'永久买断 · 更划算',payWx:'微信支付',payAli:'支付宝',payPaid:'我已完成支付，激活会员',payHint:'支付后点击激活（试运行自动开通；如遇问题请截图联系站长）',payQr:'收款码配置中，请稍后重试或联系站长',paid:'解锁成功，感谢支持！',alreadyPro:'你已是会员，感谢支持！',copied:'链接已复制',save:'保存海报',copyLink:'复制链接',shareTip:'微信内长按海报即可保存 / 发送',unlock:'解锁全部工具',member:'已是会员'},
+    en:{back:'Back to toolbox',like:'Like',fav:'Fav',share:'Share',comment:'Comment',vip:'Unlock',views:'views',
+        commentTitle:'Comment on "X"',nick:'Nickname (optional)',body:'Feedback / suggestions / features…',send:'Send',guest:'Guest',loading:'Loading…',empty:'No comments yet',fail:'Failed, try again',need:'Write something first',
+        freeLeft:'N free uses left',freeOver:'Free limit reached, tap 💎',pro:'Member unlocked · Thanks!',
+        payTitle:'Free limit reached · Unlock to continue',payDesc:'You used N free times. Unlock for unlimited access to all tools.',payYear:'Annual',payLife:'Lifetime · best value',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'I have paid — activate',payHint:'Tap activate after paying',payQr:'Payment QR being configured',paid:'Unlocked, thanks!',alreadyPro:'Already a member!',copied:'Link copied',save:'Save poster',copyLink:'Copy link',shareTip:'Long-press to save',unlock:'Unlock all tools',member:'Member'},
+    ja:{back:'ツール箱へ戻る',like:'いいね',fav:'お気に入り',share:'シェア',comment:'コメント',vip:'解除',views:'閲覧',
+        commentTitle:'「X」にコメント',nick:'ニックネーム',body:'感想・提案…',send:'投稿',guest:'ゲスト',loading:'読み込み中…',empty:'まだコメントなし',fail:'失敗しました',need:'内容を入力してください',
+        freeLeft:'残り N 回',freeOver:'上限に達しました',pro:'会員解除済み',
+        payTitle:'無料枠終了・解除して続行',payDesc:'N 回使用しました。全ツール無制限に。',payYear:'年間',payLife:'永久',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'支払い済み—有効化',payHint:'支払い後に有効化',payQr:'QR設定中',paid:'解除成功！',alreadyPro:'会員です！',copied:'コピーしました',save:'保存',copyLink:'リンクコピー',shareTip:'長押しで保存',unlock:'全ツール解除',member:'会員'},
+    ko:{back:'도구함으로 돌아가기',like:'좋아요',fav:'즐겨찾기',share:'공유',comment:'댓글',vip:'해제',views:'조회',
+        commentTitle:'「X」에 댓글',nick:'닉네임',body:'의견/제안…',send:'게시',guest:'방문자',loading:'로딩 중…',empty:'댓글 없음',fail:'실패',need:'내용을 입력하세요',
+        freeLeft:'N회 남음',freeOver:'한도 도달',pro:'회원 해제됨',
+        payTitle:'무료 한도 도달·해제',payDesc:'N회 사용. 모든 도구 무제한.',payYear:'연간',payLife:'평생',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'결제 완료—활성화',payHint:'결제 후 활성화',payQr:'QR 설정 중',paid:'해제 성공!',alreadyPro:'이미 회원!',copied:'복사됨',save:'저장',copyLink:'링크 복사',shareTip:'길게 눌러 저장',unlock:'전체 해제',member:'회원'},
+    es:{back:'Volver',like:'Me gusta',fav:'Favorito',share:'Compartir',comment:'Comentar',vip:'Desbloquear',views:'vistas',
+        commentTitle:'Comenta en "X"',nick:'Apodo',body:'Comentario…',send:'Enviar',guest:'Invitado',loading:'Cargando…',empty:'Sin comentarios',fail:'Falló',need:'Escribe algo',
+        freeLeft:'Quedan N usos',freeOver:'Límite alcanzado',pro:'Miembro desbloqueado',
+        payTitle:'Límite alcanzado · Desbloquea',payDesc:'Usaste N veces. Acceso ilimitado.',payYear:'Anual',payLife:'Vitalicio',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Ya pagué — activar',payHint:'Toca activar tras pagar',payQr:'QR en configuración',paid:'¡Desbloqueado!',alreadyPro:'¡Ya eres miembro!',copied:'Copiado',save:'Guardar',copyLink:'Copiar link',shareTip:'Mantén pulsado',unlock:'Desbloquear todo',member:'Miembro'},
+    fr:{back:'Retour',like:'J\'aime',fav:'Favori',share:'Partager',comment:'Commenter',vip:'Débloquer',views:'vues',
+        commentTitle:'Commenter « X »',nick:'Pseudo',body:'Avis…',send:'Envoyer',guest:'Invité',loading:'Chargement…',empty:'Aucun commentaire',fail:'Échec',need:'Écrivez quelque chose',
+        freeLeft:'N usages restants',freeOver:'Limite atteinte',pro:'Membre débloqué',
+        payTitle:'Limite atteinte · Débloquer',payDesc:'N utilisations. Accès illimité.',payYear:'Annuel',payLife:'À vie',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'J\'ai payé — activer',payHint:'Activez après paiement',payQr:'QR en configuration',paid:'Débloqué !',alreadyPro:'Déjà membre !',copied:'Copié',save:'Enregistrer',copyLink:'Copier le lien',shareTip:'Maintenez enfoncé',unlock:'Tout débloquer',member:'Membre'},
+    de:{back:'Zurück',like:'Gefällt mir',fav:'Favorit',share:'Teilen',comment:'Kommentar',vip:'Freischalten',views:'Aufrufe',
+        commentTitle:'Kommentar zu "X"',nick:'Name',body:'Feedback…',send:'Senden',guest:'Gast',loading:'Lädt…',empty:'Keine Kommentare',fail:'Fehlgeschlagen',need:'Schreibe etwas',
+        freeLeft:'Noch N Nutzungen',freeOver:'Limit erreicht',pro:'Mitglied freigeschaltet',
+        payTitle:'Limit erreicht · Freischalten',payDesc:'N Nutzungen. Unbegrenzt.',payYear:'Jährlich',payLife:'Lebenslang',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Bezahlt — aktivieren',payHint:'Nach Zahlung aktivieren',payQr:'QR wird konfiguriert',paid:'Freigeschaltet!',alreadyPro:'Bereits Mitglied!',copied:'Kopiert',save:'Speichern',copyLink:'Link kopieren',shareTip:'Gedrückt halten',unlock:'Alles freischalten',member:'Mitglied'},
+    ru:{back:'Назад',like:'Нравится',fav:'Избранное',share:'Поделиться',comment:'Комментарий',vip:'Разблокировать',views:'просмотры',
+        commentTitle:'Комментарий к «X»',nick:'Имя',body:'Отзыв…',send:'Отправить',guest:'Гость',loading:'Загрузка…',empty:'Нет комментариев',fail:'Ошибка',need:'Напишите что-нибудь',
+        freeLeft:'Осталось N',freeOver:'Лимит исчерпан',pro:'Членство разблокировано',
+        payTitle:'Лимит исчерпан · Разблокировать',payDesc:'N использований. Безлимит.',payYear:'Год',payLife:'Навсегда',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Оплатил — активировать',payHint:'Активируйте после оплаты',payQr:'QR настраивается',paid:'Разблокировано!',alreadyPro:'Уже член!',copied:'Скопировано',save:'Сохранить',copyLink:'Копировать',shareTip:'Удерживайте',unlock:'Разблокировать всё',member:'Член'},
+    pt:{back:'Voltar',like:'Curtir',fav:'Favorito',share:'Compartilhar',comment:'Comentar',vip:'Desbloquear',views:'vistas',
+        commentTitle:'Comentar "X"',nick:'Apelido',body:'Feedback…',send:'Enviar',guest:'Visitante',loading:'Carregando…',empty:'Sem comentários',fail:'Falhou',need:'Escreva algo',
+        freeLeft:'Restam N usos',freeOver:'Limite atingido',pro:'Membro desbloqueado',
+        payTitle:'Limite atingido · Desbloquear',payDesc:'N usos. Ilimitado.',payYear:'Anual',payLife:'Vitalício',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Já paguei — ativar',payHint:'Ative após pagar',payQr:'QR em configuração',paid:'Desbloqueado!',alreadyPro:'Já é membro!',copied:'Copiado',save:'Salvar',copyLink:'Copiar link',shareTip:'Segure para salvar',unlock:'Desbloquear tudo',member:'Membro'},
+    ar:{back:'رجوع',like:'إعجاب',fav:'مفضلة',share:'مشاركة',comment:'تعليق',vip:'فتح',views:'مشاهدات',
+        commentTitle:'تعليق على "X"',nick:'الاسم',body:'تعليق…',send:'إرسال',guest:'زائر',loading:'جارٍ…',empty:'لا تعليقات',fail:'فشل',need:'اكتب شيئاً',
+        freeLeft:'متبقي N',freeOver:'انتهى الحد',pro:'تم فتح العضوية',
+        payTitle:'انتهى الحد · فتح',payDesc:'N استخدامات. غير محدود.',payYear:'سنوي',payLife:'مدى الحياة',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'دفعت — تفعيل',payHint:'فعّل بعد الدفع',payQr:'جارٍ الإعداد',paid:'تم الفتح!',alreadyPro:'عضو بالفعل!',copied:'تم النسخ',save:'حفظ',copyLink:'نسخ الرابط',shareTip:'اضغط مطولاً',unlock:'فتح الكل',member:'عضو'},
+    hi:{back:'वापस',like:'लाइक',fav:'पसंदीदा',share:'साझा',comment:'टिप्पणी',vip:'अनलॉक',views:'व्यू',
+        commentTitle:'"X" पर टिप्पणी',nick:'नाम',body:'प्रतिक्रिया…',send:'भेजें',guest:'अतिथि',loading:'लोड…',empty:'कोई टिप्पणी नहीं',fail:'विफल',need:'कुछ लिखें',
+        freeLeft:'N बचे',freeOver:'सीमा पूर्ण',pro:'सदस्यता अनलॉक',
+        payTitle:'सीमा पूर्ण · अनलॉक',payDesc:'N उपयोग। असीमित।',payYear:'वार्षिक',payLife:'आजीवन',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'भुगतान — सक्रिय',payHint:'भुगतान बाद सक्रिय',payQr:'QR सेट हो रहा',paid:'अनलॉक!',alreadyPro:'पहले से सदस्य!',copied:'कॉपी',save:'सहेजें',copyLink:'कॉपी',shareTip:'दबाए रखें',unlock:'सब अनलॉक',member:'सदस्य'},
+    vi:{back:'Quay lại',like:'Thích',fav:'Yêu thích',share:'Chia sẻ',comment:'Bình luận',vip:'Mở khóa',views:'lượt xem',
+        commentTitle:'Bình luận "X"',nick:'Tên',body:'Góp ý…',send:'Gửi',guest:'Khách',loading:'Đang tải…',empty:'Chưa có bình luận',fail:'Thất bại',need:'Viết gì đó',
+        freeLeft:'Còn N lần',freeOver:'Hết lượt',pro:'Đã mở khóa thành viên',
+        payTitle:'Hết lượt · Mở khóa',payDesc:'N lần. Không giới hạn.',payYear:'Năm',payLife:'Trọn đời',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Đã trả — kích hoạt',payHint:'Kích hoạt sau khi trả',payQr:'Đang cấu hình',paid:'Đã mở khóa!',alreadyPro:'Đã là thành viên!',copied:'Đã sao chép',save:'Lưu',copyLink:'Sao chép',shareTip:'Nhấn giữ',unlock:'Mở khóa tất cả',member:'Thành viên'},
+    th:{back:'กลับ',like:'ถูกใจ',fav:'รายการโปรด',share:'แชร์',comment:'คอมเมนต์',vip:'ปลดล็อก',views:'การดู',
+        commentTitle:'คอมเมนต์ "X"',nick:'ชื่อ',body:'ความคิดเห็น…',send:'ส่ง',guest:'ผู้เยี่ยมชม',loading:'โหลด…',empty:'ยังไม่มีคอมเมนต์',fail:'ล้มเหลว',need:'เขียนบางอย่าง',
+        freeLeft:'เหลือ N',freeOver:'ครบแล้ว',pro:'ปลดล็อกสมาชิกแล้ว',
+        payTitle:'ครบแล้ว · ปลดล็อก',payDesc:'N ครั้ง. ไม่จำกัด.',payYear:'รายปี',payLife:'ตลอดชีพ',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'จ่ายแล้ว — เปิดใช้',payHint:'กดเปิดใช้หลังจ่าย',payQr:'กำลังตั้งค่า',paid:'ปลดล็อก!',alreadyPro:'เป็นสมาชิกแล้ว!',copied:'คัดลอก',save:'บันทึก',copyLink:'คัดลอกลิงก์',shareTip:'กดค้าง',unlock:'ปลดล็อกทั้งหมด',member:'สมาชิก'},
+    id:{back:'Kembali',like:'Suka',fav:'Favorit',share:'Bagikan',comment:'Komentar',vip:'Buka',views:'dilihat',
+        commentTitle:'Komentar "X"',nick:'Nama',body:'Masukan…',send:'Kirim',guest:'Tamu',loading:'Memuat…',empty:'Belum ada komentar',fail:'Gagal',need:'Tulis sesuatu',
+        freeLeft:'Sisa N',freeOver:'Batas tercapai',pro:'Member terbuka',
+        payTitle:'Batas tercapai · Buka',payDesc:'N kali. Tak terbatas.',payYear:'Tahunan',payLife:'Seumur hidup',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Sudah bayar — aktifkan',payHint:'Aktifkan setelah bayar',payQr:'QR disiapkan',paid:'Terbuka!',alreadyPro:'Sudah member!',copied:'Disalin',save:'Simpan',copyLink:'Salin link',shareTip:'Tekan lama',unlock:'Buka semua',member:'Member'}
+  };
+  var WB_LANG=(function(){var s=['zh','en','ja','ko','es','fr','de','ru','pt','ar','hi','vi','th','id'];var n=(navigator.language||'zh').toLowerCase().slice(0,2);return s.indexOf(n)>=0?n:'en';})();
+  function T(k){return (WB_I18N[WB_LANG]&&WB_I18N[WB_LANG][k])||WB_I18N.en[k]||k;}
   var parts=location.pathname.split('/').filter(Boolean);
   var slug=parts[parts.length-1]||'home';
   var toolName=document.title.split(/[·|]/)[0].trim()||'这个工具';
@@ -661,12 +726,12 @@ ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("sh_lang",lang);
 
   /* ---------- 底部工具条 ---------- */
   var bar=document.createElement('div');bar.id='wbBar';
-  bar.innerHTML='<a href="'+SITE+'" title="返回工具箱首页">🏠</a>'+
-    '<button class="lk'+(liked()?' on':'')+'" title="点赞">👍 <span class="vc">0</span></button>'+
-    '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="收藏">⭐</button>'+
-    '<button class="sh" title="分享">↗</button>'+
-    '<button class="cm" title="评论">💬<span class="cc"></span></button>'+
-    '<button class="vip" title="解锁会员">💎</button>'+
+  bar.innerHTML='<a href="'+SITE+'" title="'+T('back')+'">🏠</a>'+
+    '<button class="lk'+(liked()?' on':'')+'" title="'+T('like')+'">👍 <span class="vc">0</span></button>'+
+    '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="'+T('fav')+'">⭐</button>'+
+    '<button class="sh" title="'+T('share')+'">↗</button>'+
+    '<button class="cm" title="'+T('comment')+'">💬<span class="cc"></span></button>'+
+    '<button class="vip" title="'+T('vip')+'">💎</button>'+
     '<span class="vw">👁 <span class="vcw">0</span></span>';
   document.body.appendChild(bar);
 
@@ -711,10 +776,10 @@ ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("sh_lang",lang);
   /* ---------- 分享海报（二维码 + 站点介绍，扫码直达） ---------- */
   function qr(u){return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data='+encodeURIComponent(u);}
   bar.querySelector('.sh').onclick=function(){
-    var m=mkMask('wbShare','↗ 分享这个工具'),bd=m.querySelector('.bd');
-    bd.innerHTML='<img class="wbPoster" alt="海报生成中…"><div style="display:flex;gap:8px;margin-top:10px">'+
-      '<button class="wbBtn g" id="wbCp">复制链接</button><button class="wbBtn" id="wbSv">保存海报</button></div>'+
-      '<div style="font-size:11px;color:#8a8fb0;margin-top:8px;text-align:center">微信内长按海报即可保存 / 发送</div>';
+    var m=mkMask('wbShare','↗ '+T('share')+' · '+toolName),bd=m.querySelector('.bd');
+    bd.innerHTML='<img class="wbPoster" alt="…"><div style="display:flex;gap:8px;margin-top:10px">'+
+      '<button class="wbBtn g" id="wbCp">'+T('copyLink')+'</button><button class="wbBtn" id="wbSv">'+T('save')+'</button></div>'+
+      '<div style="font-size:11px;color:#8a8fb0;margin-top:8px;text-align:center">'+T('shareTip')+'</div>';
     var url=SITE+slug+'/';
     var W=750,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
     var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#eef1ff');g.addColorStop(1,'#fdeef6');
@@ -735,8 +800,8 @@ ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("sh_lang",lang);
       catch(e){bd.querySelector('img').outerHTML='<div style="text-align:center"><img src="'+q.src+'" style="width:180px"></div>';}
     };
     q.src=qr(url);
-    bd.querySelector('#wbCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(function(){alert('链接已复制')}).catch(function(){prompt('',url)});};
-    bd.querySelector('#wbSv').onclick=function(){var im=bd.querySelector('img');if(im.src&&im.src.indexOf('data:')===0){var a=document.createElement('a');a.href=im.src;a.download='share.png';a.click();}else alert('请长按图片保存');};
+    bd.querySelector('#wbCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(function(){alert(T('copied'))}).catch(function(){prompt('',url)});};
+    bd.querySelector('#wbSv').onclick=function(){var im=bd.querySelector('img');if(im.src&&im.src.indexOf('data:')===0){var a=document.createElement('a');a.href=im.src;a.download='share.png';a.click();}else alert(T('shareTip'));};
     m.classList.add('show');
   };
 
@@ -744,21 +809,21 @@ ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("sh_lang",lang);
   var cmMask=null;
   bar.querySelector('.cm').onclick=function(){
     if(!cmMask){
-      cmMask=mkMask('wbCmMask','💬 对「'+toolName+'」说点什么');
+      cmMask=mkMask('wbCmMask','💬 '+T('commentTitle').replace('X',toolName));
       cmMask.querySelector('.bd').innerHTML=
-        '<div id="wbCmList" style="max-height:44vh;overflow:auto"><div style="font-size:12px;color:#8a8fb0">加载中…</div></div>'+
-        '<div class="wbCm"><input id="wbCmName" placeholder="昵称（可留空）" maxlength="20"></div>'+
-        '<div class="wbCm"><textarea id="wbCmBody" placeholder="使用感受 / 建议 / 想要的新功能…" maxlength="500"></textarea></div>'+
-        '<button class="wbBtn" id="wbCmSend" style="width:100%">发 表</button>';
+        '<div id="wbCmList" style="max-height:44vh;overflow:auto"><div style="font-size:12px;color:#8a8fb0">'+T('loading')+'</div></div>'+
+        '<div class="wbCm"><input id="wbCmName" placeholder="'+T('nick')+'" maxlength="20"></div>'+
+        '<div class="wbCm"><textarea id="wbCmBody" placeholder="'+T('body')+'" maxlength="500"></textarea></div>'+
+        '<button class="wbBtn" id="wbCmSend" style="width:100%">'+T('send')+'</button>';
       cmMask.querySelector('#wbCmSend').onclick=function(){
         var b=cmMask.querySelector('#wbCmBody').value.trim();
-        if(!b)return alert('写点内容再发表吧');
-        var n=cmMask.querySelector('#wbCmName').value.trim()||'访客';
+        if(!b)return alert(T('need'));
+        var n=cmMask.querySelector('#wbCmName').value.trim()||T('guest');
         this.disabled=true;
         fetch(SB+'/rest/v1/comments',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json',Prefer:'return=minimal'},
           body:JSON.stringify({slug:slug,name:n,body:b})})
         .then(function(r){if(!r.ok)throw 0;cmMask.querySelector('#wbCmBody').value='';loadCm();})
-        .catch(function(){alert('发表失败，请稍后再试')}).finally(function(){this.disabled=false}.bind(this));
+        .catch(function(){alert(T('fail'))}).finally(function(){this.disabled=false}.bind(this));
       };
     }
     cmMask.classList.add('show');loadCm();
@@ -772,7 +837,7 @@ ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("sh_lang",lang);
       box.innerHTML=rows.length?rows.map(function(c){
         var d=new Date(c.created_at),ds=(d.getMonth()+1)+'/'+d.getDate();
         return '<div class="wbItem"><b>'+esc(c.name)+'</b> <i>'+ds+'</i><span>'+esc(c.body)+'</span></div>';
-      }).join(''):'<div style="font-size:12px;color:#8a8fb0;padding:10px 0">还没有评论，来抢沙发～</div>';
+      }).join(''):'<div style="font-size:12px;color:#8a8fb0;padding:10px 0">'+T('empty')+'</div>';
       var n=rows.length; if(n)bar.querySelector('.cc').textContent=' '+n;
     }).catch(function(){});
   }
@@ -783,29 +848,29 @@ ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("sh_lang",lang);
   if(!sessionStorage.getItem('wb_use_'+slug)){use[slug]=(use[slug]||0)+1;localStorage.setItem('h5hub_use',JSON.stringify(use));}
   var used=use[slug]||0, isPro=localStorage.getItem('h5hub_pro')==='1';
   var free=document.createElement('div');free.id='wbFree';document.body.appendChild(free);
-  function paintFree(){free.textContent=isPro?'✨ 会员已解锁 · 感谢支持':(used>PAY.free?'🔒 已达免费上限，点💎解锁':'🆓 免费额度剩 '+Math.max(0,PAY.free-used+1)+' 次');}
+  function paintFree(){free.textContent=isPro?('✨ '+T('pro')):(used>PAY.free?('🔒 '+T('freeOver')):('🆓 '+T('freeLeft').replace('N',Math.max(0,PAY.free-used+1))));}
   paintFree();
-  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ 你已是会员，感谢支持！');return;} showPay(); };
+  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ '+T('alreadyPro'));return;} showPay(); };
   function showPay(){
     if(isPro)return;
-    var m=mkMask('wbPay','🔒 免费额度已用完 · 解锁后继续使用');
+    var m=mkMask('wbPay','🔒 '+T('payTitle'));
     var plan_wx=true;
     function paint(){
       var plan=localStorage.getItem('wb_plan')||'year';
       m.querySelector('.bd').innerHTML=
-        '<div style="font-size:12.5px;color:#8a8fb0">你已免费使用 '+PAY.free+' 次。解锁后无限次使用本站全部工具（含每日新增）。</div>'+
-        '<div class="wbPlans"><div class="wbPlan'+(plan==='year'?' on':'')+'" data-p="year"><b>'+PAY.year+'</b><span>年度会员</span></div>'+
-        '<div class="wbPlan'+(plan==='life'?' on':'')+'" data-p="life"><b>'+PAY.life+'</b><span>永久买断 · 更划算</span></div></div>'+
-        '<div class="wbPayTabs"><button class="wx'+(plan_wx?' on':'')+'" data-w="wx">微信支付</button><button class="ali'+(plan_wx?'':' on')+'" data-w="ali">支付宝</button></div>'+
+        '<div style="font-size:12.5px;color:#8a8fb0">'+T('payDesc').replace('N',PAY.free)+'</div>'+
+        '<div class="wbPlans"><div class="wbPlan'+(plan==='year'?' on':'')+'" data-p="year"><b>'+PAY.year+'</b><span>'+T('payYear')+'</span></div>'+
+        '<div class="wbPlan'+(plan==='life'?' on':'')+'" data-p="life"><b>'+PAY.life+'</b><span>'+T('payLife')+'</span></div></div>'+
+        '<div class="wbPayTabs"><button class="wx'+(plan_wx?' on':'')+'" data-w="wx">'+T('payWx')+'</button><button class="ali'+(plan_wx?'':' on')+'" data-w="ali">'+T('payAli')+'</button></div>'+
         '<div class="wbQrBox" id="wbQr"></div>'+
-        '<button class="wbBtn" id="wbPaid" style="width:100%;margin-top:10px">✅ 我已完成支付，激活会员</button>'+
-        '<div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">支付后点击激活（试运行自动开通；如遇问题请截图联系站长）<br>可关闭本窗，但关闭后将无法继续使用本工具，点💎可重新解锁</div>';
+        '<button class="wbBtn" id="wbPaid" style="width:100%;margin-top:10px">✅ '+T('payPaid')+'</button>'+
+        '<div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">'+T('payHint')+'<br>'+T('unlock')+' · 💎</div>';
       m.querySelectorAll('.wbPlan').forEach(function(p){p.onclick=function(){localStorage.setItem('wb_plan',p.dataset.p);paint();}});
       m.querySelectorAll('.wbPayTabs button').forEach(function(b){b.onclick=function(){plan_wx=b.dataset.w==='wx';paint();};});
       var qrEl=m.querySelector('#wbQr'),src=plan_wx?PAY.wechat:PAY.alipay;
-      qrEl.innerHTML=src?'<div><img src="'+src+'"><div style="font-size:11px;color:#8a8fb0;margin-top:4px">长按 / 扫码支付 '+(plan==='year'?PAY.year:PAY.life)+'</div></div>'
-        :'<div style="font-size:12px;color:#8a8fb0">收款码配置中<br><br>↑ 微信 / 支付宝扫码后<br>向站长转账对应金额即可</div>';
-      m.querySelector('#wbPaid').onclick=function(){localStorage.setItem('h5hub_pro','1');isPro=true;unblur();m.classList.remove('show');paintFree();alert('🎉 解锁成功，感谢支持！');};
+      qrEl.innerHTML=src?'<div><img src="'+src+'"><div style="font-size:11px;color:#8a8fb0;margin-top:4px">'+(plan==='year'?PAY.year:PAY.life)+'</div></div>'
+        :'<div style="font-size:12px;color:#8a8fb0">'+T('payQr')+'</div>';
+      m.querySelector('#wbPaid').onclick=function(){localStorage.setItem('h5hub_pro','1');isPro=true;unblur();m.classList.remove('show');paintFree();alert('🎉 '+T('paid'));};
     };
     paint();m.classList.add('show');
   }
