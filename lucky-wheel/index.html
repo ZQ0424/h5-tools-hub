@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>转盘抽奖生成器 · 随机点名抽签工具 | 免费无水印可存名单 Lucky Wheel</title>
+<meta name="description" content="免费在线转盘抽奖与随机点名工具：自定义奖品和名单权重、抽后自动去重、结果历史本地保存、一键生成分享卡片。不上传服务器、无水印、无次数限制，适合门店活动、年会抽奖、课堂点名。">
+<meta name="keywords" content="转盘抽奖,抽奖转盘生成器,随机点名,抽签工具,年会抽奖,课堂随机点名,权重抽奖,免费抽奖工具,lucky wheel,random name picker">
+<meta name="theme-color" content="#6366f1">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="转盘抽奖生成器 · 随机点名抽签工具">
+<meta property="og:description" content="免费、无水印、可保存名单的转盘抽奖与随机点名工具，支持权重与去重抽取。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://h5tools.pages.dev/lucky-wheel/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="zh-CN" href="?lang=zh">
+<link rel="alternate" hreflang="en" href="?lang=en">
+<link rel="alternate" hreflang="ja" href="?lang=ja">
+<link rel="alternate" hreflang="ko" href="?lang=ko">
+<link rel="alternate" hreflang="es" href="?lang=es">
+<link rel="alternate" hreflang="fr" href="?lang=fr">
+<link rel="alternate" hreflang="x-default" href="?lang=zh">
+<link rel="canonical" href="https://h5tools.pages.dev/lucky-wheel/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Lucky Wheel">
+<style>
+:root{
+  --bg:#f5f6fb; --card:#ffffff; --txt:#1a1c2b; --sub:#6b7189; --line:#e8eaf3;
+  --pri:#6366f1; --pri2:#8b5cf6; --acc:#f59e0b; --ok:#10b981; --danger:#ef4444;
+  --shadow:0 1px 2px rgba(20,22,45,.05),0 8px 24px rgba(20,22,45,.07);
+  --r:16px;
+}
+html[data-theme="dark"]{
+  --bg:#0f1120; --card:#181b2e; --txt:#eef0fb; --sub:#9aa2c0; --line:#272b45;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Noto Sans CJK SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:0 14px 40px}
+header{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hd{max-width:960px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;flex:none;box-shadow:0 4px 12px rgba(99,102,241,.35)}
+.brand{font-weight:800;font-size:16px;letter-spacing:.2px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--sub)}
+.sel{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;padding:6px 8px;font-size:13px;max-width:110px}
+.ibtn{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;font-size:15px;flex:none}
+.ibtn:active{transform:scale(.94)}
+h1{font-size:23px;margin:22px 0 6px;letter-spacing:-.3px}
+.lead{color:var(--sub);margin:0 0 18px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:7px}
+.card h2 .dot{width:6px;height:6px;border-radius:50%;background:var(--pri)}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);padding:4px;border-radius:12px;margin-bottom:14px}
+.tab{flex:1;text-align:center;padding:9px 6px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;color:var(--sub);border:0;background:none;transition:.18s}
+.tab[aria-selected="true"]{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;box-shadow:0 3px 10px rgba(99,102,241,.3)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.wheelbox{display:flex;flex-direction:column;align-items:center;gap:12px}
+.stage{position:relative;width:100%;max-width:340px;aspect-ratio:1;display:grid;place-items:center}
+canvas#wheel{width:100%;height:100%;border-radius:50%;box-shadow:var(--shadow),0 0 0 6px var(--card),0 0 0 7px var(--line);transition:transform 4.6s cubic-bezier(.15,.72,.06,1)}
+.pointer{position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:26px solid var(--acc);filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));z-index:2}
+.hub{position:absolute;width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border:0;font-weight:800;font-size:15px;letter-spacing:.5px;cursor:pointer;box-shadow:0 6px 18px rgba(99,102,241,.45);z-index:3;display:grid;place-items:center;transition:transform .15s}
+.hub:active{transform:scale(.93)}
+.hub:disabled{opacity:.6;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=text],textarea,input[type=number]{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--txt);border-radius:11px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none;transition:.15s}
+input:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+textarea{resize:vertical;min-height:96px;line-height:1.7}
+.btn{border:0;border-radius:11px;padding:10px 15px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;transition:.15s;font-family:inherit}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--bg);color:var(--txt);border:1px solid var(--line)}
+.btn.sm{padding:7px 11px;font-size:13px}
+.btn.warn{background:linear-gradient(135deg,#f43f5e,#ef4444)}
+.items{max-height:290px;overflow:auto;margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.items li{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:7px 9px}
+.items .sw{width:14px;height:14px;border-radius:4px;flex:none}
+.items .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.items .wt{width:60px;flex:none}
+.items .x{border:0;background:none;color:var(--sub);cursor:pointer;font-size:17px;line-height:1;padding:2px 4px;border-radius:6px}
+.items .x:hover{color:var(--danger);background:rgba(239,68,68,.1)}
+.chk{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--sub);cursor:pointer;user-select:none}
+.chk input{width:16px;height:16px;accent-color:var(--pri)}
+.muted{color:var(--sub);font-size:12.5px}
+.rbox{border-radius:var(--r);padding:18px;text-align:center;background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(139,92,246,.1));border:1px solid var(--line)}
+.rbox .lbl{font-size:12px;color:var(--sub);letter-spacing:1px}
+.rbox .val{font-size:32px;font-weight:800;margin:6px 0 2px;letter-spacing:-.5px;word-break:break-word;background:linear-gradient(135deg,var(--pri),var(--pri2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hist{max-height:220px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.hist .h{display:flex;gap:9px;align-items:center;font-size:13px;padding:7px 10px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.hist .h b{font-weight:700}
+.hist .h .t{margin-left:auto;color:var(--sub);font-size:11.5px;flex:none}
+.daily{display:flex;gap:10px;align-items:center;padding:11px 13px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.dsw{width:38px;height:38px;border-radius:10px;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#1c1f36;color:#fff;padding:10px 16px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+dialog{border:0;border-radius:18px;padding:0;background:var(--card);color:var(--txt);max-width:420px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(10,12,25,.55);backdrop-filter:blur(3px)}
+.dg{padding:18px}
+.dg h3{margin:0 0 8px;font-size:16px}
+.dg .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+footer{color:var(--sub);font-size:12.5px;text-align:center;padding:18px 10px;line-height:1.8}
+footer a{color:var(--sub)}
+.hide{display:none!important}
+.kbd{font-size:11px;color:var(--sub);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo">🎯</div>
+    <div class="brand"><span data-i18n="appName">转盘抽奖 · 随机点名</span><small data-i18n="appSlogan">免费 · 无水印 · 名单本地保存</small></div>
+    <select class="sel" id="langSel" aria-label="Language"></select>
+    <button class="ibtn" id="themeBtn" title="theme">🌓</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 data-i18n="h1">转盘抽奖 &amp; 随机点名工具</h1>
+  <p class="lead" data-i18n="lead">自定义奖品或名单，可设权重、抽后自动去重；结果历史自动保存，一键生成分享卡片。全程本地运行，不上传服务器。</p>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-mode="wheel" aria-selected="true" data-i18n="tabWheel">🎡 转盘抽奖</button>
+    <button class="tab" role="tab" data-mode="pick" aria-selected="false" data-i18n="tabPick">🙋 随机点名</button>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="card wheelbox" id="wheelCard">
+        <div class="stage">
+          <div class="pointer"></div>
+          <canvas id="wheel" width="600" height="600"></canvas>
+          <button class="hub" id="goBtn" data-i18n="go">GO</button>
+        </div>
+        <div class="row" style="justify-content:center">
+          <button class="btn ghost sm" id="tplBtn" data-i18n="tpl">载入示例</button>
+          <button class="btn ghost sm" id="clearBtn" data-i18n="clearList">清空名单</button>
+        </div>
+      </div>
+
+      <div class="card hide" id="pickCard">
+        <div class="rbox">
+          <div class="lbl" data-i18n="pickResult">随机结果</div>
+          <div class="val" id="pickVal">—</div>
+          <div class="muted" id="pickMeta"></div>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn" id="pickBtn" data-i18n="pickGo">随机抽取</button>
+          <button class="btn ghost sm" id="resetPickedBtn" data-i18n="resetPicked">重置已抽</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="dot"></span><span data-i18n="today">今日</span></h2>
+        <div class="daily">
+          <div class="dsw" id="luckySw"></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:14px" id="luckyTxt">—</div>
+            <div class="muted" id="dailyStat"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2><span class="dot"></span><span data-i18n="listTitle">名单 / 奖品</span></h2>
+        <div class="row" style="margin-bottom:10px">
+          <input type="text" id="nameIn" data-i18n-ph="phName" placeholder="输入名称后回车添加">
+          <button class="btn" id="addBtn" data-i18n="add">添加</button>
+        </div>
+        <p class="muted" style="margin:0 0 8px" data-i18n="bulkHint">批量粘贴（每行一个，可用「名称,权重」格式）</p>
+        <textarea id="bulkIn" data-i18n-ph="phBulk" placeholder="一等奖\n二等奖\n谢谢参与"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn ghost sm" id="bulkBtn" data-i18n="bulkAdd">批量导入</button>
+          <span class="muted" id="countTxt"></span>
+        </div>
+        <ul class="items" id="itemList" style="margin-top:12px"></ul>
+      </div>
+
+      <div class="card">
+        <h2><span class="dot"></span><span data-i18n="optTitle">抽奖设置</span></h2>
+        <div class="row">
+          <label class="chk"><input type="checkbox" id="optRemove" checked><span data-i18n="optRemove">抽中后移除</span></label>
+          <label class="chk"><input type="checkbox" id="optSound" checked><span data-i18n="optSound">音效</span></label>
+        </div>
+        <div class="row" style="margin-top:10px;align-items:center">
+          <span class="muted" data-i18n="optTurns">旋转圈数</span>
+          <input type="number" id="optTurns" value="5" min="1" max="12" style="width:80px">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="histTitle">结果历史</span>
+      <button class="btn ghost sm" id="shareBtn" style="margin-left:auto" data-i18n="share">生成分享卡</button>
+      <button class="btn ghost sm" id="csvBtn" data-i18n="csv">导出CSV</button>
+      <button class="btn warn sm" id="clearHistBtn" data-i18n="clearHist">清空</button>
+    </h2>
+    <div class="hist" id="histList"></div>
+    <p class="muted" id="histEmpty" data-i18n="histEmpty">暂无记录，抽一次试试。</p>
+  </div>
+
+  <footer>
+    <div data-i18n="footerPrivacy">🔒 所有数据仅保存在本机浏览器，不上传任何服务器</div>
+    <div>H5 工具矩阵 · <span data-i18n="footerName">转盘抽奖 &amp; 随机点名</span> · 按 <span class="kbd">Enter</span> <span data-i18n="footerTip">快速添加</span></div>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<dialog id="shareDlg"><div class="dg">
+  <h3 data-i18n="shareTitle">分享卡片</h3>
+  <canvas id="shareCv" style="width:100%;border-radius:12px;display:block"></canvas>
+  <div class="acts">
+    <button class="btn ghost sm" id="dlShareBtn" data-i18n="dl">下载图片</button>
+    <button class="btn sm" id="closeShareBtn" data-i18n="close">关闭</button>
+  </div>
+</div></dialog>
+
+<script>
+(function(){
+"use strict";
+/* ---------- i18n ---------- */
+var LANGS=["zh","en","ja","ko","es","fr"];
+var LNAME={zh:"简体中文",en:"English",ja:"日本語",ko:"한국어",es:"Español",fr:"Français"};
+var DESC={
+ zh:"免费在线转盘抽奖与随机点名工具：自定义奖品和名单权重、抽后自动去重、结果历史本地保存、一键生成分享卡片。不上传服务器、无水印、无次数限制。",
+ en:"Free online lucky wheel and random name picker: custom weights, no-repeat draw, local history, share card. No upload, no watermark, unlimited.",
+ ja:"無料オンライン抽選ホイール＆ランダム指名ツール：重み付け、重複除外、履歴保存、シェアカード作成。アップロード不要・透かしなし。",
+ ko:"무료 온라인 룰렛 추첨 & 랜덤 이름 뽑기: 가중치 설정, 중복 제외, 기록 저장, 공유 카드. 업로드 없음, 워터마크 없음.",
+ es:"Ruleta de sorteos y selector aleatorio de nombres gratis: pesos personalizados, sin repeticiones, historial local y tarjeta para compartir.",
+ fr:"Roulette de tirage au sort et tirage de noms aléatoire gratuits : poids personnalisés, sans répétition, historique local, carte à partager."
+};
+var TITLE={
+ zh:"转盘抽奖生成器 · 随机点名抽签工具 | 免费无水印可存名单",
+ en:"Lucky Wheel Generator & Random Name Picker | Free, No Watermark",
+ ja:"抽選ホイール作成・ランダム指名ツール | 無料・透かしなし",
+ ko:"룰렛 추첨 생성기 & 랜덤 이름 뽑기 | 무료 워터마크 없음",
+ es:"Generador de ruleta de sorteos y selector aleatorio | Gratis sin marca de agua",
+ fr:"Générateur de roulette et tirage de noms aléatoire | Gratuit sans filigrane"
+};
+var T={
+ zh:{appName:"转盘抽奖 · 随机点名",appSlogan:"免费 · 无水印 · 名单本地保存",h1:"转盘抽奖 & 随机点名工具",lead:"自定义奖品或名单，可设权重、抽后自动去重；结果历史自动保存，一键生成分享卡片。全程本地运行，不上传服务器。",
+  tabWheel:"🎡 转盘抽奖",tabPick:"🙋 随机点名",go:"开始",tpl:"载入示例",clearList:"清空名单",pickResult:"随机结果",pickGo:"随机抽取",resetPicked:"重置已抽",
+  today:"今日",listTitle:"名单 / 奖品",phName:"输入名称后回车添加",add:"添加",bulkHint:"批量粘贴（每行一个，可用「名称,权重」格式）",phBulk:"一等奖\n二等奖\n谢谢参与",bulkAdd:"批量导入",
+  optTitle:"抽奖设置",optRemove:"抽中后移除",optSound:"音效",optTurns:"旋转圈数",histTitle:"结果历史",share:"生成分享卡",csv:"导出CSV",clearHist:"清空",histEmpty:"暂无记录，抽一次试试。",
+  shareTitle:"分享卡片",dl:"下载图片",close:"关闭",footerPrivacy:"🔒 所有数据仅保存在本机浏览器，不上传任何服务器",footerName:"转盘抽奖 & 随机点名",footerTip:"快速添加",
+  luckyPre:"今日幸运色",draws:"今日已抽",emptyList:"请先添加名单",allDone:"已全部抽完",noLucky:"暂无",removed:"已移除",added:"已添加",saved:"已保存",
+  clearAsk:"确定清空全部名单？",histAsk:"确定清空全部历史？",weight:"权重",result:"中奖结果",picked:"抽中",at:"时间",total:"共",modeWheel:"转盘抽奖",modePick:"随机点名",
+  tplA:"一等奖",tplB:"二等奖",tplC:"三等奖",tplD:"谢谢参与",tplE:"再来一次",tplF:"优惠券",needTwo:"至少需要 2 个选项",exported:"已导出"},
+ en:{appName:"Lucky Wheel · Name Picker",appSlogan:"Free · No watermark · Saved locally",h1:"Lucky Wheel & Random Name Picker",lead:"Custom prizes or names with weights, auto no-repeat, local history and one-tap share card. Runs fully offline in your browser.",
+  tabWheel:"🎡 Lucky Wheel",tabPick:"🙋 Name Picker",go:"SPIN",tpl:"Load sample",clearList:"Clear list",pickResult:"Result",pickGo:"Pick one",resetPicked:"Reset picked",
+  today:"Today",listTitle:"Names / Prizes",phName:"Type a name and press Enter",add:"Add",bulkHint:"Paste in bulk (one per line, \"name,weight\" supported)",phBulk:"First prize\nSecond prize\nTry again",bulkAdd:"Import",
+  optTitle:"Settings",optRemove:"Remove after draw",optSound:"Sound",optTurns:"Spin turns",histTitle:"History",share:"Share card",csv:"Export CSV",clearHist:"Clear",histEmpty:"No records yet. Try a spin!",
+  shareTitle:"Share card",dl:"Download",close:"Close",footerPrivacy:"🔒 All data stays in your browser. Nothing is uploaded.",footerName:"Lucky Wheel & Name Picker",footerTip:"to add quickly",
+  luckyPre:"Lucky color",draws:"draws today",emptyList:"Please add names first",allDone:"All items drawn",noLucky:"None",removed:"Removed",added:"Added",saved:"Saved",
+  clearAsk:"Clear the whole list?",histAsk:"Clear all history?",weight:"Weight",result:"Winner",picked:"Picked",at:"Time",total:"Total",modeWheel:"Lucky Wheel",modePick:"Name Picker",
+  tplA:"Grand prize",tplB:"2nd prize",tplC:"3rd prize",tplD:"Try again",tplE:"One more",tplF:"Coupon",needTwo:"Need at least 2 items",exported:"Exported"},
+ ja:{appName:"抽選ホイール · 指名ツール",appSlogan:"無料 · 透かしなし · 端末内保存",h1:"抽選ホイール＆ランダム指名ツール",lead:"景品や名前を自由に設定、重み付け・重複除外・履歴保存・シェアカード作成に対応。すべてブラウザ内で動作します。",
+  tabWheel:"🎡 抽選ホイール",tabPick:"🙋 ランダム指名",go:"スタート",tpl:"サンプル読込",clearList:"リスト消去",pickResult:"結果",pickGo:"抽選する",resetPicked:"抽選済リセット",
+  today:"今日",listTitle:"名前 / 景品",phName:"名前を入力してEnter",add:"追加",bulkHint:"まとめて貼り付け（1行1件、「名前,重み」可）",phBulk:"1等\n2等\nまた挑戦",bulkAdd:"一括追加",
+  optTitle:"設定",optRemove:"抽選後に削除",optSound:"効果音",optTurns:"回転数",histTitle:"履歴",share:"シェアカード",csv:"CSV出力",clearHist:"消去",histEmpty:"履歴はまだありません。",
+  shareTitle:"シェアカード",dl:"ダウンロード",close:"閉じる",footerPrivacy:"🔒 データは端末内のみ。サーバーへ送信されません。",footerName:"抽選ホイール＆指名ツール",footerTip:"で追加",
+  luckyPre:"今日のラッキーカラー",draws:"今日の抽選回数",emptyList:"先に名前を追加してください",allDone:"すべて抽選済み",noLucky:"なし",removed:"削除しました",added:"追加しました",saved:"保存しました",
+  clearAsk:"リストを全て消去しますか？",histAsk:"履歴を全て消去しますか？",weight:"重み",result:"結果",picked:"当選",at:"時刻",total:"合計",modeWheel:"抽選ホイール",modePick:"ランダム指名",
+  tplA:"1等",tplB:"2等",tplC:"3等",tplD:"また挑戦",tplE:"もう一度",tplF:"クーポン",needTwo:"2件以上必要です",exported:"出力しました"},
+ ko:{appName:"룰렛 · 이름 뽑기",appSlogan:"무료 · 워터마크 없음 · 기기 저장",h1:"룰렛 추첨 & 랜덤 이름 뽑기",lead:"경품과 이름을 자유롭게 설정하고 가중치, 중복 제외, 기록 저장, 공유 카드를 지원합니다. 브라우저에서만 실행됩니다.",
+  tabWheel:"🎡 룰렛 추첨",tabPick:"🙋 이름 뽑기",go:"시작",tpl:"예시 불러오기",clearList:"목록 비우기",pickResult:"결과",pickGo:"뽑기",resetPicked:"뽑힌 목록 초기화",
+  today:"오늘",listTitle:"이름 / 경품",phName:"이름 입력 후 Enter",add:"추가",bulkHint:"여러 줄 붙여넣기(한 줄에 하나, \"이름,가중치\" 가능)",phBulk:"1등\n2등\n다시 도전",bulkAdd:"일괄 추가",
+  optTitle:"설정",optRemove:"뽑힌 항목 제거",optSound:"효과음",optTurns:"회전 수",histTitle:"기록",share:"공유 카드",csv:"CSV 내보내기",clearHist:"비우기",histEmpty:"기록이 없습니다.",
+  shareTitle:"공유 카드",dl:"다운로드",close:"닫기",footerPrivacy:"🔒 모든 데이터는 브라우저에만 저장되며 업로드되지 않습니다.",footerName:"룰렛 & 이름 뽑기",footerTip:"로 빠르게 추가",
+  luckyPre:"오늘의 행운 색",draws:"오늘 추첨 횟수",emptyList:"먼저 이름을 추가하세요",allDone:"모두 뽑혔습니다",noLucky:"없음",removed:"삭제됨",added:"추가됨",saved:"저장됨",
+  clearAsk:"목록을 모두 비울까요?",histAsk:"기록을 모두 지울까요?",weight:"가중치",result:"당첨 결과",picked:"당첨",at:"시간",total:"총",modeWheel:"룰렛 추첨",modePick:"이름 뽑기",
+  tplA:"1등",tplB:"2등",tplC:"3등",tplD:"다시 도전",tplE:"한 번 더",tplF:"쿠폰",needTwo:"2개 이상 필요합니다",exported:"내보냈습니다"},
+ es:{appName:"Ruleta · Sorteo de nombres",appSlogan:"Gratis · Sin marca de agua · Local",h1:"Ruleta de sorteos y sorteo de nombres",lead:"Define premios o nombres con pesos, sin repeticiones, historial local y tarjeta para compartir. Funciona solo en tu navegador.",
+  tabWheel:"🎡 Ruleta",tabPick:"🙋 Elegir nombre",go:"GIRAR",tpl:"Cargar ejemplo",clearList:"Vaciar lista",pickResult:"Resultado",pickGo:"Elegir uno",resetPicked:"Reiniciar",
+  today:"Hoy",listTitle:"Nombres / Premios",phName:"Escribe un nombre y pulsa Enter",add:"Añadir",bulkHint:"Pega en bloque (uno por línea, admite \"nombre,peso\")",phBulk:"Primer premio\nSegundo premio\nOtra vez",bulkAdd:"Importar",
+  optTitle:"Ajustes",optRemove:"Quitar al salir",optSound:"Sonido",optTurns:"Vueltas",histTitle:"Historial",share:"Tarjeta",csv:"Exportar CSV",clearHist:"Borrar",histEmpty:"Sin registros todavía.",
+  shareTitle:"Tarjeta para compartir",dl:"Descargar",close:"Cerrar",footerPrivacy:"🔒 Todos los datos se guardan solo en tu navegador.",footerName:"Ruleta y sorteo de nombres",footerTip:"para añadir rápido",
+  luckyPre:"Color de la suerte",draws:"sorteos hoy",emptyList:"Añade nombres primero",allDone:"Todos elegidos",noLucky:"Ninguno",removed:"Eliminado",added:"Añadido",saved:"Guardado",
+  clearAsk:"¿Vaciar toda la lista?",histAsk:"¿Borrar todo el historial?",weight:"Peso",result:"Ganador",picked:"Elegido",at:"Hora",total:"Total",modeWheel:"Ruleta",modePick:"Elegir nombre",
+  tplA:"Primer premio",tplB:"2º premio",tplC:"3er premio",tplD:"Otra vez",tplE:"Una más",tplF:"Cupón",needTwo:"Se necesitan al menos 2",exported:"Exportado"},
+ fr:{appName:"Roulette · Tirage de noms",appSlogan:"Gratuit · Sans filigrane · Local",h1:"Roulette et tirage de noms aléatoire",lead:"Définissez prix ou noms avec poids, sans répétition, historique local et carte à partager. Fonctionne dans le navigateur.",
+  tabWheel:"🎡 Roulette",tabPick:"🙋 Tirer un nom",go:"TOURNER",tpl:"Charger l'exemple",clearList:"Vider la liste",pickResult:"Résultat",pickGo:"Tirer",resetPicked:"Réinitialiser",
+  today:"Aujourd'hui",listTitle:"Noms / Lots",phName:"Tapez un nom puis Entrée",add:"Ajouter",bulkHint:"Collez en bloc (un par ligne, \"nom,poids\" accepté)",phBulk:"1er prix\n2e prix\nRéessayer",bulkAdd:"Importer",
+  optTitle:"Réglages",optRemove:"Retirer après tirage",optSound:"Son",optTurns:"Tours",histTitle:"Historique",share:"Carte",csv:"Exporter CSV",clearHist:"Effacer",histEmpty:"Aucun résultat pour l'instant.",
+  shareTitle:"Carte à partager",dl:"Télécharger",close:"Fermer",footerPrivacy:"🔒 Toutes les données restent dans votre navigateur.",footerName:"Roulette et tirage de noms",footerTip:"pour ajouter vite",
+  luckyPre:"Couleur porte-bonheur",draws:"tirages aujourd'hui",emptyList:"Ajoutez d'abord des noms",allDone:"Tout est tiré",noLucky:"Aucun",removed:"Retiré",added:"Ajouté",saved:"Enregistré",
+  clearAsk:"Vider toute la liste ?",histAsk:"Effacer tout l'historique ?",weight:"Poids",result:"Gagnant",picked:"Tiré",at:"Heure",total:"Total",modeWheel:"Roulette",modePick:"Tirage de noms",
+  tplA:"1er prix",tplB:"2e prix",tplC:"3e prix",tplD:"Réessayer",tplE:"Encore une",tplF:"Coupon",needTwo:"Au moins 2 éléments requis",exported:"Exporté"}
+};
+var lang="zh";
+function tr(k){return (T[lang]&&T[lang][k])||T.zh[k]||k;}
+function applyI18n(){
+  document.documentElement.lang=(lang==="zh"?"zh-CN":lang);
+  document.title=TITLE[lang]||TITLE.zh;
+  var md=document.querySelector('meta[name="description"]'); if(md) md.setAttribute("content",DESC[lang]||DESC.zh);
+  document.querySelectorAll("[data-i18n]").forEach(function(el){el.textContent=tr(el.getAttribute("data-i18n"));});
+  document.querySelectorAll("[data-i18n-ph]").forEach(function(el){el.setAttribute("placeholder",tr(el.getAttribute("data-i18n-ph")));});
+  document.querySelectorAll("link[rel=alternate]").forEach(function(a){
+    var hl=a.getAttribute("hreflang"); var m={ "zh-CN":"zh", en:"en", ja:"ja", ko:"ko", es:"es", fr:"fr", "x-default":"zh" };
+    var base=location.href.split("#")[0].split("?")[0];
+    a.setAttribute("href", base + "?lang=" + (m[hl]||"zh"));
+  });
+  renderItems(); renderHist(); renderDaily(); drawWheel();
+}
+/* ---------- state ---------- */
+var KEY="lw_state_v1", K2="lw_hist_v1", K3="lw_daily_v1";
+var PAL=["#6366f1","#8b5cf6","#ec4899","#f43f5e","#f59e0b","#10b981","#06b6d4","#3b82f6","#84cc16","#f97316","#a855f7","#14b8a6"];
+var items=[], hist=[], mode="wheel", rotation=0, spinning=false, pickedSet={};
+try{var s=JSON.parse(localStorage.getItem(KEY)||"null"); if(s&&s.items){items=s.items;}}catch(e){}
+try{hist=JSON.parse(localStorage.getItem(K2)||"[]");}catch(e){}
+if(!items.length){items=[{n:"一等奖",w:1},{n:"二等奖",w:2},{n:"三等奖",w:3},{n:"谢谢参与",w:6}];}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({items:items,picked:pickedSet}));}catch(e){}}
+function saveH(){try{localStorage.setItem(K2,JSON.stringify(hist.slice(0,200)));}catch(e){}}
+function todayKey(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
+function daily(){var d={};try{d=JSON.parse(localStorage.getItem(K3)||"{}");}catch(e){}
+  var k=todayKey(); if(!d[k]){d[k]=0;} return d;}
+function bumpDaily(){var d={};try{d=JSON.parse(localStorage.getItem(K3)||"{}");}catch(e){}
+  var k=todayKey(); d[k]=(d[k]||0)+1;
+  Object.keys(d).forEach(function(x){ if(x!==k) delete d[x]; });
+  try{localStorage.setItem(K3,JSON.stringify(d));}catch(e){}}
+/* ---------- ui helpers ---------- */
+var toastEl=document.getElementById("toast"), toastT;
+function toast(m){toastEl.textContent=m;toastEl.classList.add("on");clearTimeout(toastT);toastT=setTimeout(function(){toastEl.classList.remove("on");},1900);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];});}
+function colorOf(i){return PAL[i%PAL.length];}
+/* ---------- wheel ---------- */
+var cv=document.getElementById("wheel"), ctx=cv.getContext("2d");
+function drawWheel(){
+  var dpr=Math.min(window.devicePixelRatio||1,2), size=600;
+  cv.width=size*dpr; cv.height=size*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,size,size);
+  var n=items.length; if(!n){ctx.fillStyle="#e8eaf3";ctx.beginPath();ctx.arc(300,300,300,0,7);ctx.fill();return;}
+  var seg=2*Math.PI/n, R=296;
+  for(var i=0;i<n;i++){
+    var a0=i*seg-Math.PI/2, a1=a0+seg;
+    ctx.beginPath(); ctx.moveTo(300,300); ctx.arc(300,300,R,a0,a1); ctx.closePath();
+    ctx.fillStyle=colorOf(i); ctx.fill();
+    ctx.strokeStyle="rgba(255,255,255,.55)"; ctx.lineWidth=2; ctx.stroke();
+    ctx.save(); ctx.translate(300,300); ctx.rotate(a0+seg/2);
+    ctx.fillStyle="#fff"; ctx.textAlign="right"; ctx.textBaseline="middle";
+    var fs = n<=6?30 : n<=12?24 : n<=20?19 : 15;
+    ctx.font="700 "+fs+"px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+    var txt=items[i].n; if(txt.length>9) txt=txt.slice(0,9)+"…";
+    ctx.shadowColor="rgba(0,0,0,.28)"; ctx.shadowBlur=3;
+    ctx.fillText(txt, R-22, 0); ctx.restore();
+  }
+  ctx.beginPath(); ctx.arc(300,300,R,0,7); ctx.lineWidth=6; ctx.strokeStyle="#fff"; ctx.stroke();
+}
+function pickByWeight(){
+  var pool=items.map(function(it,i){return {i:i,w:Math.max(1,parseInt(it.w||1,10))};}).filter(function(p){return !pickedSet[items[p.i].n];});
+  if(!pool.length) return -1;
+  var total=pool.reduce(function(a,b){return a+b.w;},0), r=Math.random()*total;
+  for(var k=0;k<pool.length;k++){ r-=pool[k].w; if(r<=0) return pool[k].i; }
+  return pool[pool.length-1].i;
+}
+function spin(){
+  if(spinning) return;
+  if(items.length<2){toast(tr("needTwo"));return;}
+  var idx=pickByWeight();
+  if(idx<0){toast(tr("allDone"));return;}
+  var n=items.length, seg=360/n, turns=Math.max(1,Math.min(12,parseInt(document.getElementById("optTurns").value,10)||5));
+  var jitter=(Math.random()-.5)*seg*0.68;
+  var target=360*turns - (idx+0.5)*seg + jitter;
+  rotation += (target - (rotation%360)) + 360;
+  spinning=true;
+  var g=document.getElementById("goBtn"); g.disabled=true;
+  if(document.getElementById("optSound").checked) tickSound(turns);
+  cv.style.transition="transform 4.6s cubic-bezier(.15,.72,.06,1)";
+  cv.style.transform="rotate("+rotation+"deg)";
+  setTimeout(function(){
+    spinning=false; g.disabled=false;
+    var it=items[idx];
+    if(document.getElementById("optRemove").checked){ pickedSet[it.n]=1; }
+    addHist(mode==="wheel"?tr("modeWheel"):tr("modePick"), it.n);
+    save(); renderItems(); renderDaily(); drawWheel();
+    if(document.getElementById("optSound").checked) winSound();
+    toast("🎉 "+it.n);
+  },4700);
+}
+function doPick(){
+  var idx=pickByWeight();
+  if(idx<0){document.getElementById("pickVal").textContent=tr("allDone");toast(tr("allDone"));return;}
+  var it=items[idx];
+  if(document.getElementById("optRemove").checked) pickedSet[it.n]=1;
+  document.getElementById("pickVal").textContent=it.n;
+  var remain=items.filter(function(x){return !pickedSet[x.n];}).length;
+  document.getElementById("pickMeta").textContent=tr("total")+" "+items.length+" · "+tr("noLucky")+" "+remain;
+  addHist(tr("modePick"), it.n); save(); renderItems(); renderDaily(); drawWheel();
+  if(document.getElementById("optSound").checked) winSound();
+}
+/* ---------- sound ---------- */
+var ac=null;
+function actx(){ if(!ac){ try{ac=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return ac; }
+function beep(f,d,v){ var a=actx(); if(!a) return; var o=a.createOscillator(),g=a.createGain();
+  o.type="square";o.frequency.value=f;g.gain.value=v||0.05;o.connect(g);g.connect(a.destination);o.start();
+  g.gain.exponentialRampToValueAtTime(0.0001,a.currentTime+d);o.stop(a.currentTime+d); }
+function tickSound(t){ var c=Math.round(t*6), i=0; (function step(){ if(i++>c) return; beep(880,0.05,0.035); setTimeout(step,Math.max(70,4200/c)); })(); }
+function winSound(){ [660,880,1180].forEach(function(f,i){ setTimeout(function(){beep(f,0.18,0.06);},i*110); }); }
+/* ---------- render ---------- */
+function renderItems(){
+  var ul=document.getElementById("itemList"); ul.innerHTML="";
+  items.forEach(function(it,i){
+    var li=document.createElement("li");
+    li.innerHTML='<span class="sw" style="background:'+colorOf(i)+'"></span>'+
+      '<span class="nm" title="'+esc(it.n)+'">'+esc(it.n)+(pickedSet[it.n]?' <span class="muted">✓</span>':'')+'</span>'+
+      '<input class="wt" type="number" min="1" max="99" value="'+(it.w||1)+'" title="'+tr("weight")+'" data-w="'+i+'">'+
+      '<button class="x" data-del="'+i+'">✕</button>';
+    ul.appendChild(li);
+  });
+  document.getElementById("countTxt").textContent=tr("total")+" "+items.length;
+}
+document.getElementById("itemList").addEventListener("input",function(e){
+  if(e.target.dataset.w!==undefined){ items[+e.target.dataset.w].w=Math.max(1,parseInt(e.target.value,10)||1); save(); }
+});
+document.getElementById("itemList").addEventListener("click",function(e){
+  var d=e.target.dataset.del; if(d===undefined) return;
+  items.splice(+d,1); save(); renderItems(); drawWheel(); toast(tr("removed"));
+});
+function renderHist(){
+  var box=document.getElementById("histList"); box.innerHTML="";
+  hist.slice(0,50).forEach(function(h){
+    var d=document.createElement("div"); d.className="h";
+    d.innerHTML='<span style="color:var(--pri);font-weight:700">'+esc(h.r)+'</span>'+
+      '<span class="muted">'+esc(h.m)+'</span><span class="t">'+esc(h.t)+'</span>';
+    box.appendChild(d);
+  });
+  document.getElementById("histEmpty").style.display=hist.length?"none":"block";
+}
+function addHist(m,r){
+  var d=new Date();
+  hist.unshift({m:m,r:r,t:d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)+" "+("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2)});
+  saveH(); renderHist(); bumpDaily(); renderDaily();
+}
+function renderDaily(){
+  var d=new Date(), seed=d.getFullYear()*372+d.getMonth()*31+d.getDate();
+  var c=colorOf(seed%PAL.length);
+  document.getElementById("luckySw").style.background=c;
+  document.getElementById("luckyTxt").textContent=tr("luckyPre")+" · "+c.toUpperCase();
+  document.getElementById("dailyStat").textContent=tr("draws")+": "+(daily()[todayKey()]||0);
+}
+/* ---------- share card ---------- */
+function buildShare(){
+  var W=640,H=820, c=document.getElementById("shareCv"), x=c.getContext("2d");
+  c.width=W; c.height=H;
+  var g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,"#6366f1"); g.addColorStop(1,"#8b5cf6");
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+  x.fillStyle="rgba(255,255,255,.13)"; x.beginPath(); x.arc(W-70,110,190,0,7); x.fill();
+  x.fillStyle="rgba(255,255,255,.09)"; x.beginPath(); x.arc(60,H-120,160,0,7); x.fill();
+  x.textAlign="center"; x.fillStyle="#fff";
+  x.font="800 40px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+  x.fillText("🎯 "+tr("appName"), W/2, 110);
+  x.font="500 21px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+  x.fillStyle="rgba(255,255,255,.85)";
+  x.fillText(tr(mode==="wheel"?"modeWheel":"modePick"), W/2, 156);
+  x.fillStyle="#fff"; x.beginPath(); x.roundRect?x.roundRect(70,220,W-140,300,28):x.rect(70,220,W-140,300); x.fill();
+  x.fillStyle="#1a1c2b"; x.font="700 21px -apple-system,sans-serif"; x.fillText(tr("result"), W/2, 280);
+  var r=(hist[0]&&hist[0].r)||tr("noLucky");
+  x.font="800 46px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+  var lines=wrap(x,r,W-200);
+  lines.slice(0,3).forEach(function(l,i){ x.fillText(l, W/2, 350+i*58); });
+  x.fillStyle="#6b7189"; x.font="500 19px -apple-system,sans-serif";
+  x.fillText(tr("total")+" "+items.length+" · "+tr("draws")+" "+(daily()[todayKey()]||0), W/2, 492);
+  x.fillStyle="rgba(255,255,255,.95)"; x.font="600 23px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+  x.fillText(tr("footerPrivacy"), W/2, 640);
+  x.font="500 19px -apple-system,sans-serif"; x.fillStyle="rgba(255,255,255,.72)";
+  x.fillText("H5 工具矩阵 · h5tools", W/2, 690);
+  var d=new Date(); x.fillText(d.toLocaleDateString(), W/2, 726);
+}
+function wrap(x,t,max){var out=[],line="";for(var i=0;i<t.length;i++){var test=line+t[i];if(x.measureText(test).width>max&&line){out.push(line);line=t[i];}else line=test;}if(line)out.push(line);return out;}
+/* ---------- events ---------- */
+document.getElementById("goBtn").addEventListener("click",spin);
+document.getElementById("pickBtn").addEventListener("click",doPick);
+document.getElementById("addBtn").addEventListener("click",addOne);
+document.getElementById("nameIn").addEventListener("keydown",function(e){if(e.key==="Enter")addOne();});
+function addOne(){
+  var el=document.getElementById("nameIn"), v=el.value.trim();
+  if(!v){return;} items.push({n:v,w:1}); el.value=""; save(); renderItems(); drawWheel(); toast(tr("added"));
+}
+document.getElementById("bulkBtn").addEventListener("click",function(){
+  var v=document.getElementById("bulkIn").value.split("\n"), c=0;
+  v.forEach(function(line){
+    line=line.trim(); if(!line) return;
+    var p=line.split(/[,，\t]/); var n=(p[0]||"").trim(); if(!n) return;
+    var w=parseInt((p[1]||"1").trim(),10); if(isNaN(w)||w<1) w=1;
+    items.push({n:n,w:w}); c++;
+  });
+  if(c){ save(); renderItems(); drawWheel(); document.getElementById("bulkIn").value=""; toast(tr("added")+" "+c); }
+});
+document.getElementById("tplBtn").addEventListener("click",function(){
+  items=[{n:tr("tplA"),w:1},{n:tr("tplB"),w:2},{n:tr("tplC"),w:3},{n:tr("tplD"),w:5},{n:tr("tplE"),w:4},{n:tr("tplF"),w:3}];
+  pickedSet={}; save(); renderItems(); drawWheel();
+});
+document.getElementById("clearBtn").addEventListener("click",function(){
+  if(!confirm(tr("clearAsk")))return; items=[];pickedSet={};save();renderItems();drawWheel();
+});
+document.getElementById("resetPickedBtn").addEventListener("click",function(){pickedSet={};save();renderItems();drawWheel();toast(tr("saved"));});
+document.getElementById("clearHistBtn").addEventListener("click",function(){
+  if(!confirm(tr("histAsk")))return; hist=[];saveH();renderHist();
+});
+document.getElementById("csvBtn").addEventListener("click",function(){
+  var rows=[["mode","result","time"]].concat(hist.map(function(h){return [h.m,h.r,h.t];}));
+  var csv="\ufeff"+rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(",");}).join("\n");
+  dl(new Blob([csv],{type:"text/csv"}),"lucky-wheel-history.csv"); toast(tr("exported"));
+});
+function dl(blob,name){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},3000);}
+document.getElementById("shareBtn").addEventListener("click",function(){buildShare();document.getElementById("shareDlg").showModal();});
+document.getElementById("closeShareBtn").addEventListener("click",function(){document.getElementById("shareDlg").close();});
+document.getElementById("dlShareBtn").addEventListener("click",function(){
+  var c=document.getElementById("shareCv");
+  c.toBlob(function(b){ dl(b,"lucky-wheel-share.png"); });
+});
+document.querySelectorAll(".tab").forEach(function(t){
+  t.addEventListener("click",function(){
+    document.querySelectorAll(".tab").forEach(function(x){x.setAttribute("aria-selected", x===t?"true":"false");});
+    mode=t.dataset.mode;
+    document.getElementById("wheelCard").classList.toggle("hide", mode!=="wheel");
+    document.getElementById("pickCard").classList.toggle("hide", mode!=="pick");
+  });
+});
+document.getElementById("themeBtn").addEventListener("click",function(){
+  var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",cur);
+  try{localStorage.setItem("lw_theme",cur);}catch(e){}
+  drawWheel();
+});
+var ls=document.getElementById("langSel");
+LANGS.forEach(function(l){var o=document.createElement("option");o.value=l;o.textContent=LNAME[l];ls.appendChild(o);});
+ls.addEventListener("change",function(){ lang=ls.value; try{localStorage.setItem("lw_lang",lang);}catch(e){} applyI18n(); });
+/* ---------- init ---------- */
+(function init(){
+  var q=new URLSearchParams(location.search).get("lang");
+  var saved=null; try{saved=localStorage.getItem("lw_lang");}catch(e){}
+  var nav=(navigator.language||"zh").toLowerCase();
+  var guess = nav.indexOf("ja")===0?"ja":nav.indexOf("ko")===0?"ko":nav.indexOf("es")===0?"es":nav.indexOf("fr")===0?"fr":nav.indexOf("en")===0?"en":"zh";
+  lang = q || saved || guess;
+  if(LANGS.indexOf(lang)<0) lang="zh";
+  ls.value=lang;
+  var th=null; try{th=localStorage.getItem("lw_theme");}catch(e){}
+  if(!th){th=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}
+  document.documentElement.setAttribute("data-theme",th);
+  try{var p=JSON.parse(localStorage.getItem(KEY)||"{}"); if(p.picked) pickedSet=p.picked;}catch(e){}
+  applyI18n();
+})();
+window.addEventListener("resize",function(){ clearTimeout(window.__rz); window.__rz=setTimeout(drawWheel,200); });
+})();
+</script>
+<!--WB_WIDGET_V2 v=6-->
+
+<script>
+(function(){
+  if(window.WB_WIDGET) return; window.WB_WIDGET=1;
+  var SB='https://jebnpaglwgozboyujxnx.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
+  var SITE='https://zq0424.github.io/h5-tools-hub/';
+  /* ★ 站长配置：把两张收款码图片的公网URL填到这里（可用 GitHub 仓库里的图片） */
+  var PAY={wechat:'',alipay:'',year:'¥19.9/年',life:'¥49.9/永久',free:10};
+  var parts=location.pathname.split('/').filter(Boolean);
+  var slug=parts[parts.length-1]||'home';
+  var toolName=document.title.split(/[·|]/)[0].trim()||'这个工具';
+  function ls(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
+  function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function liked(){return ls('h5hub_liked').indexOf(slug)>=0}
+  function favs(){return ls('h5hub_fav')}
+
+  /* ---------- 样式 ---------- */
+  var css=document.createElement('style');
+  css.textContent=
+  '#wbBar{position:fixed;right:12px;bottom:12px;z-index:99990;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(91,107,255,.25);border:1px solid #eef0f7;border-radius:999px;padding:6px 8px;font-family:-apple-system,PingFang SC,sans-serif;flex-wrap:wrap;max-width:calc(100vw - 24px)}'+
+  '#wbBar a,#wbBar button{border:none;background:none;font-size:15px;line-height:1;cursor:pointer;text-decoration:none;padding:4px 6px;border-radius:999px;color:#23263a}'+
+  '#wbBar .lk{background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff;font-weight:700;font-size:12.5px;padding:6px 11px}'+
+  '#wbBar .lk.on{outline:2px solid #5b6bff}#wbBar .fv.on{background:#fff3d6}#wbBar .vw{font-size:11.5px;color:#8a8fb0}#wbBar .vip{background:linear-gradient(135deg,#ffd86b,#ff9a3c);color:#fff;font-size:13px;padding:6px 9px}'+
+  '#wbFree{position:fixed;left:12px;bottom:12px;z-index:99990;background:rgba(255,255,255,.95);border:1px solid #eef0f7;border-radius:999px;padding:5px 11px;font-size:11.5px;color:#5b6bff;font-weight:700;box-shadow:0 4px 14px rgba(91,107,255,.15)}'+
+  '.wbMask{position:fixed;inset:0;background:rgba(20,22,40,.55);z-index:99999;display:none;align-items:flex-end;justify-content:center;font-family:-apple-system,PingFang SC,sans-serif}'+
+  '.wbMask.show{display:flex}.wbSheet{background:#fff;border-radius:18px 18px 0 0;max-width:420px;width:100%;max-height:82vh;overflow:auto;padding:16px 16px 26px}'+
+  '.wbSheet h3{margin:0 0 10px;font-size:15.5px}.wbX{float:right;border:none;background:none;font-size:17px;color:#8a8fb0;cursor:pointer}'+
+  '.wbCm{display:flex;gap:6px;margin:6px 0}.wbCm input,.wbCm textarea{flex:1;border:1px solid #eef0f7;border-radius:10px;padding:8px 10px;font-size:13px;outline:none}.wbCm textarea{height:56px;resize:none}'+
+  '.wbBtn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff}'+
+  '.wbBtn.g{background:#eef0ff;color:#5b6bff}'+
+  '.wbItem{background:#f7f8ff;border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px}.wbItem b{font-size:12px;color:#5b6bff}.wbItem span{display:block;color:#23263a;margin-top:2px;word-break:break-word}.wbItem i{font-size:10.5px;color:#b6bad0;font-style:normal}'+
+  '.wbPoster{width:100%;border-radius:10px}'+
+  '.wbPlans{display:flex;gap:8px;margin:10px 0}.wbPlan{flex:1;border:2px solid #eef0f7;border-radius:12px;padding:10px;text-align:center;cursor:pointer}.wbPlan.on{border-color:#5b6bff;background:#f6f7ff}.wbPlan b{display:block;font-size:17px;color:#ff6bb0}.wbPlan span{font-size:11px;color:#8a8fb0}'+
+  '.wbPayTabs{display:flex;gap:6px;margin-bottom:8px}.wbPayTabs button{flex:1;border:1px solid #eef0f7;background:#fff;border-radius:10px;padding:8px;font-size:13px;font-weight:700;cursor:pointer}.wbPayTabs button.on{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.wx{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.ali{border-color:#1677ff;color:#1677ff}'+
+  '.wbQrBox{text-align:center;min-height:180px;display:flex;align-items:center;justify-content:center;background:#f7f8ff;border-radius:12px;padding:10px}.wbQrBox img{width:160px;height:160px;border-radius:8px}'+
+  '.wbBlur>*:not(#wbBar):not(#wbFree):not(.wbMask){filter:blur(6px);pointer-events:none;user-select:none}';
+  document.head.appendChild(css);
+
+  /* ---------- 底部工具条 ---------- */
+  var bar=document.createElement('div');bar.id='wbBar';
+  bar.innerHTML='<a href="'+SITE+'" title="返回工具箱首页">🏠</a>'+
+    '<button class="lk'+(liked()?' on':'')+'" title="点赞">👍 <span class="vc">0</span></button>'+
+    '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="收藏">⭐</button>'+
+    '<button class="sh" title="分享">↗</button>'+
+    '<button class="cm" title="评论">💬<span class="cc"></span></button>'+
+    '<button class="vip" title="解锁会员">💎</button>'+
+    '<span class="vw">👁 <span class="vcw">0</span></span>';
+  document.body.appendChild(bar);
+
+  function mkMask(id,title,closable){
+    var m=document.createElement('div');m.className='wbMask';m.id=id;
+    m.innerHTML='<div class="wbSheet">'+(closable===false?'':'<button class="wbX">✕</button>')+'<h3>'+title+'</h3><div class="bd"></div></div>';
+    if(closable!==false){
+      m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
+      m.querySelector('.wbX').onclick=function(){m.classList.remove('show')};
+    }
+    document.body.appendChild(m);return m;}
+
+  /* ---------- 浏览量 + 点赞数 ---------- */
+  function loadCnt(){
+    fetch(SB+'/rest/v1/votes?select=total,views_total&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      if(rows[0]){bar.querySelector('.vc').textContent=rows[0].total||0;bar.querySelector('.vcw').textContent=rows[0].views_total||0;}
+    }).catch(function(){});
+  }
+  if(!sessionStorage.getItem('wb_view_'+slug)){
+    sessionStorage.setItem('wb_view_'+slug,'1');
+    fetch(SB+'/rest/v1/rpc/increment_view',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(loadCnt);
+  } else loadCnt();
+
+  bar.querySelector('.lk').onclick=function(){
+    if(liked())return; var a=ls('h5hub_liked');a.push(slug);save('h5hub_liked',a);
+    this.classList.add('on');this.querySelector('.vc').textContent=(parseInt(this.querySelector('.vc').textContent)||0)+1;
+    fetch(SB+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(function(){});
+  };
+  bar.querySelector('.fv').onclick=function(){
+    var a=favs(),i=a.indexOf(slug),adding=i<0;
+    if(adding){a.push(slug);this.classList.add('on');}else{a.splice(i,1);this.classList.remove('on');}
+    save('h5hub_fav',a);
+    var tok=null;try{var au=JSON.parse(localStorage.getItem('h5hub_auth')||'null');tok=au&&au.access_token||null;}catch(e){}
+    if(tok){
+      var H={apikey:ANON,Authorization:'Bearer '+tok,'Content-Type':'application/json'};
+      if(adding)fetch(SB+'/rest/v1/favorites',{method:'POST',headers:H,body:JSON.stringify({slug:slug})}).catch(function(){});
+      else fetch(SB+'/rest/v1/favorites?slug=eq.'+encodeURIComponent(slug),{method:'DELETE',headers:{apikey:ANON,Authorization:'Bearer '+tok}}).catch(function(){});
+    }
+  };
+
+  /* ---------- 分享海报（二维码 + 站点介绍，扫码直达） ---------- */
+  function qr(u){return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data='+encodeURIComponent(u);}
+  bar.querySelector('.sh').onclick=function(){
+    var m=mkMask('wbShare','↗ 分享这个工具'),bd=m.querySelector('.bd');
+    bd.innerHTML='<img class="wbPoster" alt="海报生成中…"><div style="display:flex;gap:8px;margin-top:10px">'+
+      '<button class="wbBtn g" id="wbCp">复制链接</button><button class="wbBtn" id="wbSv">保存海报</button></div>'+
+      '<div style="font-size:11px;color:#8a8fb0;margin-top:8px;text-align:center">微信内长按海报即可保存 / 发送</div>';
+    var url=SITE+slug+'/';
+    var W=750,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#eef1ff');g.addColorStop(1,'#fdeef6');
+    x.fillStyle=g;x.fillRect(0,0,W,H);x.fillStyle='#fff';
+    function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();x.fill();}
+    rr(50,50,W-100,H-100,36);x.textAlign='center';
+    x.fillStyle='#23263a';x.font='bold 54px -apple-system,PingFang SC,sans-serif';
+    x.fillText(toolName.slice(0,14),W/2,230);
+    x.fillStyle='#5b6bff';x.font='bold 34px -apple-system,PingFang SC,sans-serif';
+    x.fillText('🧰 我的工具箱 · 每天自动上新的免费小工具',W/2,310);
+    x.fillStyle='#8a8fb0';x.font='28px -apple-system,PingFang SC,sans-serif';
+    x.fillText('免登录 · 即开即用 · 欢迎点赞评论',W/2,370);
+    var q=new Image();q.crossOrigin='anonymous';
+    q.onload=function(){x.fillStyle='#fff';rr(W/2-140,420,280,280,24);x.drawImage(q,W/2-120,440,240,240);
+      x.fillStyle='#5b6bff';x.font='bold 30px sans-serif';x.fillText('👍 觉得好用就点个赞',W/2,790);
+      x.fillStyle='#b6bad0';x.font='24px sans-serif';x.fillText('扫码直达 · Scan to open',W/2,860);
+      try{bd.querySelector('img').src=c.toDataURL('image/png');}
+      catch(e){bd.querySelector('img').outerHTML='<div style="text-align:center"><img src="'+q.src+'" style="width:180px"></div>';}
+    };
+    q.src=qr(url);
+    bd.querySelector('#wbCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(function(){alert('链接已复制')}).catch(function(){prompt('',url)});};
+    bd.querySelector('#wbSv').onclick=function(){var im=bd.querySelector('img');if(im.src&&im.src.indexOf('data:')===0){var a=document.createElement('a');a.href=im.src;a.download='share.png';a.click();}else alert('请长按图片保存');};
+    m.classList.add('show');
+  };
+
+  /* ---------- 评论区 ---------- */
+  var cmMask=null;
+  bar.querySelector('.cm').onclick=function(){
+    if(!cmMask){
+      cmMask=mkMask('wbCmMask','💬 对「'+toolName+'」说点什么');
+      cmMask.querySelector('.bd').innerHTML=
+        '<div id="wbCmList" style="max-height:44vh;overflow:auto"><div style="font-size:12px;color:#8a8fb0">加载中…</div></div>'+
+        '<div class="wbCm"><input id="wbCmName" placeholder="昵称（可留空）" maxlength="20"></div>'+
+        '<div class="wbCm"><textarea id="wbCmBody" placeholder="使用感受 / 建议 / 想要的新功能…" maxlength="500"></textarea></div>'+
+        '<button class="wbBtn" id="wbCmSend" style="width:100%">发 表</button>';
+      cmMask.querySelector('#wbCmSend').onclick=function(){
+        var b=cmMask.querySelector('#wbCmBody').value.trim();
+        if(!b)return alert('写点内容再发表吧');
+        var n=cmMask.querySelector('#wbCmName').value.trim()||'访客';
+        this.disabled=true;
+        fetch(SB+'/rest/v1/comments',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json',Prefer:'return=minimal'},
+          body:JSON.stringify({slug:slug,name:n,body:b})})
+        .then(function(r){if(!r.ok)throw 0;cmMask.querySelector('#wbCmBody').value='';loadCm();})
+        .catch(function(){alert('发表失败，请稍后再试')}).finally(function(){this.disabled=false}.bind(this));
+      };
+    }
+    cmMask.classList.add('show');loadCm();
+  };
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function loadCm(){
+    if(!cmMask)return;
+    fetch(SB+'/rest/v1/comments?select=name,body,created_at&slug=eq.'+encodeURIComponent(slug)+'&order=created_at.desc&limit=50',{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      var box=cmMask.querySelector('#wbCmList');
+      box.innerHTML=rows.length?rows.map(function(c){
+        var d=new Date(c.created_at),ds=(d.getMonth()+1)+'/'+d.getDate();
+        return '<div class="wbItem"><b>'+esc(c.name)+'</b> <i>'+ds+'</i><span>'+esc(c.body)+'</span></div>';
+      }).join(''):'<div style="font-size:12px;color:#8a8fb0;padding:10px 0">还没有评论，来抢沙发～</div>';
+      var n=rows.length; if(n)bar.querySelector('.cc').textContent=' '+n;
+    }).catch(function(){});
+  }
+  loadCm();
+
+  /* ---------- 付费墙：免费 ' + PAY.free + ' 次后硬封锁（不可用第 ' + (PAY.free+1) + ' 次）---------- */
+  var use=JSON.parse(localStorage.getItem('h5hub_use')||'{}');
+  if(!sessionStorage.getItem('wb_use_'+slug)){use[slug]=(use[slug]||0)+1;localStorage.setItem('h5hub_use',JSON.stringify(use));}
+  var used=use[slug]||0, isPro=localStorage.getItem('h5hub_pro')==='1';
+  var free=document.createElement('div');free.id='wbFree';document.body.appendChild(free);
+  function paintFree(){free.textContent=isPro?'✨ 会员已解锁 · 感谢支持':(used>PAY.free?'🔒 已达免费上限，点💎解锁':'🆓 免费额度剩 '+Math.max(0,PAY.free-used+1)+' 次');}
+  paintFree();
+  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ 你已是会员，感谢支持！');return;} showPay(); };
+  function showPay(){
+    if(isPro)return;
+    var m=mkMask('wbPay','🔒 免费额度已用完 · 解锁后继续使用');
+    var plan_wx=true;
+    function paint(){
+      var plan=localStorage.getItem('wb_plan')||'year';
+      m.querySelector('.bd').innerHTML=
+        '<div style="font-size:12.5px;color:#8a8fb0">你已免费使用 '+PAY.free+' 次。解锁后无限次使用本站全部工具（含每日新增）。</div>'+
+        '<div class="wbPlans"><div class="wbPlan'+(plan==='year'?' on':'')+'" data-p="year"><b>'+PAY.year+'</b><span>年度会员</span></div>'+
+        '<div class="wbPlan'+(plan==='life'?' on':'')+'" data-p="life"><b>'+PAY.life+'</b><span>永久买断 · 更划算</span></div></div>'+
+        '<div class="wbPayTabs"><button class="wx'+(plan_wx?' on':'')+'" data-w="wx">微信支付</button><button class="ali'+(plan_wx?'':' on')+'" data-w="ali">支付宝</button></div>'+
+        '<div class="wbQrBox" id="wbQr"></div>'+
+        '<button class="wbBtn" id="wbPaid" style="width:100%;margin-top:10px">✅ 我已完成支付，激活会员</button>'+
+        '<div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">支付后点击激活（试运行自动开通；如遇问题请截图联系站长）<br>可关闭本窗，但关闭后将无法继续使用本工具，点💎可重新解锁</div>';
+      m.querySelectorAll('.wbPlan').forEach(function(p){p.onclick=function(){localStorage.setItem('wb_plan',p.dataset.p);paint();}});
+      m.querySelectorAll('.wbPayTabs button').forEach(function(b){b.onclick=function(){plan_wx=b.dataset.w==='wx';paint();};});
+      var qrEl=m.querySelector('#wbQr'),src=plan_wx?PAY.wechat:PAY.alipay;
+      qrEl.innerHTML=src?'<div><img src="'+src+'"><div style="font-size:11px;color:#8a8fb0;margin-top:4px">长按 / 扫码支付 '+(plan==='year'?PAY.year:PAY.life)+'</div></div>'
+        :'<div style="font-size:12px;color:#8a8fb0">收款码配置中<br><br>↑ 微信 / 支付宝扫码后<br>向站长转账对应金额即可</div>';
+      m.querySelector('#wbPaid').onclick=function(){localStorage.setItem('h5hub_pro','1');isPro=true;unblur();m.classList.remove('show');paintFree();alert('🎉 解锁成功，感谢支持！');};
+    };
+    paint();m.classList.add('show');
+  }
+  function blurPage(){document.body.classList.add('wbBlur');}
+  function unblur(){document.body.classList.remove('wbBlur');}
+  if(!isPro&&used>PAY.free){blurPage();showPay();}
+})();
+</script>
+
+</body>
+</html>
