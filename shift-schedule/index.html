@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>排班表生成器 · 三班倒员工排班日历 | 免费在线自动排班 可打印导出</title>
+<meta name="description" content="免费在线排班表生成器：支持三班倒、上五休二、白夜休等轮转规则一键生成整月排班，也可手动点格微调；自动统计每人班次天数与工时，支持打印、导出 CSV，数据本地保存。适合餐饮门店、工厂、医院、保安物业。">
+<meta name="keywords" content="排班表生成器,三班倒排班表,员工排班软件,排班日历,倒班表模板,自动排班,值班表,门店排班,shift schedule generator,rotation roster">
+<meta name="theme-color" content="#f97316">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="排班表生成器 · 三班倒员工排班日历">
+<meta property="og:description" content="规则一键生成整月排班，支持手动微调、工时统计、打印与导出 CSV，完全免费。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://h5tools.pages.dev/shift-schedule/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="zh-CN" href="?lang=zh">
+<link rel="alternate" hreflang="en" href="?lang=en">
+<link rel="alternate" hreflang="ja" href="?lang=ja">
+<link rel="alternate" hreflang="ko" href="?lang=ko">
+<link rel="alternate" hreflang="es" href="?lang=es">
+<link rel="alternate" hreflang="fr" href="?lang=fr">
+<link rel="alternate" hreflang="x-default" href="?lang=zh">
+<link rel="canonical" href="https://h5tools.pages.dev/shift-schedule/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Shift">
+<style>
+:root{
+  --bg:#fbf7f3; --card:#fff; --txt:#1b1815; --sub:#7a6f66; --line:#eee3d8;
+  --pri:#f97316; --pri2:#ea580c; --ok:#16a34a; --blue:#0ea5e9; --danger:#ef4444;
+  --shadow:0 1px 2px rgba(40,25,10,.05),0 10px 26px rgba(40,25,10,.07); --r:16px;
+}
+html[data-theme="dark"]{--bg:#12100e;--card:#1c1917;--txt:#f5efe9;--sub:#a89b90;--line:#2e2924;--shadow:0 1px 2px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.4)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Noto Sans CJK SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 14px 40px}
+header{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hd{max-width:1080px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;color:#fff;font-weight:800;flex:none;box-shadow:0 4px 12px rgba(249,115,22,.35)}
+.brand{font-weight:800;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--sub)}
+.sel{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;padding:6px 8px;font-size:13px;max-width:110px}
+.ibtn{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;font-size:15px}
+.ibtn:active{transform:scale(.94)}
+h1{font-size:23px;margin:22px 0 6px;letter-spacing:-.3px}
+.lead{color:var(--sub);margin:0 0 18px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:7px}
+.card h2 .dot{width:6px;height:6px;border-radius:50%;background:var(--pri)}
+.card h2 .sp{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=text],select,input[type=date],input[type=number]{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--txt);border-radius:11px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none}
+input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(249,115,22,.14)}
+textarea{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--txt);border-radius:11px;padding:10px 12px;font-size:14px;font-family:inherit;resize:vertical;min-height:88px;line-height:1.7;outline:none}
+.btn{border:0;border-radius:11px;padding:10px 15px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-family:inherit;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--bg);color:var(--txt);border:1px solid var(--line)}
+.btn.sm{padding:7px 11px;font-size:13px}
+.btn.warn{background:linear-gradient(135deg,#f43f5e,#dc2626)}
+.btn:disabled{opacity:.55;cursor:default}
+.muted{color:var(--sub);font-size:12.5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:780px){.grid2{grid-template-columns:1fr}}
+.fld label{display:block;font-size:12.5px;color:var(--sub);margin-bottom:5px;font-weight:600}
+.fgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(max-width:640px){.fgrid{grid-template-columns:1fr}}
+.tblbox{overflow:auto;border:1px solid var(--line);border-radius:12px;-webkit-overflow-scrolling:touch}
+table{border-collapse:separate;border-spacing:0;font-size:12px;width:max-content;min-width:100%}
+th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:0;text-align:center}
+th{background:var(--bg);font-weight:700;color:var(--sub);padding:6px 4px;position:sticky;top:0;z-index:2;font-size:11.5px}
+th.we{color:#f43f5e}
+th.today{color:var(--pri)}
+td.staff,th.staff{position:sticky;left:0;background:var(--card);z-index:1;text-align:left;padding:6px 9px;font-weight:600;font-size:12.5px;min-width:82px;white-space:nowrap}
+th.staff{z-index:3}
+td.cell{cursor:pointer;min-width:34px;height:36px;transition:.12s;font-weight:700;font-size:12px}
+td.cell:hover{outline:2px solid var(--pri);outline-offset:-2px;border-radius:5px}
+td.cell .s{display:block;width:26px;height:22px;line-height:22px;border-radius:6px;margin:0 auto;color:#fff;font-size:11px;font-weight:800}
+td.cell.weekend{background:rgba(244,63,94,.05)}
+td.cell.isToday{background:rgba(249,115,22,.12)}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.lg{display:flex;align-items:center;gap:6px;font-size:12.5px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:5px 9px}
+.lg i{width:14px;height:14px;border-radius:4px;display:block}
+.lg input[type=text]{width:auto;border:0;background:none;padding:0;font-size:12.5px;max-width:90px}
+.lg .x{border:0;background:none;color:var(--sub);cursor:pointer;font-size:14px;padding:0 2px}
+.lg .x:hover{color:var(--danger)}
+.stafflist{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto}
+.sl{display:flex;gap:7px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 9px}
+.sl .nm{flex:1;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sl .off{width:56px}
+.sl .x{border:0;background:none;color:var(--sub);cursor:pointer;font-size:16px}
+.sl .x:hover{color:var(--danger)}
+.today-card{border-radius:14px;padding:15px;background:linear-gradient(135deg,rgba(249,115,22,.12),rgba(234,88,12,.08));border:1px solid var(--line)}
+.today-card .d{font-size:12px;color:var(--sub);letter-spacing:.5px}
+.today-card .big{font-size:19px;font-weight:800;margin:2px 0 10px}
+.tchips{display:flex;flex-wrap:wrap;gap:7px}
+.tchip{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;font-weight:600}
+.tchip i{width:11px;height:11px;border-radius:3px;display:block}
+.stats{width:100%;font-size:12.5px;border-collapse:collapse}
+.stats th,.stats td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+.stats td:first-child,.stats th:first-child{text-align:left}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#1a1614;color:#fff;padding:10px 16px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+dialog{border:0;border-radius:18px;padding:0;background:var(--card);color:var(--txt);max-width:420px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(12,9,7,.55);backdrop-filter:blur(3px)}
+.dg{padding:18px}.dg h3{margin:0 0 8px;font-size:16px}
+.dg .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+footer{color:var(--sub);font-size:12.5px;text-align:center;padding:18px 10px;line-height:1.8}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--txt);border-radius:999px;padding:6px 12px;font-size:12.5px;cursor:pointer;font-weight:600}
+.chip.on{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border-color:transparent}
+@media print{
+  header,.tabsbar,.noprint,footer,.toast{display:none!important}
+  body{background:#fff}
+  .card{border:0;box-shadow:none;padding:0}
+  .wrap{max-width:none}
+  td.cell{min-width:26px;height:26px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo">📅</div>
+    <div class="brand"><span data-i18n="appName">排班表生成器</span><small data-i18n="appSlogan">免费 · 自动排班 · 本地保存</small></div>
+    <select class="sel" id="langSel" aria-label="Language"></select>
+    <button class="ibtn" id="themeBtn" title="theme">🌓</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 data-i18n="h1">排班表生成器 · 三班倒 / 员工值班日历</h1>
+  <p class="lead" data-i18n="lead">选好轮转规则一键生成整月排班，也可点格子手动微调；自动统计每人班次天数与工时，支持打印存 PDF、导出 CSV。数据保存在本机浏览器，无需注册。</p>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="todayTitle">今日值班</span></h2>
+    <div class="today-card">
+      <div class="d" id="todayDate">—</div>
+      <div class="big" id="todayBig">—</div>
+      <div class="tchips" id="todayChips"></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2><span class="dot"></span><span data-i18n="staffTitle">员工名单</span></h2>
+      <div class="row" style="margin-bottom:9px">
+        <input type="text" id="staffIn" data-i18n-ph="phStaff" placeholder="输入姓名后回车添加">
+        <button class="btn" id="addStaffBtn" data-i18n="add">添加</button>
+      </div>
+      <textarea id="staffBulk" data-i18n-ph="phStaffBulk" placeholder="张三&#10;李四&#10;王五"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ghost sm" id="bulkStaffBtn" data-i18n="bulkAdd">批量导入</button>
+        <span class="muted" id="staffCnt"></span>
+      </div>
+      <div class="stafflist" id="staffList" style="margin-top:11px"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="dot"></span><span data-i18n="shiftTitle">班次设置</span></h2>
+      <div class="legend" id="legend"></div>
+      <div class="row" style="margin-top:10px">
+        <input type="text" id="shiftName" data-i18n-ph="phShift" placeholder="新班次名称" style="flex:1;min-width:110px">
+        <input type="color" id="shiftColor" value="#6366f1" style="width:44px;height:38px;padding:2px;border:1px solid var(--line);border-radius:9px;background:var(--bg)">
+        <button class="btn sm" id="addShiftBtn" data-i18n="addShift">加班次</button>
+      </div>
+      <div class="muted" style="margin-top:10px" data-i18n="hoursTip">可填写每班工时，用于自动统计总工时</div>
+      <div id="hoursBox" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="genTitle">自动生成</span></h2>
+    <div class="muted" style="margin:0 0 8px" data-i18n="presetTip">常用轮转规则（点击后按「生成」套用到整月）</div>
+    <div class="presets" id="presets" style="margin-bottom:12px"></div>
+    <div class="fgrid">
+      <div class="fld"><label data-i18n="seqLabel">轮转序列（按班次顺序，逗号分隔）</label><input type="text" id="seqIn" placeholder="早,夜,休"></div>
+      <div class="fld"><label data-i18n="startLabel">起始日期</label><input type="date" id="startDate"></div>
+      <div class="fld"><label data-i18n="stepLabel">每人错开天数</label><input type="number" id="stepIn" value="1" min="0" max="30"></div>
+      <div class="fld"><label data-i18n="monthLabel">排班月份</label><input type="month" id="monthIn"></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="genBtn" data-i18n="gen">生成整月排班</button>
+      <button class="btn ghost sm" id="clearGridBtn" data-i18n="clearGrid">清空表格</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="tableTitle">排班表</span>
+      <span class="sp">
+        <button class="btn ghost sm" id="prevBtn">◀</button>
+        <span class="muted" id="monthLabel" style="align-self:center"></span>
+        <button class="btn ghost sm" id="nextBtn">▶</button>
+        <button class="btn ghost sm" id="printBtn" data-i18n="print">打印 / PDF</button>
+        <button class="btn ghost sm" id="csvBtn" data-i18n="csv">导出CSV</button>
+        <button class="btn sm" id="shareBtn" data-i18n="share">分享卡</button>
+      </span>
+    </h2>
+    <p class="muted noprint" style="margin:0 0 9px" data-i18n="tapTip">点击任意格子可循环切换班次（手动微调）</p>
+    <div class="tblbox"><table id="tbl"></table></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="statTitle">工时统计</span></h2>
+    <div style="overflow:auto"><table class="stats" id="statTbl"></table></div>
+  </div>
+
+  <footer>
+    <div data-i18n="footerPrivacy">🔒 排班数据仅保存在本机浏览器，不上传任何服务器</div>
+    <div>H5 工具矩阵 · <span data-i18n="footerName">排班表生成器</span></div>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+<dialog id="shareDlg"><div class="dg">
+  <h3 data-i18n="shareTitle">分享卡片</h3>
+  <canvas id="shareCv" style="width:100%;border-radius:12px;display:block"></canvas>
+  <div class="acts">
+    <button class="btn ghost sm" id="dlShareBtn" data-i18n="dl">下载图片</button>
+    <button class="btn sm" id="closeShareBtn" data-i18n="close">关闭</button>
+  </div>
+</div></dialog>
+
+<script>
+(function(){
+"use strict";
+var LANGS=["zh","en","ja","ko","es","fr"];
+var LNAME={zh:"简体中文",en:"English",ja:"日本語",ko:"한국어",es:"Español",fr:"Français"};
+var DESC={
+ zh:"免费在线排班表生成器：支持三班倒、上五休二、白夜休等轮转规则一键生成整月排班，可手动微调，自动统计班次天数与工时，支持打印与导出 CSV，数据本地保存。",
+ en:"Free online shift schedule generator: generate a full month roster from rotation rules (3-shift, 5-on/2-off, day-night-rest), tweak manually, auto count days and hours, print or export CSV.",
+ ja:"無料オンライン勤務シフト表作成ツール：三交代・週休2日などのルールで1か月分を自動生成、手動調整、日数と時間の集計、印刷・CSV出力に対応。",
+ ko:"무료 온라인 근무표 생성기: 3교대·주5일 등 교대 규칙으로 한 달 근무표 자동 생성, 수동 조정, 일수·시간 집계, 인쇄 및 CSV 내보내기.",
+ es:"Generador de turnos online gratis: crea el cuadrante mensual con reglas de rotación (3 turnos, 5x2, día-noche-descanso), ajusta a mano, cuenta días y horas, imprime o exporta CSV.",
+ fr:"Générateur de planning en ligne gratuit : créez un mois de rotations (3x8, 5/2, jour-nuit-repos), ajustez à la main, comptez jours et heures, imprimez ou exportez en CSV."
+};
+var TITLE={
+ zh:"排班表生成器 · 三班倒员工排班日历 | 免费在线自动排班 可打印导出",
+ en:"Shift Schedule Generator · Rotation Roster Calendar | Free Online",
+ ja:"シフト表作成ツール · 三交代勤務カレンダー | 無料オンライン",
+ ko:"근무표 생성기 · 3교대 근무 달력 | 무료 온라인 자동 생성",
+ es:"Generador de turnos · Calendario de rotación | Gratis online",
+ fr:"Générateur de planning · Calendrier de rotation | Gratuit en ligne"
+};
+var T={
+ zh:{appName:"排班表生成器",appSlogan:"免费 · 自动排班 · 本地保存",h1:"排班表生成器 · 三班倒 / 员工值班日历",
+  lead:"选好轮转规则一键生成整月排班，也可点格子手动微调；自动统计每人班次天数与工时，支持打印存 PDF、导出 CSV。数据保存在本机浏览器，无需注册。",
+  todayTitle:"今日值班",staffTitle:"员工名单",phStaff:"输入姓名后回车添加",add:"添加",phStaffBulk:"张三\n李四\n王五",bulkAdd:"批量导入",
+  shiftTitle:"班次设置",phShift:"新班次名称",addShift:"加班次",hoursTip:"可填写每班工时，用于自动统计总工时",genTitle:"自动生成",presetTip:"常用轮转规则（点击后按「生成」套用到整月）",
+  seqLabel:"轮转序列（按班次顺序，逗号分隔）",startLabel:"起始日期",stepLabel:"每人错开天数",monthLabel:"排班月份",gen:"生成整月排班",clearGrid:"清空表格",
+  tableTitle:"排班表",print:"打印 / PDF",csv:"导出CSV",share:"分享卡",tapTip:"点击任意格子可循环切换班次（手动微调）",statTitle:"工时统计",
+  footerPrivacy:"🔒 排班数据仅保存在本机浏览器，不上传任何服务器",footerName:"排班表生成器",shareTitle:"分享卡片",dl:"下载图片",close:"关闭",
+  needStaff:"请先添加员工",needShift:"请先添加班次",generated:"已生成",saved:"已保存",removed:"已移除",exported:"已导出",clearAsk:"清空当前月份表格？",
+  offLabel:"错开",hours:"工时",total:"合计",days:"天",todayNo:"今日无排班",p1:"三班倒(早中夜休)",p2:"白夜休",p3:"上五休二",p4:"上二休一",p5:"早晚两班",rest:"休",
+  mon:"月",dayUnit:"日",staff:"员工",shiftCol:"班次",name:"姓名"},
+ en:{appName:"Shift Schedule",appSlogan:"Free · Auto roster · Local",h1:"Shift Schedule Generator · Rotation Roster",
+  lead:"Generate a whole month from rotation rules, then click any cell to tweak. Auto counts days and hours, print to PDF or export CSV. Stored locally, no sign-up.",
+  todayTitle:"On duty today",staffTitle:"Staff",phStaff:"Type a name and press Enter",add:"Add",phStaffBulk:"Alice\nBob\nCarol",bulkAdd:"Import",
+  shiftTitle:"Shifts",phShift:"New shift name",addShift:"Add shift",hoursTip:"Set hours per shift to auto-total working hours",genTitle:"Auto generate",presetTip:"Common rotations (click, then press Generate)",
+  seqLabel:"Rotation sequence (comma separated)",startLabel:"Start date",stepLabel:"Stagger days",monthLabel:"Month",gen:"Generate month",clearGrid:"Clear grid",
+  tableTitle:"Roster",print:"Print / PDF",csv:"Export CSV",share:"Share",tapTip:"Click any cell to cycle through shifts",statTitle:"Hours summary",
+  footerPrivacy:"🔒 Roster data stays in your browser. Nothing is uploaded.",footerName:"Shift Schedule Generator",shareTitle:"Share card",dl:"Download",close:"Close",
+  needStaff:"Add staff first",needShift:"Add a shift first",generated:"Generated",saved:"Saved",removed:"Removed",exported:"Exported",clearAsk:"Clear this month?",
+  offLabel:"offset",hours:"hours",total:"Total",days:"d",todayNo:"No shifts today",p1:"3-shift (D/E/N/R)",p2:"Day/Night/Rest",p3:"5 on 2 off",p4:"2 on 1 off",p5:"Day/Early",rest:"Off",
+  mon:"M",dayUnit:"",staff:"Staff",shiftCol:"Shift",name:"Name"},
+ ja:{appName:"シフト表作成",appSlogan:"無料 · 自動生成 · 端末保存",h1:"シフト表作成ツール · 交代勤務カレンダー",
+  lead:"交代ルールで1か月分を自動生成、セルをクリックして手動調整。日数と時間を自動集計し、印刷（PDF）・CSV出力に対応。端末内に保存、登録不要。",
+  todayTitle:"本日の勤務",staffTitle:"スタッフ",phStaff:"名前を入力してEnter",add:"追加",phStaffBulk:"田中\n佐藤\n鈴木",bulkAdd:"一括追加",
+  shiftTitle:"シフト",phShift:"新しいシフト名",addShift:"シフト追加",hoursTip:"各シフトの時間を入力すると合計時間を集計します",genTitle:"自動生成",presetTip:"よく使う交代パターン（選んで生成）",
+  seqLabel:"交代順（カンマ区切り）",startLabel:"開始日",stepLabel:"ずらす日数",monthLabel:"対象月",gen:"1か月生成",clearGrid:"表を消去",
+  tableTitle:"シフト表",print:"印刷 / PDF",csv:"CSV出力",share:"シェア",tapTip:"セルをクリックするとシフトを切り替えられます",statTitle:"時間集計",
+  footerPrivacy:"🔒 データは端末内のみに保存され、送信されません。",footerName:"シフト表作成ツール",shareTitle:"シェアカード",dl:"ダウンロード",close:"閉じる",
+  needStaff:"先にスタッフを追加してください",needShift:"先にシフトを追加してください",generated:"生成しました",saved:"保存しました",removed:"削除しました",exported:"出力しました",clearAsk:"今月の表を消去しますか？",
+  offLabel:"ずらし",hours:"時間",total:"合計",days:"日",todayNo:"本日の勤務はありません",p1:"三交代(早/中/夜/休)",p2:"日勤/夜勤/休",p3:"週休2日",p4:"2勤1休",p5:"早番/遅番",rest:"休",
+  mon:"月",dayUnit:"日",staff:"スタッフ",shiftCol:"シフト",name:"名前"},
+ ko:{appName:"근무표 생성기",appSlogan:"무료 · 자동 생성 · 기기 저장",h1:"근무표 생성기 · 교대 근무 달력",
+  lead:"교대 규칙으로 한 달 근무표를 자동 생성하고 셀을 눌러 조정하세요. 일수와 시간을 자동 집계하고 인쇄(PDF)·CSV 내보내기를 지원합니다.",
+  todayTitle:"오늘 근무",staffTitle:"직원",phStaff:"이름 입력 후 Enter",add:"추가",phStaffBulk:"홍길동\n김철수\n이영희",bulkAdd:"일괄 추가",
+  shiftTitle:"근무 유형",phShift:"새 근무 이름",addShift:"근무 추가",hoursTip:"근무별 시간을 입력하면 총 시간을 자동 집계합니다",genTitle:"자동 생성",presetTip:"자주 쓰는 교대 패턴(선택 후 생성)",
+  seqLabel:"교대 순서(쉼표 구분)",startLabel:"시작일",stepLabel:"어긋나는 일수",monthLabel:"대상 월",gen:"한 달 생성",clearGrid:"표 비우기",
+  tableTitle:"근무표",print:"인쇄 / PDF",csv:"CSV 내보내기",share:"공유",tapTip:"셀을 누르면 근무가 순환 전환됩니다",statTitle:"시간 집계",
+  footerPrivacy:"🔒 근무표는 브라우저에만 저장되며 업로드되지 않습니다.",footerName:"근무표 생성기",shareTitle:"공유 카드",dl:"다운로드",close:"닫기",
+  needStaff:"먼저 직원을 추가하세요",needShift:"먼저 근무를 추가하세요",generated:"생성됨",saved:"저장됨",removed:"삭제됨",exported:"내보냈습니다",clearAsk:"이번 달 표를 비울까요?",
+  offLabel:"오프셋",hours:"시간",total:"합계",days:"일",todayNo:"오늘 근무 없음",p1:"3교대(조/중/야/휴)",p2:"주/야/휴",p3:"5일 근무 2일 휴",p4:"2일 근무 1일 휴",p5:"조/석",rest:"휴",
+  mon:"월",dayUnit:"일",staff:"직원",shiftCol:"근무",name:"이름"},
+ es:{appName:"Generador de turnos",appSlogan:"Gratis · Auto · Local",h1:"Generador de turnos · Calendario de rotación",
+  lead:"Genera un mes con reglas de rotación y ajusta cualquier celda. Cuenta días y horas, imprime a PDF o exporta CSV. Se guarda localmente, sin registro.",
+  todayTitle:"De turno hoy",staffTitle:"Personal",phStaff:"Escribe un nombre y pulsa Enter",add:"Añadir",phStaffBulk:"Ana\nLuis\nMarta",bulkAdd:"Importar",
+  shiftTitle:"Turnos",phShift:"Nombre del turno",addShift:"Añadir turno",hoursTip:"Define las horas por turno para totalizar automáticamente",genTitle:"Generación automática",presetTip:"Rotaciones comunes (elige y pulsa Generar)",
+  seqLabel:"Secuencia de rotación (separada por comas)",startLabel:"Fecha de inicio",stepLabel:"Desfase (días)",monthLabel:"Mes",gen:"Generar mes",clearGrid:"Vaciar tabla",
+  tableTitle:"Cuadrante",print:"Imprimir / PDF",csv:"Exportar CSV",share:"Compartir",tapTip:"Pulsa una celda para cambiar de turno",statTitle:"Resumen de horas",
+  footerPrivacy:"🔒 Los datos se guardan solo en tu navegador. Nada se sube.",footerName:"Generador de turnos",shareTitle:"Tarjeta",dl:"Descargar",close:"Cerrar",
+  needStaff:"Añade personal primero",needShift:"Añade un turno primero",generated:"Generado",saved:"Guardado",removed:"Eliminado",exported:"Exportado",clearAsk:"¿Vaciar este mes?",
+  offLabel:"desfase",hours:"horas",total:"Total",days:"d",todayNo:"Sin turnos hoy",p1:"3 turnos (M/T/N/D)",p2:"Día/Noche/Descanso",p3:"5x2",p4:"2x1",p5:"Mañana/Tarde",rest:"Libre",
+  mon:"M",dayUnit:"",staff:"Personal",shiftCol:"Turno",name:"Nombre"},
+ fr:{appName:"Générateur de planning",appSlogan:"Gratuit · Auto · Local",h1:"Générateur de planning · Calendrier de rotation",
+  lead:"Générez un mois depuis des règles de rotation et ajustez chaque cellule. Compte jours et heures, impression PDF ou export CSV. Stockage local, sans inscription.",
+  todayTitle:"De service aujourd'hui",staffTitle:"Équipe",phStaff:"Tapez un nom puis Entrée",add:"Ajouter",phStaffBulk:"Alice\nBob\nCarol",bulkAdd:"Importer",
+  shiftTitle:"Services",phShift:"Nom du service",addShift:"Ajouter",hoursTip:"Renseignez les heures par service pour le total automatique",genTitle:"Génération auto",presetTip:"Rotations courantes (choisissez puis Générer)",
+  seqLabel:"Séquence de rotation (séparée par des virgules)",startLabel:"Date de début",stepLabel:"Décalage (jours)",monthLabel:"Mois",gen:"Générer le mois",clearGrid:"Vider la grille",
+  tableTitle:"Planning",print:"Imprimer / PDF",csv:"Exporter CSV",share:"Partager",tapTip:"Cliquez une cellule pour changer de service",statTitle:"Récapitulatif des heures",
+  footerPrivacy:"🔒 Le planning reste dans votre navigateur. Rien n'est envoyé.",footerName:"Générateur de planning",shareTitle:"Carte à partager",dl:"Télécharger",close:"Fermer",
+  needStaff:"Ajoutez d'abord du personnel",needShift:"Ajoutez d'abord un service",generated:"Généré",saved:"Enregistré",removed:"Retiré",exported:"Exporté",clearAsk:"Vider ce mois ?",
+  offLabel:"décalage",hours:"heures",total:"Total",days:"j",todayNo:"Aucun service aujourd'hui",p1:"3x8 (M/A/N/R)",p2:"Jour/Nuit/Repos",p3:"5 jours / 2 off",p4:"2 jours / 1 off",p5:"Matin/Soir",rest:"Repos",
+  mon:"M",dayUnit:"",staff:"Équipe",shiftCol:"Service",name:"Nom"}
+};
+var lang="zh";
+function tr(k){return (T[lang]&&T[lang][k])||T.zh[k]||k;}
+function applyI18n(){
+  document.documentElement.lang=(lang==="zh"?"zh-CN":lang);
+  document.title=TITLE[lang]||TITLE.zh;
+  var md=document.querySelector('meta[name="description"]'); if(md) md.setAttribute("content",DESC[lang]||DESC.zh);
+  document.querySelectorAll("[data-i18n]").forEach(function(el){el.textContent=tr(el.getAttribute("data-i18n"));});
+  document.querySelectorAll("[data-i18n-ph]").forEach(function(el){el.setAttribute("placeholder",tr(el.getAttribute("data-i18n-ph")));});
+  document.querySelectorAll("link[rel=alternate]").forEach(function(a){
+    var m={"zh-CN":"zh",en:"en",ja:"ja",ko:"ko",es:"es",fr:"fr","x-default":"zh"};
+    var base=location.href.split("#")[0].split("?")[0];
+    a.setAttribute("href", base+"?lang="+(m[a.getAttribute("hreflang")]||"zh"));
+  });
+  renderAll();
+}
+/* ---------- state ---------- */
+var KEY="sh_state_v1";
+var DEF_COLORS=["#f97316","#0ea5e9","#6366f1","#16a34a","#94a3b8","#ec4899"];
+var st={staff:[],shifts:[],grid:{},month:"",start:"",step:1,seq:""};
+(function(){
+  var d=new Date();
+  st.month=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2);
+  st.start=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-01";
+})();
+try{var s=JSON.parse(localStorage.getItem(KEY)||"null"); if(s&&s.staff){ st=s; }}catch(e){}
+if(!st.staff||!st.staff.length) st.staff=[{n:"张三",o:0},{n:"李四",o:1},{n:"王五",o:2},{n:"赵六",o:3}];
+if(!st.shifts||!st.shifts.length) st.shifts=[
+  {n:"早班",s:"早",c:"#f97316",h:8},{n:"中班",s:"中",c:"#0ea5e9",h:8},{n:"夜班",s:"夜",c:"#6366f1",h:8},{n:"休息",s:"休",c:"#94a3b8",h:0}
+];
+if(!st.grid) st.grid={};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];});}
+function daysInMonth(m){ var y=+m.slice(0,4), mo=+m.slice(5,7); return new Date(y,mo,0).getDate(); }
+function gkey(si,d){ return st.month+"|"+si+"|"+d; }
+/* ---------- render ---------- */
+function renderAll(){ renderStaff(); renderShifts(); renderTable(); renderToday(); renderStats(); renderPresets(); syncInputs(); }
+function syncInputs(){
+  document.getElementById("monthIn").value=st.month;
+  document.getElementById("startDate").value=st.start;
+  document.getElementById("stepIn").value=st.step||1;
+  if(!document.getElementById("seqIn").value) document.getElementById("seqIn").value=st.shifts.map(function(x){return x.s;}).join(",");
+}
+function renderStaff(){
+  var box=document.getElementById("staffList"); box.innerHTML="";
+  st.staff.forEach(function(p,i){
+    var d=document.createElement("div"); d.className="sl";
+    d.innerHTML='<span class="nm">'+esc(p.n)+'</span>'+
+      '<input class="off" type="number" min="0" max="60" value="'+(p.o||0)+'" title="'+tr("offLabel")+'" data-o="'+i+'">'+
+      '<button class="x" data-sd="'+i+'">✕</button>';
+    box.appendChild(d);
+  });
+  document.getElementById("staffCnt").textContent=st.staff.length+" "+tr("staff");
+}
+document.getElementById("staffList").addEventListener("input",function(e){
+  if(e.target.dataset.o!==undefined){ st.staff[+e.target.dataset.o].o=parseInt(e.target.value,10)||0; save(); }
+});
+document.getElementById("staffList").addEventListener("click",function(e){
+  var d=e.target.dataset.sd; if(d===undefined) return;
+  st.staff.splice(+d,1); save(); renderAll(); toast(tr("removed"));
+});
+function renderShifts(){
+  var box=document.getElementById("legend"); box.innerHTML="";
+  st.shifts.forEach(function(s,i){
+    var d=document.createElement("div"); d.className="lg";
+    d.innerHTML='<i style="background:'+s.c+'"></i><input type="text" value="'+esc(s.n)+'" data-sn="'+i+'">'+
+      '<button class="x" data-sx="'+i+'">✕</button>';
+    box.appendChild(d);
+  });
+  var hb=document.getElementById("hoursBox"); hb.innerHTML="";
+  var g=document.createElement("div"); g.className="fgrid";
+  st.shifts.forEach(function(s,i){
+    var f=document.createElement("div"); f.className="fld";
+    f.innerHTML='<label>'+esc(s.n)+' · '+tr("hours")+'</label><input type="number" min="0" max="24" step="0.5" value="'+(s.h||0)+'" data-sh="'+i+'">';
+    g.appendChild(f);
+  });
+  hb.appendChild(g);
+}
+document.getElementById("legend").addEventListener("input",function(e){
+  if(e.target.dataset.sn!==undefined){ st.shifts[+e.target.dataset.sn].n=e.target.value; if(!e.target.value.trim())return; save(); renderTable(); renderToday(); }
+});
+document.getElementById("legend").addEventListener("click",function(e){
+  var d=e.target.dataset.sx; if(d===undefined) return;
+  if(st.shifts.length<=1){return;}
+  st.shifts.splice(+d,1); save(); renderAll(); toast(tr("removed"));
+});
+document.getElementById("hoursBox").addEventListener("input",function(e){
+  if(e.target.dataset.sh!==undefined){ st.shifts[+e.target.dataset.sh].h=parseFloat(e.target.value)||0; save(); renderStats(); }
+});
+function renderTable(){
+  var tbl=document.getElementById("tbl"), N=daysInMonth(st.month), y=+st.month.slice(0,4), mo=+st.month.slice(5,7);
+  var today=new Date(), tk = today.getFullYear()+"-"+("0"+(today.getMonth()+1)).slice(-2);
+  var html='<tr><th class="staff">'+tr("staff")+'</th>';
+  for(var d=1;d<=N;d++){
+    var wd=new Date(y,mo-1,d).getDay(), we=(wd===0||wd===6);
+    var isT = (tk===st.month && today.getDate()===d);
+    html+='<th class="'+(we?"we ":"")+(isT?"today":"")+'">'+d+'</th>';
+  }
+  html+='<th>'+tr("total")+'</th></tr>';
+  st.staff.forEach(function(p,si){
+    html+='<tr><td class="staff">'+esc(p.n)+'</td>';
+    for(var d=1;d<=N;d++){
+      var wd=new Date(y,mo-1,d).getDay(), we=(wd===0||wd===6);
+      var isT=(tk===st.month && today.getDate()===d);
+      var v=st.grid[gkey(si,d)];
+      var sh=null; if(v!==undefined&&v!==null&&v!=="") sh=st.shifts[v];
+      html+='<td class="cell '+(we?"weekend ":"")+(isT?"isToday":"")+'" data-si="'+si+'" data-d="'+d+'">'+
+        (sh?'<span class="s" style="background:'+sh.c+'">'+esc(sh.s||sh.n.slice(0,1))+'</span>':'')+'</td>';
+    }
+    var tot=0;
+    for(var dd=1;dd<=N;dd++){ var vv=st.grid[gkey(si,dd)]; if(vv!=null&&st.shifts[vv]) tot+=(st.shifts[vv].h||0); }
+    html+='<td style="font-weight:700">'+tot+'h</td></tr>';
+  });
+  tbl.innerHTML=html;
+  document.getElementById("monthLabel").textContent=y+" "+tr("mon")+" "+mo+" "+tr("dayUnit");
+}
+document.getElementById("tbl").addEventListener("click",function(e){
+  var td=e.target.closest("td.cell"); if(!td) return;
+  var si=+td.dataset.si, d=+td.dataset.d, k=gkey(si,d);
+  var cur=st.grid[k];
+  var nx = (cur==null||cur==="") ? 0 : (cur+1)%st.shifts.length;
+  if(cur===st.shifts.length-1) nx="";
+  st.grid[k]=nx; save(); renderTable(); renderToday(); renderStats();
+});
+function renderToday(){
+  var t=new Date();
+  var mk=t.getFullYear()+"-"+("0"+(t.getMonth()+1)).slice(-2);
+  document.getElementById("todayDate").textContent=t.getFullYear()+"-"+("0"+(t.getMonth()+1)).slice(-2)+"-"+("0"+t.getDate()).slice(-2);
+  document.getElementById("todayBig").textContent=mk===st.month?(st.month+" · "+tr("todayTitle")):tr("todayTitle");
+  var box=document.getElementById("todayChips"); box.innerHTML="";
+  if(mk!==st.month){ box.innerHTML='<span class="muted">'+tr("todayNo")+'</span>'; return; }
+  var dd=t.getDate(), any=false;
+  st.staff.forEach(function(p,si){
+    var v=st.grid[gkey(si,dd)]; if(v==null||v==="") return;
+    var sh=st.shifts[v]; if(!sh) return; any=true;
+    var c=document.createElement("div"); c.className="tchip";
+    c.innerHTML='<i style="background:'+sh.c+'"></i>'+esc(p.n)+' · '+esc(sh.n);
+    box.appendChild(c);
+  });
+  if(!any) box.innerHTML='<span class="muted">'+tr("todayNo")+'</span>';
+}
+function renderStats(){
+  var N=daysInMonth(st.month);
+  var html='<tr><th>'+tr("name")+'</th>';
+  st.shifts.forEach(function(s){ html+='<th>'+esc(s.n)+'</th>'; });
+  html+='<th>'+tr("hours")+'</th></tr>';
+  st.staff.forEach(function(p,si){
+    html+='<tr><td>'+esc(p.n)+'</td>';
+    var tot=0;
+    st.shifts.forEach(function(s,vi){
+      var c=0;
+      for(var d=1;d<=N;d++){ if(st.grid[gkey(si,d)]===vi) c++; }
+      tot+=c*(s.h||0);
+      html+='<td>'+c+'</td>';
+    });
+    html+='<td style="font-weight:700">'+tot+'</td></tr>';
+  });
+  document.getElementById("statTbl").innerHTML=html;
+}
+/* ---------- presets ---------- */
+var PRESETS=[
+  {k:"p1",seq:[0,1,2,3]},
+  {k:"p2",seq:[0,2,3]},
+  {k:"p3",seq:[0,0,0,0,0,3,3]},
+  {k:"p4",seq:[0,1,3]},
+  {k:"p5",seq:[0,1]}
+];
+var curPreset=0;
+function renderPresets(){
+  var box=document.getElementById("presets"); box.innerHTML="";
+  PRESETS.forEach(function(p,i){
+    var b=document.createElement("button"); b.className="chip"+(i===curPreset?" on":"");
+    b.textContent=tr(p.k); b.onclick=function(){
+      curPreset=i;
+      document.getElementById("seqIn").value=p.seq.map(function(x){return (st.shifts[x]&&st.shifts[x].s)||"休";}).join(",");
+      renderPresets();
+    };
+    box.appendChild(b);
+  });
+}
+function generate(){
+  if(!st.staff.length){toast(tr("needStaff"));return;}
+  if(!st.shifts.length){toast(tr("needShift"));return;}
+  var seqRaw=document.getElementById("seqIn").value.split(/[,，\s]+/).filter(function(x){return x;});
+  var idx=seqRaw.map(function(x){
+    for(var i=0;i<st.shifts.length;i++){ if(st.shifts[i].s===x||st.shifts[i].n===x) return i; }
+    return -1;
+  }).filter(function(i){return i>=0;});
+  if(!idx.length){toast(tr("needShift"));return;}
+  var sd=document.getElementById("startDate").value||st.start;
+  var step=parseInt(document.getElementById("stepIn").value,10)||0;
+  st.start=sd; st.step=step;
+  var s0=new Date(sd+"T00:00:00");
+  var N=daysInMonth(st.month), y=+st.month.slice(0,4), mo=+st.month.slice(5,7);
+  st.staff.forEach(function(p,si){
+    var off=(p.o!=null?p.o:si*step);
+    for(var d=1;d<=N;d++){
+      var cur=new Date(y,mo-1,d);
+      var diff=Math.round((cur-s0)/86400000);
+      if(diff<0){ st.grid[gkey(si,d)]=""; continue; }
+      var pos=((diff+off)%idx.length+idx.length)%idx.length;
+      st.grid[gkey(si,d)]=idx[pos];
+    }
+  });
+  save(); renderAll(); toast(tr("generated"));
+}
+/* ---------- share ---------- */
+function buildShare(){
+  var W=640,H=760,c=document.getElementById("shareCv"),x=c.getContext("2d");
+  c.width=W;c.height=H;
+  var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,"#f97316");g.addColorStop(1,"#ea580c");
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle="rgba(255,255,255,.13)";x.beginPath();x.arc(W-60,110,180,0,7);x.fill();
+  x.textAlign="center";x.fillStyle="#fff";
+  x.font="800 38px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+  x.fillText("📅 "+tr("appName"),W/2,104);
+  x.font="500 20px -apple-system,sans-serif";x.fillStyle="rgba(255,255,255,.86)";
+  x.fillText(st.month,W/2,146);
+  x.fillStyle="#fff"; if(x.roundRect){x.beginPath();x.roundRect(56,180,W-112,420,26);x.fill();}else x.fillRect(56,180,W-112,420);
+  x.fillStyle="#1b1815";x.font="700 21px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+  x.fillText(tr("todayTitle"),W/2,228);
+  var t=new Date(), mk=t.getFullYear()+"-"+("0"+(t.getMonth()+1)).slice(-2), dd=t.getDate(), yy=240;
+  var has=false;
+  if(mk===st.month){
+    st.staff.forEach(function(p,si){
+      var v=st.grid[gkey(si,dd)]; if(v==null||v==="")return;
+      var sh=st.shifts[v]; if(!sh)return; has=true;
+      if(yy>540) return;
+      x.fillStyle=sh.c; if(x.roundRect){x.beginPath();x.roundRect(96,yy,W-192,44,12);x.fill();}else x.fillRect(96,yy,W-192,44);
+      x.fillStyle="#fff";x.font="700 19px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+      x.fillText(p.n+" · "+sh.n,W/2,yy+29);
+      yy+=56;
+    });
+  }
+  if(!has){ x.fillStyle="#7a6f66";x.font="600 19px -apple-system,sans-serif";x.fillText(tr("todayNo"),W/2,290); }
+  x.fillStyle="rgba(255,255,255,.95)";x.font="600 21px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+  x.fillText(tr("footerPrivacy"),W/2,650);
+  x.font="500 18px -apple-system,sans-serif";x.fillStyle="rgba(255,255,255,.72)";
+  x.fillStyle="rgba(255,255,255,.72)";
+  x.fillText("H5 工具矩阵 · h5tools",W/2,694);
+  x.fillText(new Date().toLocaleDateString(),W/2,726);
+}
+/* ---------- events ---------- */
+var toastEl=document.getElementById("toast"),tt;
+function toast(m){toastEl.textContent=m;toastEl.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove("on");},1800);}
+function dl(blob,name){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},4000);}
+document.getElementById("addStaffBtn").onclick=addStaff;
+document.getElementById("staffIn").addEventListener("keydown",function(e){if(e.key==="Enter")addStaff();});
+function addStaff(){
+  var el=document.getElementById("staffIn"), v=el.value.trim(); if(!v) return;
+  st.staff.push({n:v,o:st.staff.length*(parseInt(document.getElementById("stepIn").value,10)||1)});
+  el.value=""; save(); renderAll();
+}
+document.getElementById("bulkStaffBtn").onclick=function(){
+  var v=document.getElementById("staffBulk").value.split("\n"), step=parseInt(document.getElementById("stepIn").value,10)||1;
+  v.forEach(function(l){ l=l.trim(); if(l) st.staff.push({n:l,o:st.staff.length*step}); });
+  document.getElementById("staffBulk").value=""; save(); renderAll();
+};
+document.getElementById("addShiftBtn").onclick=function(){
+  var n=document.getElementById("shiftName").value.trim(); if(!n) return;
+  var c=document.getElementById("shiftColor").value||DEF_COLORS[st.shifts.length%DEF_COLORS.length];
+  st.shifts.push({n:n,s:n.slice(0,1),c:c,h:8});
+  document.getElementById("shiftName").value=""; save(); renderAll();
+};
+document.getElementById("genBtn").onclick=generate;
+document.getElementById("clearGridBtn").onclick=function(){
+  if(!confirm(tr("clearAsk")))return;
+  Object.keys(st.grid).forEach(function(k){ if(k.indexOf(st.month+"|")===0) delete st.grid[k]; });
+  save(); renderAll();
+};
+document.getElementById("monthIn").onchange=function(){ st.month=this.value||st.month; save(); renderAll(); };
+document.getElementById("prevBtn").onclick=function(){ shiftMonth(-1); };
+document.getElementById("nextBtn").onclick=function(){ shiftMonth(1); };
+function shiftMonth(delta){
+  var y=+st.month.slice(0,4), m=+st.month.slice(5,7)+delta;
+  if(m<1){m=12;y--;} if(m>12){m=1;y++;}
+  st.month=y+"-"+("0"+m).slice(-2); save(); renderAll();
+}
+document.getElementById("printBtn").onclick=function(){ window.print(); };
+document.getElementById("csvBtn").onclick=function(){
+  var N=daysInMonth(st.month);
+  var rows=[[tr("name")]];
+  var head=[tr("staff")]; for(var d=1;d<=N;d++) head.push(st.month+"-"+d); rows[0]=head;
+  st.staff.forEach(function(p,si){
+    var r=[p.n];
+    for(var d=1;d<=N;d++){ var v=st.grid[gkey(si,d)]; r.push((v==null||v==="")?"":(st.shifts[v]?st.shifts[v].n:"")); }
+    rows.push(r);
+  });
+  var csv="\ufeff"+rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(",");}).join("\n");
+  dl(new Blob([csv],{type:"text/csv"}),"shift-"+st.month+".csv"); toast(tr("exported"));
+};
+document.getElementById("shareBtn").onclick=function(){ buildShare(); document.getElementById("shareDlg").showModal(); };
+document.getElementById("closeShareBtn").onclick=function(){ document.getElementById("shareDlg").close(); };
+document.getElementById("dlShareBtn").onclick=function(){ document.getElementById("shareCv").toBlob(function(b){ dl(b,"shift-share.png"); }); };
+document.getElementById("themeBtn").onclick=function(){
+  var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",cur);
+  try{localStorage.setItem("sh_theme",cur);}catch(e){}
+};
+var ls=document.getElementById("langSel");
+LANGS.forEach(function(l){var o=document.createElement("option");o.value=l;o.textContent=LNAME[l];ls.appendChild(o);});
+ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("sh_lang",lang);}catch(e){} applyI18n(); };
+(function init(){
+  var q=new URLSearchParams(location.search).get("lang"), saved=null;
+  try{saved=localStorage.getItem("sh_lang");}catch(e){}
+  var nav=(navigator.language||"zh").toLowerCase();
+  var guess=nav.indexOf("ja")===0?"ja":nav.indexOf("ko")===0?"ko":nav.indexOf("es")===0?"es":nav.indexOf("fr")===0?"fr":nav.indexOf("en")===0?"en":"zh";
+  lang=q||saved||guess; if(LANGS.indexOf(lang)<0) lang="zh"; ls.value=lang;
+  var th=null; try{th=localStorage.getItem("sh_theme");}catch(e){}
+  if(!th) th=window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";
+  document.documentElement.setAttribute("data-theme",th);
+  applyI18n();
+})();
+})();
+</script>
+<!--WB_WIDGET_V2 v=6-->
+
+<script>
+(function(){
+  if(window.WB_WIDGET) return; window.WB_WIDGET=1;
+  var SB='https://jebnpaglwgozboyujxnx.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
+  var SITE='https://zq0424.github.io/h5-tools-hub/';
+  /* ★ 站长配置：把两张收款码图片的公网URL填到这里（可用 GitHub 仓库里的图片） */
+  var PAY={wechat:'',alipay:'',year:'¥19.9/年',life:'¥49.9/永久',free:10};
+  var parts=location.pathname.split('/').filter(Boolean);
+  var slug=parts[parts.length-1]||'home';
+  var toolName=document.title.split(/[·|]/)[0].trim()||'这个工具';
+  function ls(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
+  function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function liked(){return ls('h5hub_liked').indexOf(slug)>=0}
+  function favs(){return ls('h5hub_fav')}
+
+  /* ---------- 样式 ---------- */
+  var css=document.createElement('style');
+  css.textContent=
+  '#wbBar{position:fixed;right:12px;bottom:12px;z-index:99990;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(91,107,255,.25);border:1px solid #eef0f7;border-radius:999px;padding:6px 8px;font-family:-apple-system,PingFang SC,sans-serif;flex-wrap:wrap;max-width:calc(100vw - 24px)}'+
+  '#wbBar a,#wbBar button{border:none;background:none;font-size:15px;line-height:1;cursor:pointer;text-decoration:none;padding:4px 6px;border-radius:999px;color:#23263a}'+
+  '#wbBar .lk{background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff;font-weight:700;font-size:12.5px;padding:6px 11px}'+
+  '#wbBar .lk.on{outline:2px solid #5b6bff}#wbBar .fv.on{background:#fff3d6}#wbBar .vw{font-size:11.5px;color:#8a8fb0}#wbBar .vip{background:linear-gradient(135deg,#ffd86b,#ff9a3c);color:#fff;font-size:13px;padding:6px 9px}'+
+  '#wbFree{position:fixed;left:12px;bottom:12px;z-index:99990;background:rgba(255,255,255,.95);border:1px solid #eef0f7;border-radius:999px;padding:5px 11px;font-size:11.5px;color:#5b6bff;font-weight:700;box-shadow:0 4px 14px rgba(91,107,255,.15)}'+
+  '.wbMask{position:fixed;inset:0;background:rgba(20,22,40,.55);z-index:99999;display:none;align-items:flex-end;justify-content:center;font-family:-apple-system,PingFang SC,sans-serif}'+
+  '.wbMask.show{display:flex}.wbSheet{background:#fff;border-radius:18px 18px 0 0;max-width:420px;width:100%;max-height:82vh;overflow:auto;padding:16px 16px 26px}'+
+  '.wbSheet h3{margin:0 0 10px;font-size:15.5px}.wbX{float:right;border:none;background:none;font-size:17px;color:#8a8fb0;cursor:pointer}'+
+  '.wbCm{display:flex;gap:6px;margin:6px 0}.wbCm input,.wbCm textarea{flex:1;border:1px solid #eef0f7;border-radius:10px;padding:8px 10px;font-size:13px;outline:none}.wbCm textarea{height:56px;resize:none}'+
+  '.wbBtn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff}'+
+  '.wbBtn.g{background:#eef0ff;color:#5b6bff}'+
+  '.wbItem{background:#f7f8ff;border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px}.wbItem b{font-size:12px;color:#5b6bff}.wbItem span{display:block;color:#23263a;margin-top:2px;word-break:break-word}.wbItem i{font-size:10.5px;color:#b6bad0;font-style:normal}'+
+  '.wbPoster{width:100%;border-radius:10px}'+
+  '.wbPlans{display:flex;gap:8px;margin:10px 0}.wbPlan{flex:1;border:2px solid #eef0f7;border-radius:12px;padding:10px;text-align:center;cursor:pointer}.wbPlan.on{border-color:#5b6bff;background:#f6f7ff}.wbPlan b{display:block;font-size:17px;color:#ff6bb0}.wbPlan span{font-size:11px;color:#8a8fb0}'+
+  '.wbPayTabs{display:flex;gap:6px;margin-bottom:8px}.wbPayTabs button{flex:1;border:1px solid #eef0f7;background:#fff;border-radius:10px;padding:8px;font-size:13px;font-weight:700;cursor:pointer}.wbPayTabs button.on{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.wx{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.ali{border-color:#1677ff;color:#1677ff}'+
+  '.wbQrBox{text-align:center;min-height:180px;display:flex;align-items:center;justify-content:center;background:#f7f8ff;border-radius:12px;padding:10px}.wbQrBox img{width:160px;height:160px;border-radius:8px}'+
+  '.wbBlur>*:not(#wbBar):not(#wbFree):not(.wbMask){filter:blur(6px);pointer-events:none;user-select:none}';
+  document.head.appendChild(css);
+
+  /* ---------- 底部工具条 ---------- */
+  var bar=document.createElement('div');bar.id='wbBar';
+  bar.innerHTML='<a href="'+SITE+'" title="返回工具箱首页">🏠</a>'+
+    '<button class="lk'+(liked()?' on':'')+'" title="点赞">👍 <span class="vc">0</span></button>'+
+    '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="收藏">⭐</button>'+
+    '<button class="sh" title="分享">↗</button>'+
+    '<button class="cm" title="评论">💬<span class="cc"></span></button>'+
+    '<button class="vip" title="解锁会员">💎</button>'+
+    '<span class="vw">👁 <span class="vcw">0</span></span>';
+  document.body.appendChild(bar);
+
+  function mkMask(id,title,closable){
+    var m=document.createElement('div');m.className='wbMask';m.id=id;
+    m.innerHTML='<div class="wbSheet">'+(closable===false?'':'<button class="wbX">✕</button>')+'<h3>'+title+'</h3><div class="bd"></div></div>';
+    if(closable!==false){
+      m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
+      m.querySelector('.wbX').onclick=function(){m.classList.remove('show')};
+    }
+    document.body.appendChild(m);return m;}
+
+  /* ---------- 浏览量 + 点赞数 ---------- */
+  function loadCnt(){
+    fetch(SB+'/rest/v1/votes?select=total,views_total&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      if(rows[0]){bar.querySelector('.vc').textContent=rows[0].total||0;bar.querySelector('.vcw').textContent=rows[0].views_total||0;}
+    }).catch(function(){});
+  }
+  if(!sessionStorage.getItem('wb_view_'+slug)){
+    sessionStorage.setItem('wb_view_'+slug,'1');
+    fetch(SB+'/rest/v1/rpc/increment_view',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(loadCnt);
+  } else loadCnt();
+
+  bar.querySelector('.lk').onclick=function(){
+    if(liked())return; var a=ls('h5hub_liked');a.push(slug);save('h5hub_liked',a);
+    this.classList.add('on');this.querySelector('.vc').textContent=(parseInt(this.querySelector('.vc').textContent)||0)+1;
+    fetch(SB+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(function(){});
+  };
+  bar.querySelector('.fv').onclick=function(){
+    var a=favs(),i=a.indexOf(slug),adding=i<0;
+    if(adding){a.push(slug);this.classList.add('on');}else{a.splice(i,1);this.classList.remove('on');}
+    save('h5hub_fav',a);
+    var tok=null;try{var au=JSON.parse(localStorage.getItem('h5hub_auth')||'null');tok=au&&au.access_token||null;}catch(e){}
+    if(tok){
+      var H={apikey:ANON,Authorization:'Bearer '+tok,'Content-Type':'application/json'};
+      if(adding)fetch(SB+'/rest/v1/favorites',{method:'POST',headers:H,body:JSON.stringify({slug:slug})}).catch(function(){});
+      else fetch(SB+'/rest/v1/favorites?slug=eq.'+encodeURIComponent(slug),{method:'DELETE',headers:{apikey:ANON,Authorization:'Bearer '+tok}}).catch(function(){});
+    }
+  };
+
+  /* ---------- 分享海报（二维码 + 站点介绍，扫码直达） ---------- */
+  function qr(u){return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data='+encodeURIComponent(u);}
+  bar.querySelector('.sh').onclick=function(){
+    var m=mkMask('wbShare','↗ 分享这个工具'),bd=m.querySelector('.bd');
+    bd.innerHTML='<img class="wbPoster" alt="海报生成中…"><div style="display:flex;gap:8px;margin-top:10px">'+
+      '<button class="wbBtn g" id="wbCp">复制链接</button><button class="wbBtn" id="wbSv">保存海报</button></div>'+
+      '<div style="font-size:11px;color:#8a8fb0;margin-top:8px;text-align:center">微信内长按海报即可保存 / 发送</div>';
+    var url=SITE+slug+'/';
+    var W=750,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#eef1ff');g.addColorStop(1,'#fdeef6');
+    x.fillStyle=g;x.fillRect(0,0,W,H);x.fillStyle='#fff';
+    function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();x.fill();}
+    rr(50,50,W-100,H-100,36);x.textAlign='center';
+    x.fillStyle='#23263a';x.font='bold 54px -apple-system,PingFang SC,sans-serif';
+    x.fillText(toolName.slice(0,14),W/2,230);
+    x.fillStyle='#5b6bff';x.font='bold 34px -apple-system,PingFang SC,sans-serif';
+    x.fillText('🧰 我的工具箱 · 每天自动上新的免费小工具',W/2,310);
+    x.fillStyle='#8a8fb0';x.font='28px -apple-system,PingFang SC,sans-serif';
+    x.fillText('免登录 · 即开即用 · 欢迎点赞评论',W/2,370);
+    var q=new Image();q.crossOrigin='anonymous';
+    q.onload=function(){x.fillStyle='#fff';rr(W/2-140,420,280,280,24);x.drawImage(q,W/2-120,440,240,240);
+      x.fillStyle='#5b6bff';x.font='bold 30px sans-serif';x.fillText('👍 觉得好用就点个赞',W/2,790);
+      x.fillStyle='#b6bad0';x.font='24px sans-serif';x.fillText('扫码直达 · Scan to open',W/2,860);
+      try{bd.querySelector('img').src=c.toDataURL('image/png');}
+      catch(e){bd.querySelector('img').outerHTML='<div style="text-align:center"><img src="'+q.src+'" style="width:180px"></div>';}
+    };
+    q.src=qr(url);
+    bd.querySelector('#wbCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(function(){alert('链接已复制')}).catch(function(){prompt('',url)});};
+    bd.querySelector('#wbSv').onclick=function(){var im=bd.querySelector('img');if(im.src&&im.src.indexOf('data:')===0){var a=document.createElement('a');a.href=im.src;a.download='share.png';a.click();}else alert('请长按图片保存');};
+    m.classList.add('show');
+  };
+
+  /* ---------- 评论区 ---------- */
+  var cmMask=null;
+  bar.querySelector('.cm').onclick=function(){
+    if(!cmMask){
+      cmMask=mkMask('wbCmMask','💬 对「'+toolName+'」说点什么');
+      cmMask.querySelector('.bd').innerHTML=
+        '<div id="wbCmList" style="max-height:44vh;overflow:auto"><div style="font-size:12px;color:#8a8fb0">加载中…</div></div>'+
+        '<div class="wbCm"><input id="wbCmName" placeholder="昵称（可留空）" maxlength="20"></div>'+
+        '<div class="wbCm"><textarea id="wbCmBody" placeholder="使用感受 / 建议 / 想要的新功能…" maxlength="500"></textarea></div>'+
+        '<button class="wbBtn" id="wbCmSend" style="width:100%">发 表</button>';
+      cmMask.querySelector('#wbCmSend').onclick=function(){
+        var b=cmMask.querySelector('#wbCmBody').value.trim();
+        if(!b)return alert('写点内容再发表吧');
+        var n=cmMask.querySelector('#wbCmName').value.trim()||'访客';
+        this.disabled=true;
+        fetch(SB+'/rest/v1/comments',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json',Prefer:'return=minimal'},
+          body:JSON.stringify({slug:slug,name:n,body:b})})
+        .then(function(r){if(!r.ok)throw 0;cmMask.querySelector('#wbCmBody').value='';loadCm();})
+        .catch(function(){alert('发表失败，请稍后再试')}).finally(function(){this.disabled=false}.bind(this));
+      };
+    }
+    cmMask.classList.add('show');loadCm();
+  };
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function loadCm(){
+    if(!cmMask)return;
+    fetch(SB+'/rest/v1/comments?select=name,body,created_at&slug=eq.'+encodeURIComponent(slug)+'&order=created_at.desc&limit=50',{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      var box=cmMask.querySelector('#wbCmList');
+      box.innerHTML=rows.length?rows.map(function(c){
+        var d=new Date(c.created_at),ds=(d.getMonth()+1)+'/'+d.getDate();
+        return '<div class="wbItem"><b>'+esc(c.name)+'</b> <i>'+ds+'</i><span>'+esc(c.body)+'</span></div>';
+      }).join(''):'<div style="font-size:12px;color:#8a8fb0;padding:10px 0">还没有评论，来抢沙发～</div>';
+      var n=rows.length; if(n)bar.querySelector('.cc').textContent=' '+n;
+    }).catch(function(){});
+  }
+  loadCm();
+
+  /* ---------- 付费墙：免费 ' + PAY.free + ' 次后硬封锁（不可用第 ' + (PAY.free+1) + ' 次）---------- */
+  var use=JSON.parse(localStorage.getItem('h5hub_use')||'{}');
+  if(!sessionStorage.getItem('wb_use_'+slug)){use[slug]=(use[slug]||0)+1;localStorage.setItem('h5hub_use',JSON.stringify(use));}
+  var used=use[slug]||0, isPro=localStorage.getItem('h5hub_pro')==='1';
+  var free=document.createElement('div');free.id='wbFree';document.body.appendChild(free);
+  function paintFree(){free.textContent=isPro?'✨ 会员已解锁 · 感谢支持':(used>PAY.free?'🔒 已达免费上限，点💎解锁':'🆓 免费额度剩 '+Math.max(0,PAY.free-used+1)+' 次');}
+  paintFree();
+  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ 你已是会员，感谢支持！');return;} showPay(); };
+  function showPay(){
+    if(isPro)return;
+    var m=mkMask('wbPay','🔒 免费额度已用完 · 解锁后继续使用');
+    var plan_wx=true;
+    function paint(){
+      var plan=localStorage.getItem('wb_plan')||'year';
+      m.querySelector('.bd').innerHTML=
+        '<div style="font-size:12.5px;color:#8a8fb0">你已免费使用 '+PAY.free+' 次。解锁后无限次使用本站全部工具（含每日新增）。</div>'+
+        '<div class="wbPlans"><div class="wbPlan'+(plan==='year'?' on':'')+'" data-p="year"><b>'+PAY.year+'</b><span>年度会员</span></div>'+
+        '<div class="wbPlan'+(plan==='life'?' on':'')+'" data-p="life"><b>'+PAY.life+'</b><span>永久买断 · 更划算</span></div></div>'+
+        '<div class="wbPayTabs"><button class="wx'+(plan_wx?' on':'')+'" data-w="wx">微信支付</button><button class="ali'+(plan_wx?'':' on')+'" data-w="ali">支付宝</button></div>'+
+        '<div class="wbQrBox" id="wbQr"></div>'+
+        '<button class="wbBtn" id="wbPaid" style="width:100%;margin-top:10px">✅ 我已完成支付，激活会员</button>'+
+        '<div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">支付后点击激活（试运行自动开通；如遇问题请截图联系站长）<br>可关闭本窗，但关闭后将无法继续使用本工具，点💎可重新解锁</div>';
+      m.querySelectorAll('.wbPlan').forEach(function(p){p.onclick=function(){localStorage.setItem('wb_plan',p.dataset.p);paint();}});
+      m.querySelectorAll('.wbPayTabs button').forEach(function(b){b.onclick=function(){plan_wx=b.dataset.w==='wx';paint();};});
+      var qrEl=m.querySelector('#wbQr'),src=plan_wx?PAY.wechat:PAY.alipay;
+      qrEl.innerHTML=src?'<div><img src="'+src+'"><div style="font-size:11px;color:#8a8fb0;margin-top:4px">长按 / 扫码支付 '+(plan==='year'?PAY.year:PAY.life)+'</div></div>'
+        :'<div style="font-size:12px;color:#8a8fb0">收款码配置中<br><br>↑ 微信 / 支付宝扫码后<br>向站长转账对应金额即可</div>';
+      m.querySelector('#wbPaid').onclick=function(){localStorage.setItem('h5hub_pro','1');isPro=true;unblur();m.classList.remove('show');paintFree();alert('🎉 解锁成功，感谢支持！');};
+    };
+    paint();m.classList.add('show');
+  }
+  function blurPage(){document.body.classList.add('wbBlur');}
+  function unblur(){document.body.classList.remove('wbBlur');}
+  if(!isPro&&used>PAY.free){blurPage();showPay();}
+})();
+</script>
+
+</body>
+</html>
