@@ -23,7 +23,8 @@
       "path": "lucky-wheel/",
       "generated": "2026-10-15",
       "综合评价分": 92,
-      "score": 92
+      "score": 92,
+      "category": "娱乐"
     },
     {
       "slug": "img-kb-compress",
@@ -43,7 +44,8 @@
       "path": "img-kb-compress/",
       "generated": "2026-10-15",
       "综合评价分": 90,
-      "score": 90
+      "score": 90,
+      "category": "图片"
     },
     {
       "slug": "shift-schedule",
@@ -64,7 +66,8 @@
       "path": "shift-schedule/",
       "generated": "2026-10-15",
       "综合评价分": 88,
-      "score": 88
+      "score": 88,
+      "category": "办公"
     },
     {
       "slug": "grid-split",
@@ -87,7 +90,8 @@
       "path": "grid-split/",
       "generated": "2026-10-15",
       "综合评价分": 89,
-      "score": 89
+      "score": 89,
+      "category": "图片"
     },
     {
       "slug": "bmi-tracker",
@@ -111,7 +115,8 @@
       "path": "bmi-tracker/",
       "generated": "2026-10-15",
       "综合评价分": 87,
-      "score": 87
+      "score": 87,
+      "category": "生活"
     },
     {
       "slug": "pwd-gen",
@@ -133,7 +138,8 @@
       "path": "pwd-gen/",
       "generated": "2026-10-15",
       "综合评价分": 88,
-      "score": 88
+      "score": 88,
+      "category": "开发"
     },
     {
       "slug": "xiaohongshu-formatter",
@@ -147,7 +153,8 @@
       ],
       "path": "xiaohongshu-formatter/",
       "generated": "2026-10-15",
-      "综合评价分": null
+      "综合评价分": null,
+      "category": "文字"
     },
     {
       "slug": "weekly-report",
@@ -161,7 +168,8 @@
       ],
       "path": "weekly-report/",
       "generated": "2026-10-15",
-      "综合评价分": null
+      "综合评价分": null,
+      "category": "办公"
     },
     {
       "slug": "countdown",
@@ -175,7 +183,8 @@
       ],
       "path": "countdown/",
       "generated": "2026-10-15",
-      "综合评价分": null
+      "综合评价分": null,
+      "category": "生活"
     },
     {
       "slug": "unit-converter",
@@ -189,7 +198,8 @@
       ],
       "path": "unit-converter/",
       "generated": "2026-10-15",
-      "综合评价分": null
+      "综合评价分": null,
+      "category": "办公"
     },
     {
       "slug": "copywriter",
@@ -203,7 +213,206 @@
       ],
       "path": "copywriter/",
       "generated": "2026-10-15",
-      "综合评价分": null
+      "综合评价分": null,
+      "category": "文字"
+    },
+    {
+      "slug": "qr-generator",
+      "name": "二维码生成器",
+      "desc": "在线生成二维码，支持文本、网址、WiFi、电话，自定义颜色尺寸，免费无水印。",
+      "icon": "🔳",
+      "color": "#5b6bff",
+      "keywords": [
+        "二维码生成",
+        "二维码制作",
+        "在线二维码",
+        "wifi二维码",
+        "QR code"
+      ],
+      "path": "qr-generator/",
+      "generated": "2026-10-15",
+      "综合评价分": null,
+      "score": null,
+      "category": "开发"
+    },
+    {
+      "slug": "text-diff",
+      "name": "文本比对",
+      "desc": "在线文本差异对比，逐行高亮增删改，支持中文、代码比对，纯前端不上传。",
+      "icon": "🔍",
+      "color": "#10b981",
+      "keywords": [
+        "文本比对",
+        "文本对比",
+        "差异对比",
+        "diff工具",
+        "代码对比"
+      ],
+      "path": "text-diff/",
+      "generated": "2026-10-15",
+      "综合评价分": null,
+      "score": null,
+      "category": "开发"
+    },
+    {
+      "slug": "trad-simp",
+      "name": "繁简转换",
+      "desc": "繁体简体中文一键互转，1800+常用字映射，纯前端处理，适合两岸三地交流。",
+      "icon": "🀄",
+      "color": "#f59e0b",
+      "keywords": [
+        "繁简转换",
+        "繁体转简体",
+        "简体转繁体",
+        "简繁转换"
+      ],
+      "path": "trad-simp/",
+      "generated": "2026-10-15",
+      "综合评价分": null,
+      "score": null,
+      "category": "文字"
+    },
+    {
+      "slug": "word-count",
+      "name": "字数统计",
+      "desc": "实时统计中文字数、英文单词、字符数、段落数，公众号小红书论文作者好帮手。",
+      "icon": "🔢",
+      "color": "#8b5cf6",
+      "keywords": [
+        "字数统计",
+        "字符统计",
+        "字数计算",
+        "文章字数"
+      ],
+      "path": "word-count/",
+      "generated": "2026-10-15",
+      "综合评价分": null,
+      "score": null,
+      "category": "文字"
+    },
+    {
+      "slug": "color-picker",
+      "name": "颜色提取",
+      "desc": "上传图片提取主色调生成调色板，HEX/RGB互转，设计师必备，纯前端。",
+      "icon": "🎨",
+      "color": "#ec4899",
+      "keywords": [
+        "颜色提取",
+        "取色器",
+        "调色板",
+        "色值转换",
+        "color picker"
+      ],
+      "path": "color-picker/",
+      "generated": "2026-10-15",
+      "综合评价分": null,
+      "score": null,
+      "category": "图片"
+    },
+    {
+      "slug": "pomodoro",
+      "name": "番茄钟",
+      "desc": "番茄工作法计时器，25分钟专注+5分钟休息，自动循环，本地统计专注次数。",
+      "icon": "🍅",
+      "color": "#ef4444",
+      "keywords": [
+        "番茄钟",
+        "番茄工作法",
+        "专注计时",
+        "pomodoro"
+      ],
+      "path": "pomodoro/",
+      "generated": "2026-10-15",
+      "综合评价分": null,
+      "score": null,
+      "category": "生活"
+    },
+    {
+      "slug": "random-decider",
+      "name": "随机决定",
+      "desc": "随机数生成、抛硬币、抽签决定，解决选择困难症，纯前端。",
+      "icon": "🎲",
+      "color": "#6366f1",
+      "keywords": [
+        "随机数",
+        "抽签",
+        "抛硬币",
+        "随机决定",
+        "选择困难"
+      ],
+      "path": "random-decider/",
+      "generated": "2026-10-15",
+      "综合评价分": null,
+      "score": null,
+      "category": "娱乐"
+    },
+    {
+      "slug": "unix-timestamp",
+      "name": "时间戳转换",
+      "desc": "Unix时间戳与日期时间互转，支持秒/毫秒，实时显示当前时间戳。",
+      "icon": "⏱️",
+      "color": "#0ea5e9",
+      "keywords": [
+        "时间戳",
+        "unix时间戳",
+        "时间戳转换",
+        "timestamp"
+      ],
+      "path": "unix-timestamp/",
+      "generated": "2026-10-15",
+      "综合评价分": null,
+      "score": null,
+      "category": "开发"
+    },
+    {
+      "slug": "codec-toolkit",
+      "name": "编解码工具箱",
+      "desc": "Base64、URL编码解码、MD5、SHA-256哈希，本地处理不上传，开发者必备。",
+      "icon": "🔐",
+      "color": "#14b8a6",
+      "keywords": [
+        "base64",
+        "url编码",
+        "md5",
+        "sha256",
+        "编解码",
+        "加密"
+      ],
+      "path": "codec-toolkit/",
+      "generated": "2026-10-15",
+      "综合评价分": null,
+      "score": null,
+      "category": "开发"
+    }
+  ],
+  "categories": [
+    {
+      "key": "全部",
+      "icon": "🧩"
+    },
+    {
+      "key": "图片",
+      "icon": "🖼️"
+    },
+    {
+      "key": "文字",
+      "icon": "📝"
+    },
+    {
+      "key": "办公",
+      "icon": "💼"
+    },
+    {
+      "key": "生活",
+      "icon": "🏠"
+    },
+    {
+      "key": "开发",
+      "icon": "💻"
+    },
+    {
+      "key": "娱乐",
+      "icon": "🎮"
     }
   ]
 }
