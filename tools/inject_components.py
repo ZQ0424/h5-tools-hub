@@ -1,0 +1,305 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+向 /workspace/h5-apps/<slug>/index.html 注入统一组件 v2：
+返回首页 / 点赞 / 收藏 / 分享海报 / 评论区 / 付费墙(免费N次) / 浏览量
+- 幂等：已含当前版本标记则跳过；旧版本块(<!--WB_LIKE--> / <!--WB_WIDGET)先剥离再注入新版
+- deploy.sh 会在推送前自动运行本脚本，定时任务新生成的工具也会自动获得组件
+"""
+import os, glob, re
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+VER = 7
+MARK = f'<!--WB_WIDGET_V2 v={VER}-->'
+
+SNIPPET = r"""
+<script>
+(function(){
+  if(window.WB_WIDGET) return; window.WB_WIDGET=1;
+  var SB='https://jebnpaglwgozboyujxnx.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
+  var SITE='https://zq0424.github.io/h5-tools-hub/';
+  /* ★ 站长配置：把两张收款码图片的公网URL填到这里（可用 GitHub 仓库里的图片） */
+  var PAY={wechat:'',alipay:'',year:'¥19.9/年',life:'¥49.9/永久',free:10};
+  /* ---- 组件 i18n（跟随浏览器语言自动切换，14 语言） ---- */
+  var WB_I18N={
+    zh:{back:'返回工具箱首页',like:'点赞',fav:'收藏',share:'分享',comment:'评论',vip:'解锁会员',views:'浏览',
+        commentTitle:'对「X」说点什么',nick:'昵称（可留空）',body:'使用感受 / 建议 / 想要的新功能…',send:'发表',guest:'访客',loading:'加载中…',empty:'还没有评论，来抢沙发～',fail:'发表失败，请稍后再试',need:'写点内容再发表吧',
+        freeLeft:'免费额度剩 N 次',freeOver:'已达免费上限，点💎解锁',pro:'会员已解锁 · 感谢支持',
+        payTitle:'免费额度已用完 · 解锁后继续使用',payDesc:'你已免费使用 N 次。解锁后无限次使用本站全部工具（含每日新增）。',payYear:'年度会员',payLife:'永久买断 · 更划算',payWx:'微信支付',payAli:'支付宝',payPaid:'我已完成支付，激活会员',payHint:'支付后点击激活（试运行自动开通；如遇问题请截图联系站长）',payQr:'收款码配置中，请稍后重试或联系站长',paid:'解锁成功，感谢支持！',alreadyPro:'你已是会员，感谢支持！',copied:'链接已复制',save:'保存海报',copyLink:'复制链接',shareTip:'微信内长按海报即可保存 / 发送',unlock:'解锁全部工具',member:'已是会员'},
+    en:{back:'Back to toolbox',like:'Like',fav:'Fav',share:'Share',comment:'Comment',vip:'Unlock',views:'views',
+        commentTitle:'Comment on "X"',nick:'Nickname (optional)',body:'Feedback / suggestions / features…',send:'Send',guest:'Guest',loading:'Loading…',empty:'No comments yet',fail:'Failed, try again',need:'Write something first',
+        freeLeft:'N free uses left',freeOver:'Free limit reached, tap 💎',pro:'Member unlocked · Thanks!',
+        payTitle:'Free limit reached · Unlock to continue',payDesc:'You used N free times. Unlock for unlimited access to all tools.',payYear:'Annual',payLife:'Lifetime · best value',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'I have paid — activate',payHint:'Tap activate after paying',payQr:'Payment QR being configured',paid:'Unlocked, thanks!',alreadyPro:'Already a member!',copied:'Link copied',save:'Save poster',copyLink:'Copy link',shareTip:'Long-press to save',unlock:'Unlock all tools',member:'Member'},
+    ja:{back:'ツール箱へ戻る',like:'いいね',fav:'お気に入り',share:'シェア',comment:'コメント',vip:'解除',views:'閲覧',
+        commentTitle:'「X」にコメント',nick:'ニックネーム',body:'感想・提案…',send:'投稿',guest:'ゲスト',loading:'読み込み中…',empty:'まだコメントなし',fail:'失敗しました',need:'内容を入力してください',
+        freeLeft:'残り N 回',freeOver:'上限に達しました',pro:'会員解除済み',
+        payTitle:'無料枠終了・解除して続行',payDesc:'N 回使用しました。全ツール無制限に。',payYear:'年間',payLife:'永久',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'支払い済み—有効化',payHint:'支払い後に有効化',payQr:'QR設定中',paid:'解除成功！',alreadyPro:'会員です！',copied:'コピーしました',save:'保存',copyLink:'リンクコピー',shareTip:'長押しで保存',unlock:'全ツール解除',member:'会員'},
+    ko:{back:'도구함으로 돌아가기',like:'좋아요',fav:'즐겨찾기',share:'공유',comment:'댓글',vip:'해제',views:'조회',
+        commentTitle:'「X」에 댓글',nick:'닉네임',body:'의견/제안…',send:'게시',guest:'방문자',loading:'로딩 중…',empty:'댓글 없음',fail:'실패',need:'내용을 입력하세요',
+        freeLeft:'N회 남음',freeOver:'한도 도달',pro:'회원 해제됨',
+        payTitle:'무료 한도 도달·해제',payDesc:'N회 사용. 모든 도구 무제한.',payYear:'연간',payLife:'평생',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'결제 완료—활성화',payHint:'결제 후 활성화',payQr:'QR 설정 중',paid:'해제 성공!',alreadyPro:'이미 회원!',copied:'복사됨',save:'저장',copyLink:'링크 복사',shareTip:'길게 눌러 저장',unlock:'전체 해제',member:'회원'},
+    es:{back:'Volver',like:'Me gusta',fav:'Favorito',share:'Compartir',comment:'Comentar',vip:'Desbloquear',views:'vistas',
+        commentTitle:'Comenta en "X"',nick:'Apodo',body:'Comentario…',send:'Enviar',guest:'Invitado',loading:'Cargando…',empty:'Sin comentarios',fail:'Falló',need:'Escribe algo',
+        freeLeft:'Quedan N usos',freeOver:'Límite alcanzado',pro:'Miembro desbloqueado',
+        payTitle:'Límite alcanzado · Desbloquea',payDesc:'Usaste N veces. Acceso ilimitado.',payYear:'Anual',payLife:'Vitalicio',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Ya pagué — activar',payHint:'Toca activar tras pagar',payQr:'QR en configuración',paid:'¡Desbloqueado!',alreadyPro:'¡Ya eres miembro!',copied:'Copiado',save:'Guardar',copyLink:'Copiar link',shareTip:'Mantén pulsado',unlock:'Desbloquear todo',member:'Miembro'},
+    fr:{back:'Retour',like:'J\'aime',fav:'Favori',share:'Partager',comment:'Commenter',vip:'Débloquer',views:'vues',
+        commentTitle:'Commenter « X »',nick:'Pseudo',body:'Avis…',send:'Envoyer',guest:'Invité',loading:'Chargement…',empty:'Aucun commentaire',fail:'Échec',need:'Écrivez quelque chose',
+        freeLeft:'N usages restants',freeOver:'Limite atteinte',pro:'Membre débloqué',
+        payTitle:'Limite atteinte · Débloquer',payDesc:'N utilisations. Accès illimité.',payYear:'Annuel',payLife:'À vie',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'J\'ai payé — activer',payHint:'Activez après paiement',payQr:'QR en configuration',paid:'Débloqué !',alreadyPro:'Déjà membre !',copied:'Copié',save:'Enregistrer',copyLink:'Copier le lien',shareTip:'Maintenez enfoncé',unlock:'Tout débloquer',member:'Membre'},
+    de:{back:'Zurück',like:'Gefällt mir',fav:'Favorit',share:'Teilen',comment:'Kommentar',vip:'Freischalten',views:'Aufrufe',
+        commentTitle:'Kommentar zu "X"',nick:'Name',body:'Feedback…',send:'Senden',guest:'Gast',loading:'Lädt…',empty:'Keine Kommentare',fail:'Fehlgeschlagen',need:'Schreibe etwas',
+        freeLeft:'Noch N Nutzungen',freeOver:'Limit erreicht',pro:'Mitglied freigeschaltet',
+        payTitle:'Limit erreicht · Freischalten',payDesc:'N Nutzungen. Unbegrenzt.',payYear:'Jährlich',payLife:'Lebenslang',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Bezahlt — aktivieren',payHint:'Nach Zahlung aktivieren',payQr:'QR wird konfiguriert',paid:'Freigeschaltet!',alreadyPro:'Bereits Mitglied!',copied:'Kopiert',save:'Speichern',copyLink:'Link kopieren',shareTip:'Gedrückt halten',unlock:'Alles freischalten',member:'Mitglied'},
+    ru:{back:'Назад',like:'Нравится',fav:'Избранное',share:'Поделиться',comment:'Комментарий',vip:'Разблокировать',views:'просмотры',
+        commentTitle:'Комментарий к «X»',nick:'Имя',body:'Отзыв…',send:'Отправить',guest:'Гость',loading:'Загрузка…',empty:'Нет комментариев',fail:'Ошибка',need:'Напишите что-нибудь',
+        freeLeft:'Осталось N',freeOver:'Лимит исчерпан',pro:'Членство разблокировано',
+        payTitle:'Лимит исчерпан · Разблокировать',payDesc:'N использований. Безлимит.',payYear:'Год',payLife:'Навсегда',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Оплатил — активировать',payHint:'Активируйте после оплаты',payQr:'QR настраивается',paid:'Разблокировано!',alreadyPro:'Уже член!',copied:'Скопировано',save:'Сохранить',copyLink:'Копировать',shareTip:'Удерживайте',unlock:'Разблокировать всё',member:'Член'},
+    pt:{back:'Voltar',like:'Curtir',fav:'Favorito',share:'Compartilhar',comment:'Comentar',vip:'Desbloquear',views:'vistas',
+        commentTitle:'Comentar "X"',nick:'Apelido',body:'Feedback…',send:'Enviar',guest:'Visitante',loading:'Carregando…',empty:'Sem comentários',fail:'Falhou',need:'Escreva algo',
+        freeLeft:'Restam N usos',freeOver:'Limite atingido',pro:'Membro desbloqueado',
+        payTitle:'Limite atingido · Desbloquear',payDesc:'N usos. Ilimitado.',payYear:'Anual',payLife:'Vitalício',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Já paguei — ativar',payHint:'Ative após pagar',payQr:'QR em configuração',paid:'Desbloqueado!',alreadyPro:'Já é membro!',copied:'Copiado',save:'Salvar',copyLink:'Copiar link',shareTip:'Segure para salvar',unlock:'Desbloquear tudo',member:'Membro'},
+    ar:{back:'رجوع',like:'إعجاب',fav:'مفضلة',share:'مشاركة',comment:'تعليق',vip:'فتح',views:'مشاهدات',
+        commentTitle:'تعليق على "X"',nick:'الاسم',body:'تعليق…',send:'إرسال',guest:'زائر',loading:'جارٍ…',empty:'لا تعليقات',fail:'فشل',need:'اكتب شيئاً',
+        freeLeft:'متبقي N',freeOver:'انتهى الحد',pro:'تم فتح العضوية',
+        payTitle:'انتهى الحد · فتح',payDesc:'N استخدامات. غير محدود.',payYear:'سنوي',payLife:'مدى الحياة',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'دفعت — تفعيل',payHint:'فعّل بعد الدفع',payQr:'جارٍ الإعداد',paid:'تم الفتح!',alreadyPro:'عضو بالفعل!',copied:'تم النسخ',save:'حفظ',copyLink:'نسخ الرابط',shareTip:'اضغط مطولاً',unlock:'فتح الكل',member:'عضو'},
+    hi:{back:'वापस',like:'लाइक',fav:'पसंदीदा',share:'साझा',comment:'टिप्पणी',vip:'अनलॉक',views:'व्यू',
+        commentTitle:'"X" पर टिप्पणी',nick:'नाम',body:'प्रतिक्रिया…',send:'भेजें',guest:'अतिथि',loading:'लोड…',empty:'कोई टिप्पणी नहीं',fail:'विफल',need:'कुछ लिखें',
+        freeLeft:'N बचे',freeOver:'सीमा पूर्ण',pro:'सदस्यता अनलॉक',
+        payTitle:'सीमा पूर्ण · अनलॉक',payDesc:'N उपयोग। असीमित।',payYear:'वार्षिक',payLife:'आजीवन',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'भुगतान — सक्रिय',payHint:'भुगतान बाद सक्रिय',payQr:'QR सेट हो रहा',paid:'अनलॉक!',alreadyPro:'पहले से सदस्य!',copied:'कॉपी',save:'सहेजें',copyLink:'कॉपी',shareTip:'दबाए रखें',unlock:'सब अनलॉक',member:'सदस्य'},
+    vi:{back:'Quay lại',like:'Thích',fav:'Yêu thích',share:'Chia sẻ',comment:'Bình luận',vip:'Mở khóa',views:'lượt xem',
+        commentTitle:'Bình luận "X"',nick:'Tên',body:'Góp ý…',send:'Gửi',guest:'Khách',loading:'Đang tải…',empty:'Chưa có bình luận',fail:'Thất bại',need:'Viết gì đó',
+        freeLeft:'Còn N lần',freeOver:'Hết lượt',pro:'Đã mở khóa thành viên',
+        payTitle:'Hết lượt · Mở khóa',payDesc:'N lần. Không giới hạn.',payYear:'Năm',payLife:'Trọn đời',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Đã trả — kích hoạt',payHint:'Kích hoạt sau khi trả',payQr:'Đang cấu hình',paid:'Đã mở khóa!',alreadyPro:'Đã là thành viên!',copied:'Đã sao chép',save:'Lưu',copyLink:'Sao chép',shareTip:'Nhấn giữ',unlock:'Mở khóa tất cả',member:'Thành viên'},
+    th:{back:'กลับ',like:'ถูกใจ',fav:'รายการโปรด',share:'แชร์',comment:'คอมเมนต์',vip:'ปลดล็อก',views:'การดู',
+        commentTitle:'คอมเมนต์ "X"',nick:'ชื่อ',body:'ความคิดเห็น…',send:'ส่ง',guest:'ผู้เยี่ยมชม',loading:'โหลด…',empty:'ยังไม่มีคอมเมนต์',fail:'ล้มเหลว',need:'เขียนบางอย่าง',
+        freeLeft:'เหลือ N',freeOver:'ครบแล้ว',pro:'ปลดล็อกสมาชิกแล้ว',
+        payTitle:'ครบแล้ว · ปลดล็อก',payDesc:'N ครั้ง. ไม่จำกัด.',payYear:'รายปี',payLife:'ตลอดชีพ',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'จ่ายแล้ว — เปิดใช้',payHint:'กดเปิดใช้หลังจ่าย',payQr:'กำลังตั้งค่า',paid:'ปลดล็อก!',alreadyPro:'เป็นสมาชิกแล้ว!',copied:'คัดลอก',save:'บันทึก',copyLink:'คัดลอกลิงก์',shareTip:'กดค้าง',unlock:'ปลดล็อกทั้งหมด',member:'สมาชิก'},
+    id:{back:'Kembali',like:'Suka',fav:'Favorit',share:'Bagikan',comment:'Komentar',vip:'Buka',views:'dilihat',
+        commentTitle:'Komentar "X"',nick:'Nama',body:'Masukan…',send:'Kirim',guest:'Tamu',loading:'Memuat…',empty:'Belum ada komentar',fail:'Gagal',need:'Tulis sesuatu',
+        freeLeft:'Sisa N',freeOver:'Batas tercapai',pro:'Member terbuka',
+        payTitle:'Batas tercapai · Buka',payDesc:'N kali. Tak terbatas.',payYear:'Tahunan',payLife:'Seumur hidup',payWx:'WeChat Pay',payAli:'Alipay',payPaid:'Sudah bayar — aktifkan',payHint:'Aktifkan setelah bayar',payQr:'QR disiapkan',paid:'Terbuka!',alreadyPro:'Sudah member!',copied:'Disalin',save:'Simpan',copyLink:'Salin link',shareTip:'Tekan lama',unlock:'Buka semua',member:'Member'}
+  };
+  var WB_LANG=(function(){var s=['zh','en','ja','ko','es','fr','de','ru','pt','ar','hi','vi','th','id'];var n=(navigator.language||'zh').toLowerCase().slice(0,2);return s.indexOf(n)>=0?n:'en';})();
+  function T(k){return (WB_I18N[WB_LANG]&&WB_I18N[WB_LANG][k])||WB_I18N.en[k]||k;}
+  var parts=location.pathname.split('/').filter(Boolean);
+  var slug=parts[parts.length-1]||'home';
+  var toolName=document.title.split(/[·|]/)[0].trim()||'这个工具';
+  function ls(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
+  function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function liked(){return ls('h5hub_liked').indexOf(slug)>=0}
+  function favs(){return ls('h5hub_fav')}
+
+  /* ---------- 样式 ---------- */
+  var css=document.createElement('style');
+  css.textContent=
+  '#wbBar{position:fixed;right:12px;bottom:12px;z-index:99990;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(91,107,255,.25);border:1px solid #eef0f7;border-radius:999px;padding:6px 8px;font-family:-apple-system,PingFang SC,sans-serif;flex-wrap:wrap;max-width:calc(100vw - 24px)}'+
+  '#wbBar a,#wbBar button{border:none;background:none;font-size:15px;line-height:1;cursor:pointer;text-decoration:none;padding:4px 6px;border-radius:999px;color:#23263a}'+
+  '#wbBar .lk{background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff;font-weight:700;font-size:12.5px;padding:6px 11px}'+
+  '#wbBar .lk.on{outline:2px solid #5b6bff}#wbBar .fv.on{background:#fff3d6}#wbBar .vw{font-size:11.5px;color:#8a8fb0}#wbBar .vip{background:linear-gradient(135deg,#ffd86b,#ff9a3c);color:#fff;font-size:13px;padding:6px 9px}'+
+  '#wbFree{position:fixed;left:12px;bottom:12px;z-index:99990;background:rgba(255,255,255,.95);border:1px solid #eef0f7;border-radius:999px;padding:5px 11px;font-size:11.5px;color:#5b6bff;font-weight:700;box-shadow:0 4px 14px rgba(91,107,255,.15)}'+
+  '.wbMask{position:fixed;inset:0;background:rgba(20,22,40,.55);z-index:99999;display:none;align-items:flex-end;justify-content:center;font-family:-apple-system,PingFang SC,sans-serif}'+
+  '.wbMask.show{display:flex}.wbSheet{background:#fff;border-radius:18px 18px 0 0;max-width:420px;width:100%;max-height:82vh;overflow:auto;padding:16px 16px 26px}'+
+  '.wbSheet h3{margin:0 0 10px;font-size:15.5px}.wbX{float:right;border:none;background:none;font-size:17px;color:#8a8fb0;cursor:pointer}'+
+  '.wbCm{display:flex;gap:6px;margin:6px 0}.wbCm input,.wbCm textarea{flex:1;border:1px solid #eef0f7;border-radius:10px;padding:8px 10px;font-size:13px;outline:none}.wbCm textarea{height:56px;resize:none}'+
+  '.wbBtn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff}'+
+  '.wbBtn.g{background:#eef0ff;color:#5b6bff}'+
+  '.wbItem{background:#f7f8ff;border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px}.wbItem b{font-size:12px;color:#5b6bff}.wbItem span{display:block;color:#23263a;margin-top:2px;word-break:break-word}.wbItem i{font-size:10.5px;color:#b6bad0;font-style:normal}'+
+  '.wbPoster{width:100%;border-radius:10px}'+
+  '.wbPlans{display:flex;gap:8px;margin:10px 0}.wbPlan{flex:1;border:2px solid #eef0f7;border-radius:12px;padding:10px;text-align:center;cursor:pointer}.wbPlan.on{border-color:#5b6bff;background:#f6f7ff}.wbPlan b{display:block;font-size:17px;color:#ff6bb0}.wbPlan span{font-size:11px;color:#8a8fb0}'+
+  '.wbPayTabs{display:flex;gap:6px;margin-bottom:8px}.wbPayTabs button{flex:1;border:1px solid #eef0f7;background:#fff;border-radius:10px;padding:8px;font-size:13px;font-weight:700;cursor:pointer}.wbPayTabs button.on{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.wx{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.ali{border-color:#1677ff;color:#1677ff}'+
+  '.wbQrBox{text-align:center;min-height:180px;display:flex;align-items:center;justify-content:center;background:#f7f8ff;border-radius:12px;padding:10px}.wbQrBox img{width:160px;height:160px;border-radius:8px}'+
+  '.wbBlur>*:not(#wbBar):not(#wbFree):not(.wbMask){filter:blur(6px);pointer-events:none;user-select:none}';
+  document.head.appendChild(css);
+
+  /* ---------- 底部工具条 ---------- */
+  var bar=document.createElement('div');bar.id='wbBar';
+  bar.innerHTML='<a href="'+SITE+'" title="'+T('back')+'">🏠</a>'+
+    '<button class="lk'+(liked()?' on':'')+'" title="'+T('like')+'">👍 <span class="vc">0</span></button>'+
+    '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="'+T('fav')+'">⭐</button>'+
+    '<button class="sh" title="'+T('share')+'">↗</button>'+
+    '<button class="cm" title="'+T('comment')+'">💬<span class="cc"></span></button>'+
+    '<button class="vip" title="'+T('vip')+'">💎</button>'+
+    '<span class="vw">👁 <span class="vcw">0</span></span>';
+  document.body.appendChild(bar);
+
+  function mkMask(id,title,closable){
+    var m=document.createElement('div');m.className='wbMask';m.id=id;
+    m.innerHTML='<div class="wbSheet">'+(closable===false?'':'<button class="wbX">✕</button>')+'<h3>'+title+'</h3><div class="bd"></div></div>';
+    if(closable!==false){
+      m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
+      m.querySelector('.wbX').onclick=function(){m.classList.remove('show')};
+    }
+    document.body.appendChild(m);return m;}
+
+  /* ---------- 浏览量 + 点赞数 ---------- */
+  function loadCnt(){
+    fetch(SB+'/rest/v1/votes?select=total,views_total&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      if(rows[0]){bar.querySelector('.vc').textContent=rows[0].total||0;bar.querySelector('.vcw').textContent=rows[0].views_total||0;}
+    }).catch(function(){});
+  }
+  if(!sessionStorage.getItem('wb_view_'+slug)){
+    sessionStorage.setItem('wb_view_'+slug,'1');
+    fetch(SB+'/rest/v1/rpc/increment_view',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(loadCnt);
+  } else loadCnt();
+
+  bar.querySelector('.lk').onclick=function(){
+    if(liked())return; var a=ls('h5hub_liked');a.push(slug);save('h5hub_liked',a);
+    this.classList.add('on');this.querySelector('.vc').textContent=(parseInt(this.querySelector('.vc').textContent)||0)+1;
+    fetch(SB+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(function(){});
+  };
+  bar.querySelector('.fv').onclick=function(){
+    var a=favs(),i=a.indexOf(slug),adding=i<0;
+    if(adding){a.push(slug);this.classList.add('on');}else{a.splice(i,1);this.classList.remove('on');}
+    save('h5hub_fav',a);
+    var tok=null;try{var au=JSON.parse(localStorage.getItem('h5hub_auth')||'null');tok=au&&au.access_token||null;}catch(e){}
+    if(tok){
+      var H={apikey:ANON,Authorization:'Bearer '+tok,'Content-Type':'application/json'};
+      if(adding)fetch(SB+'/rest/v1/favorites',{method:'POST',headers:H,body:JSON.stringify({slug:slug})}).catch(function(){});
+      else fetch(SB+'/rest/v1/favorites?slug=eq.'+encodeURIComponent(slug),{method:'DELETE',headers:{apikey:ANON,Authorization:'Bearer '+tok}}).catch(function(){});
+    }
+  };
+
+  /* ---------- 分享海报（二维码 + 站点介绍，扫码直达） ---------- */
+  function qr(u){return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data='+encodeURIComponent(u);}
+  bar.querySelector('.sh').onclick=function(){
+    var m=mkMask('wbShare','↗ '+T('share')+' · '+toolName),bd=m.querySelector('.bd');
+    bd.innerHTML='<img class="wbPoster" alt="…"><div style="display:flex;gap:8px;margin-top:10px">'+
+      '<button class="wbBtn g" id="wbCp">'+T('copyLink')+'</button><button class="wbBtn" id="wbSv">'+T('save')+'</button></div>'+
+      '<div style="font-size:11px;color:#8a8fb0;margin-top:8px;text-align:center">'+T('shareTip')+'</div>';
+    var url=SITE+slug+'/';
+    var W=750,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#eef1ff');g.addColorStop(1,'#fdeef6');
+    x.fillStyle=g;x.fillRect(0,0,W,H);x.fillStyle='#fff';
+    function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();x.fill();}
+    rr(50,50,W-100,H-100,36);x.textAlign='center';
+    x.fillStyle='#23263a';x.font='bold 54px -apple-system,PingFang SC,sans-serif';
+    x.fillText(toolName.slice(0,14),W/2,230);
+    x.fillStyle='#5b6bff';x.font='bold 34px -apple-system,PingFang SC,sans-serif';
+    x.fillText('🧰 我的工具箱 · 每天自动上新的免费小工具',W/2,310);
+    x.fillStyle='#8a8fb0';x.font='28px -apple-system,PingFang SC,sans-serif';
+    x.fillText('免登录 · 即开即用 · 欢迎点赞评论',W/2,370);
+    var q=new Image();q.crossOrigin='anonymous';
+    q.onload=function(){x.fillStyle='#fff';rr(W/2-140,420,280,280,24);x.drawImage(q,W/2-120,440,240,240);
+      x.fillStyle='#5b6bff';x.font='bold 30px sans-serif';x.fillText('👍 觉得好用就点个赞',W/2,790);
+      x.fillStyle='#b6bad0';x.font='24px sans-serif';x.fillText('扫码直达 · Scan to open',W/2,860);
+      try{bd.querySelector('img').src=c.toDataURL('image/png');}
+      catch(e){bd.querySelector('img').outerHTML='<div style="text-align:center"><img src="'+q.src+'" style="width:180px"></div>';}
+    };
+    q.src=qr(url);
+    bd.querySelector('#wbCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(function(){alert(T('copied'))}).catch(function(){prompt('',url)});};
+    bd.querySelector('#wbSv').onclick=function(){var im=bd.querySelector('img');if(im.src&&im.src.indexOf('data:')===0){var a=document.createElement('a');a.href=im.src;a.download='share.png';a.click();}else alert(T('shareTip'));};
+    m.classList.add('show');
+  };
+
+  /* ---------- 评论区 ---------- */
+  var cmMask=null;
+  bar.querySelector('.cm').onclick=function(){
+    if(!cmMask){
+      cmMask=mkMask('wbCmMask','💬 '+T('commentTitle').replace('X',toolName));
+      cmMask.querySelector('.bd').innerHTML=
+        '<div id="wbCmList" style="max-height:44vh;overflow:auto"><div style="font-size:12px;color:#8a8fb0">'+T('loading')+'</div></div>'+
+        '<div class="wbCm"><input id="wbCmName" placeholder="'+T('nick')+'" maxlength="20"></div>'+
+        '<div class="wbCm"><textarea id="wbCmBody" placeholder="'+T('body')+'" maxlength="500"></textarea></div>'+
+        '<button class="wbBtn" id="wbCmSend" style="width:100%">'+T('send')+'</button>';
+      cmMask.querySelector('#wbCmSend').onclick=function(){
+        var b=cmMask.querySelector('#wbCmBody').value.trim();
+        if(!b)return alert(T('need'));
+        var n=cmMask.querySelector('#wbCmName').value.trim()||T('guest');
+        this.disabled=true;
+        fetch(SB+'/rest/v1/comments',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json',Prefer:'return=minimal'},
+          body:JSON.stringify({slug:slug,name:n,body:b})})
+        .then(function(r){if(!r.ok)throw 0;cmMask.querySelector('#wbCmBody').value='';loadCm();})
+        .catch(function(){alert(T('fail'))}).finally(function(){this.disabled=false}.bind(this));
+      };
+    }
+    cmMask.classList.add('show');loadCm();
+  };
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function loadCm(){
+    if(!cmMask)return;
+    fetch(SB+'/rest/v1/comments?select=name,body,created_at&slug=eq.'+encodeURIComponent(slug)+'&order=created_at.desc&limit=50',{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      var box=cmMask.querySelector('#wbCmList');
+      box.innerHTML=rows.length?rows.map(function(c){
+        var d=new Date(c.created_at),ds=(d.getMonth()+1)+'/'+d.getDate();
+        return '<div class="wbItem"><b>'+esc(c.name)+'</b> <i>'+ds+'</i><span>'+esc(c.body)+'</span></div>';
+      }).join(''):'<div style="font-size:12px;color:#8a8fb0;padding:10px 0">'+T('empty')+'</div>';
+      var n=rows.length; if(n)bar.querySelector('.cc').textContent=' '+n;
+    }).catch(function(){});
+  }
+  loadCm();
+
+  /* ---------- 付费墙：免费 ' + PAY.free + ' 次后硬封锁（不可用第 ' + (PAY.free+1) + ' 次）---------- */
+  var use=JSON.parse(localStorage.getItem('h5hub_use')||'{}');
+  if(!sessionStorage.getItem('wb_use_'+slug)){use[slug]=(use[slug]||0)+1;localStorage.setItem('h5hub_use',JSON.stringify(use));}
+  var used=use[slug]||0, isPro=localStorage.getItem('h5hub_pro')==='1';
+  var free=document.createElement('div');free.id='wbFree';document.body.appendChild(free);
+  function paintFree(){free.textContent=isPro?('✨ '+T('pro')):(used>PAY.free?('🔒 '+T('freeOver')):('🆓 '+T('freeLeft').replace('N',Math.max(0,PAY.free-used+1))));}
+  paintFree();
+  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ '+T('alreadyPro'));return;} showPay(); };
+  function showPay(){
+    if(isPro)return;
+    var m=mkMask('wbPay','🔒 '+T('payTitle'));
+    var plan_wx=true;
+    function paint(){
+      var plan=localStorage.getItem('wb_plan')||'year';
+      m.querySelector('.bd').innerHTML=
+        '<div style="font-size:12.5px;color:#8a8fb0">'+T('payDesc').replace('N',PAY.free)+'</div>'+
+        '<div class="wbPlans"><div class="wbPlan'+(plan==='year'?' on':'')+'" data-p="year"><b>'+PAY.year+'</b><span>'+T('payYear')+'</span></div>'+
+        '<div class="wbPlan'+(plan==='life'?' on':'')+'" data-p="life"><b>'+PAY.life+'</b><span>'+T('payLife')+'</span></div></div>'+
+        '<div class="wbPayTabs"><button class="wx'+(plan_wx?' on':'')+'" data-w="wx">'+T('payWx')+'</button><button class="ali'+(plan_wx?'':' on')+'" data-w="ali">'+T('payAli')+'</button></div>'+
+        '<div class="wbQrBox" id="wbQr"></div>'+
+        '<button class="wbBtn" id="wbPaid" style="width:100%;margin-top:10px">✅ '+T('payPaid')+'</button>'+
+        '<div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">'+T('payHint')+'<br>'+T('unlock')+' · 💎</div>';
+      m.querySelectorAll('.wbPlan').forEach(function(p){p.onclick=function(){localStorage.setItem('wb_plan',p.dataset.p);paint();}});
+      m.querySelectorAll('.wbPayTabs button').forEach(function(b){b.onclick=function(){plan_wx=b.dataset.w==='wx';paint();};});
+      var qrEl=m.querySelector('#wbQr'),src=plan_wx?PAY.wechat:PAY.alipay;
+      qrEl.innerHTML=src?'<div><img src="'+src+'"><div style="font-size:11px;color:#8a8fb0;margin-top:4px">'+(plan==='year'?PAY.year:PAY.life)+'</div></div>'
+        :'<div style="font-size:12px;color:#8a8fb0">'+T('payQr')+'</div>';
+      m.querySelector('#wbPaid').onclick=function(){localStorage.setItem('h5hub_pro','1');isPro=true;unblur();m.classList.remove('show');paintFree();alert('🎉 '+T('paid'));};
+    };
+    paint();m.classList.add('show');
+  }
+  function blurPage(){document.body.classList.add('wbBlur');}
+  function unblur(){document.body.classList.remove('wbBlur');}
+  if(!isPro&&used>PAY.free){blurPage();showPay();}
+})();
+</script>
+"""
+
+# 修正：SNIPPET 是 raw 字符串，上面注释里的 '+PAY.free+' 仅为说明，无需处理
+
+
+def strip_old(c):
+    """剥离旧版本注入块（WB_LIKE 或任意 WB_WIDGET 块）"""
+    while True:
+        m = re.search(r'<!--WB_LIKE-->|<!--WB_WIDGET[^>]*-->', c)
+        if not m:
+            return c
+        start = m.start()
+        # 找到标记后第一个 </script>（块结构固定为 标记+<script>...</script>）
+        j = c.find('</script>', start)
+        if j == -1:
+            return c[:start]
+        c = c[:start] + c[j + len('</script>'):]
+
+
+for f in sorted(glob.glob(os.path.join(ROOT, '*', 'index.html'))):
+    with open(f, encoding='utf-8') as fh:
+        c = fh.read()
+    if MARK in c:
+        print('skip (current v%d): %s' % (VER, f))
+        continue
+    c2 = strip_old(c)
+    if c2 != c:
+        print('removed old block:', f)
+    if '</body>' in c2:
+        c2 = c2.replace('</body>', MARK + '\n' + SNIPPET + '\n</body>', 1)
+    else:
+        c2 = c2 + MARK + '\n' + SNIPPET
+    with open(f, 'w', encoding='utf-8') as fh:
+        fh.write(c2)
+    print('injected v%d: %s' % (VER, f))
+print('done')
