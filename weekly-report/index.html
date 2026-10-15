@@ -148,7 +148,9 @@ renderHist();
 
 
 
-<!--WB_WIDGET_V2 v=5-->
+
+
+<!--WB_WIDGET_V2 v=6-->
 
 <script>
 (function(){
@@ -226,9 +228,15 @@ renderHist();
     fetch(SB+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(function(){});
   };
   bar.querySelector('.fv').onclick=function(){
-    var a=favs(),i=a.indexOf(slug);
-    if(i>=0){a.splice(i,1);this.classList.remove('on');}else{a.push(slug);this.classList.add('on');}
+    var a=favs(),i=a.indexOf(slug),adding=i<0;
+    if(adding){a.push(slug);this.classList.add('on');}else{a.splice(i,1);this.classList.remove('on');}
     save('h5hub_fav',a);
+    var tok=null;try{var au=JSON.parse(localStorage.getItem('h5hub_auth')||'null');tok=au&&au.access_token||null;}catch(e){}
+    if(tok){
+      var H={apikey:ANON,Authorization:'Bearer '+tok,'Content-Type':'application/json'};
+      if(adding)fetch(SB+'/rest/v1/favorites',{method:'POST',headers:H,body:JSON.stringify({slug:slug})}).catch(function(){});
+      else fetch(SB+'/rest/v1/favorites?slug=eq.'+encodeURIComponent(slug),{method:'DELETE',headers:{apikey:ANON,Authorization:'Bearer '+tok}}).catch(function(){});
+    }
   };
 
   /* ---------- 分享海报（二维码 + 站点介绍，扫码直达） ---------- */
