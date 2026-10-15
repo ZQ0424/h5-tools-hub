@@ -1,0 +1,1 @@
+{"name":"九宫格切图","short_name":"GridSplit","description":"上传图片自动切成九宫格/四宫格/六宫格，一键下载","start_url":"./","display":"standalone","background_color":"#f5f3ff","theme_color":"#8b5cf6","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]}
