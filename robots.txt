@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://zq0424.github.io/h5-tools-hub/sitemap.xml
