@@ -112,6 +112,9 @@ footer{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;line-
       <option value="ja">日本語</option><option value="ko">한국어</option>
       <option value="es">Español</option><option value="fr">Français</option>
       <option value="de">Deutsch</option><option value="ru">Русский</option>
+      <option value="pt">Português</option><option value="ar">العربية</option>
+      <option value="hi">हिन्दी</option><option value="vi">Tiếng Việt</option>
+      <option value="th">ไทย</option><option value="id">Bahasa Indonesia</option>
     </select></div>
     </div>
   </header>
@@ -245,12 +248,28 @@ const I18N={
    empty:'Нет подходящих инструментов',nofav:'Пока нет избранного. Нажмите ⭐ на карточке, чтобы закрепить',loading:'Загрузка инструментов…',
    footer:'Только фронтенд · Без входа · Лайки/просмотры/комментарии через Supabase',
    share_title:'↗ Поделиться',copy_link:'Копировать ссылку',save_poster:'Сохранить плакат',share_tip:'Удерживайте плакат, чтобы сохранить/отправить',copied:'Ссылка скопирована!',
-   intro:'Бесплатный набор H5-инструментов, новые каждый день — без входа'}
+   intro:'Бесплатный набор H5-инструментов, новые каждый день — без входа'},
+ pt:{sub:'Novas mini-ferramentas H5 grátis todos os dias às 06:00',title:'Minha Caixa de Ferramentas',tools:'ferramentas',likes:'curtidas',updated:'Atualizado:',search:'🔍 Buscar ferramentas',tab_new:'🆕 Novos',tab_fav:'⭐ Favoritos',tab_week:'🔥 Semana',tab_month:'📅 Mês',tab_total:'🏆 Total',hot:{week:'🔥 Top 5 da semana',month:'📅 Top 5 do mês',total:'🏆 Top 5 geral'},empty:'Nenhuma ferramenta',nofav:'Sem favoritos ainda',loading:'Carregando…',footer:'Caixa front-end · Sem login · Via Supabase',share_title:'↗ Compartilhar',copy_link:'Copiar link',save_poster:'Salvar pôster',share_tip:'Segure para salvar',copied:'Link copiado!',intro:'Caixa grátis de mini-ferramentas H5',vip_btn:'💎 Desbloquear',pay_title:'💎 Desbloquear tudo',pay_year:'¥19.9/ano',pay_life:'¥49.9/vitalício',pay_year_lbl:'Anual',pay_life_lbl:'Vitalício',pay_wx:'WeChat Pay',pay_ali:'Alipay',pay_paid:'✅ Já paguei — ativar',pay_hint:'Toque em ativar após pagar',pay_qr:'QR em configuração'},
+ ar:{sub:'أدوات H5 مجانية جديدة يومياً الساعة 06:00',title:'صندوق أدواتي',tools:'أدوات',likes:'إعجابات',updated:'تم التحديث:',search:'🔍 ابحث عن الأدوات',tab_new:'🆕 جديد',tab_fav:'⭐ المفضلة',tab_week:'🔥 أسبوعي',tab_month:'📅 شهري',tab_total:'🏆 الكل',hot:{week:'🔥 أفضل 5 أسبوعياً',month:'📅 أفضل 5 شهرياً',total:'🏆 أفضل 5 على الإطلاق'},empty:'لا توجد أدوات',nofav:'لا مفضلات بعد',loading:'جارٍ التحميل…',footer:'مجموعة أدوات · بدون تسجيل',share_title:'↗ مشاركة',copy_link:'نسخ الرابط',save_poster:'حفظ الملصق',share_tip:'اضغط مطولاً للحفظ',copied:'تم النسخ!',intro:'مجموعة أدوات H5 مجانية',vip_btn:'💎 فتح',pay_title:'💎 فتح الكل',pay_year:'¥19.9/سنة',pay_life:'¥49.9/مدى الحياة',pay_year_lbl:'سنوي',pay_life_lbl:'مدى الحياة',pay_wx:'WeChat Pay',pay_ali:'Alipay',pay_paid:'✅ دفعت — تفعيل',pay_hint:'اضغط تفعيل بعد الدفع',pay_qr:'جاري الإعداد'},
+ hi:{sub:'हर दिन सुबह 06:00 बजे नए मुफ्त H5 टूल',title:'मेरा टूलबॉक्स',tools:'टूल',likes:'लाइक',updated:'अपडेट:',search:'🔍 टूल खोजें',tab_new:'🆕 नया',tab_fav:'⭐ पसंदीदा',tab_week:'🔥 साप्ताहिक',tab_month:'📅 मासिक',tab_total:'🏆 कुल',hot:{week:'🔥 सप्ताह के टॉप 5',month:'📅 महीने के टॉप 5',total:'🏆 कुल टॉप 5'},empty:'कोई टूल नहीं',nofav:'कोई पसंदीदा नहीं',loading:'लोड हो रहा…',footer:'फ्रंट-एंड टूलबॉक्स · लॉगिन नहीं',share_title:'↗ साझा करें',copy_link:'लिंक कॉपी',save_poster:'पोस्टर सहेजें',share_tip:'दबाए रखें',copied:'कॉपी!',intro:'रोज़ नए मुफ्त H5 टूल',vip_btn:'💎 अनलॉक',pay_title:'💎 सब अनलॉक',pay_year:'¥19.9/वर्ष',pay_life:'¥49.9/आजीवन',pay_year_lbl:'वार्षिक',pay_life_lbl:'आजीवन',pay_wx:'WeChat Pay',pay_ali:'Alipay',pay_paid:'✅ भुगतान — सक्रिय',pay_hint:'भुगतान के बाद सक्रिय',pay_qr:'QR सेट हो रहा'},
+ vi:{sub:'Công cụ H5 miễn phí mới mỗi ngày lúc 06:00',title:'Hộp Công Cụ',tools:'công cụ',likes:'thích',updated:'Cập nhật:',search:'🔍 Tìm công cụ',tab_new:'🆕 Mới',tab_fav:'⭐ Yêu thích',tab_week:'🔥 Tuần',tab_month:'📅 Tháng',tab_total:'🏆 Tổng',hot:{week:'🔥 Top 5 tuần',month:'📅 Top 5 tháng',total:'🏆 Top 5 mọi thời'},empty:'Không có công cụ',nofav:'Chưa có yêu thích',loading:'Đang tải…',footer:'Hộp công cụ front-end · Không đăng nhập',share_title:'↗ Chia sẻ',copy_link:'Sao chép link',save_poster:'Lưu poster',share_tip:'Nhấn giữ để lưu',copied:'Đã sao chép!',intro:'Bộ công cụ H5 miễn phí',vip_btn:'💎 Mở khóa',pay_title:'💎 Mở khóa tất cả',pay_year:'¥19.9/năm',pay_life:'¥49.9/trọn đời',pay_year_lbl:'Năm',pay_life_lbl:'Trọn đời',pay_wx:'WeChat Pay',pay_ali:'Alipay',pay_paid:'✅ Đã thanh toán — kích hoạt',pay_hint:'Nhấn kích hoạt sau',pay_qr:'Đang cấu hình'},
+ th:{sub:'เครื่องมือ H5 ฟรีใหม่ทุกวันเวลา 06:00',title:'กล่องเครื่องมือ',tools:'เครื่องมือ',likes:'ไลก์',updated:'อัปเดต:',search:'🔍 ค้นหาเครื่องมือ',tab_new:'🆕 ใหม่',tab_fav:'⭐ รายการโปรด',tab_week:'🔥 สัปดาห์',tab_month:'📅 เดือน',tab_total:'🏆 ทั้งหมด',hot:{week:'🔥 ยอดนิยม 5',month:'📅 ยอดนิยม 5',total:'🏆 ยอดนิยม 5'},empty:'ไม่พบเครื่องมือ',nofav:'ยังไม่มีรายการโปรด',loading:'กำลังโหลด…',footer:'กล่องเครื่องมือ · ไม่ต้องล็อกอิน',share_title:'↗ แชร์',copy_link:'คัดลอกลิงก์',save_poster:'บันทึกโปสเตอร์',share_tip:'กดค้างเพื่อบันทึก',copied:'คัดลอกแล้ว!',intro:'ชุดเครื่องมือ H5 ฟรี',vip_btn:'💎 ปลดล็อก',pay_title:'💎 ปลดล็อกทั้งหมด',pay_year:'¥19.9/ปี',pay_life:'¥49.9/ตลอดชีพ',pay_year_lbl:'รายปี',pay_life_lbl:'ตลอดชีพ',pay_wx:'WeChat Pay',pay_ali:'Alipay',pay_paid:'✅ ชำระแล้ว — เปิดใช้',pay_hint:'กดเปิดใช้หลังชำระ',pay_qr:'กำลังตั้งค่า'},
+ id:{sub:'Alat H5 gratis baru setiap hari jam 06:00',title:'Kotak Alat Saya',tools:'alat',likes:'suka',updated:'Diperbarui:',search:'🔍 Cari alat',tab_new:'🆕 Baru',tab_fav:'⭐ Favorit',tab_week:'🔥 Mingguan',tab_month:'📅 Bulanan',tab_total:'🏆 Total',hot:{week:'🔥 Top 5 minggu',month:'📅 Top 5 bulan',total:'🏆 Top 5 sepanjang masa'},empty:'Tidak ada alat',nofav:'Belum ada favorit',loading:'Memuat…',footer:'Kotak alat front-end · Tanpa login',share_title:'↗ Bagikan',copy_link:'Salin link',save_poster:'Simpan poster',share_tip:'Tekan lama untuk simpan',copied:'Link disalin!',intro:'Kotak alat H5 gratis',vip_btn:'💎 Buka',pay_title:'💎 Buka semua',pay_year:'¥19.9/tahun',pay_life:'¥49.9/seumur hidup',pay_year_lbl:'Tahunan',pay_life_lbl:'Seumur hidup',pay_wx:'WeChat Pay',pay_ali:'Alipay',pay_paid:'✅ Sudah bayar — aktifkan',pay_hint:'Tekan aktifkan',pay_qr:'QR disiapkan'}
 };
-let LANG=localStorage.getItem(LANGKEY)||'zh';
+let LANG=localStorage.getItem(LANGKEY);
+if(!LANG){
+  // 自动检测：优先浏览器语言，其次按需 IP 检测
+  const nav=(navigator.language||navigator.userLanguage||'zh').toLowerCase();
+  const m=nav.slice(0,2);
+  const supported=['zh','en','ja','ko','es','fr','de','ru','pt','ar','hi','vi','th','id'];
+  LANG=supported.includes(m)?m:'en';
+  // 浏览器语言只有大类时细化：zh 默认中文
+  if(LANG==='zh'&&!nav.startsWith('zh'))LANG='en';
+  localStorage.setItem(LANGKEY,LANG);
+}
 function T(k){return (I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||I18N.zh[k]||k;}
 function applyLang(){
-  const map={zh:'zh-CN',en:'en',ja:'ja',ko:'ko',es:'es',fr:'fr',de:'de',ru:'ru'};
+  const map={zh:'zh-CN',en:'en',ja:'ja',ko:'ko',es:'es',fr:'fr',de:'de',ru:'ru',pt:'pt',ar:'ar',hi:'hi',vi:'vi',th:'th',id:'id'};
   document.documentElement.lang=map[LANG]||'zh-CN';
   document.getElementById('t_title').textContent=T('title');
   document.getElementById('t_sub').textContent=T('sub');
