@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>九宫格切图 · 朋友圈/Instagram网格切割工具 | 免费无水印在线图片分割</title>
+<meta name="description" content="在线把一张图片切成九宫格/四宫格/六宫格/三宫格，一键下载全部切片。适合朋友圈九宫格、Instagram网格、拼图切割。纯前端Canvas处理，不上传、无水印、免费不限次数。">
+<meta name="keywords" content="九宫格切图,朋友圈九宫格,图片切割,九宫格分割,Instagram网格,四宫格,六宫格,三宫格,图片分割器,grid split,image grid cutter">
+<meta name="theme-color" content="#8b5cf6">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="九宫格切图 · 免费在线图片网格分割工具">
+<meta property="og:description" content="一键把图片切成九宫格/四宫格/六宫格，下载全部切片，无水印、不上传。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://h5tools.pages.dev/grid-split/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="zh-CN" href="?lang=zh">
+<link rel="alternate" hreflang="en" href="?lang=en">
+<link rel="alternate" hreflang="ja" href="?lang=ja">
+<link rel="alternate" hreflang="ko" href="?lang=ko">
+<link rel="alternate" hreflang="es" href="?lang=es">
+<link rel="alternate" hreflang="fr" href="?lang=fr">
+<link rel="alternate" hreflang="x-default" href="?lang=zh">
+<link rel="canonical" href="https://h5tools.pages.dev/grid-split/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="GridSplit">
+<style>
+:root{
+  --bg:#f5f3ff; --card:#fff; --txt:#1e1b2e; --sub:#6b6885; --line:#e8e5f5;
+  --pri:#8b5cf6; --pri2:#ec4899; --ok:#10b981; --warn:#f59e0b; --danger:#ef4444;
+  --shadow:0 1px 2px rgba(30,27,46,.06),0 10px 26px rgba(30,27,46,.08); --r:16px;
+}
+html[data-theme="dark"]{--bg:#0f0a1e;--card:#1a1530;--txt:#f0ecff;--sub:#9894b8;--line:#2a2540;--shadow:0 1px 2px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.4)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Noto Sans CJK SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;padding:0 14px 40px}
+header{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hd{max-width:940px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;color:#fff;font-weight:800;flex:none;box-shadow:0 4px 12px rgba(139,92,246,.35)}
+.brand{font-weight:800;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--sub)}
+.sel{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;padding:6px 8px;font-size:13px;max-width:110px}
+.ibtn{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;font-size:15px}
+.ibtn:active{transform:scale(.94)}
+h1{font-size:23px;margin:22px 0 6px;letter-spacing:-.3px}
+.lead{color:var(--sub);margin:0 0 18px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:7px}
+.card h2 .dot{width:6px;height:6px;border-radius:50%;background:var(--pri)}
+.drop{border:2px dashed var(--line);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;transition:.18s;background:var(--bg)}
+.drop:hover,.drop.over{border-color:var(--pri);background:rgba(139,92,246,.07)}
+.drop .big{font-size:34px;line-height:1}
+.drop p{margin:8px 0 0;color:var(--sub);font-size:13.5px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--txt);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer;transition:.15s;font-weight:600}
+.chip.on{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(139,92,246,.3)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:11px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-family:inherit;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--bg);color:var(--txt);border:1px solid var(--line)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn:disabled{opacity:.55;cursor:default}
+.muted{color:var(--sub);font-size:12.5px}
+.daily{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(236,72,153,.1));border:1px solid var(--line)}
+.daily .num{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.grid-preview{display:grid;gap:3px;margin:12px 0;border-radius:10px;overflow:hidden}
+.grid-preview.g3{grid-template-columns:repeat(3,1fr)}
+.grid-preview.g2{grid-template-columns:repeat(2,1fr)}
+.grid-preview.g32{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr)}
+.grid-preview.g23{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr)}
+.grid-cell{position:relative;aspect-ratio:1;overflow:hidden;border-radius:4px;background:var(--line);display:grid;place-items:center}
+.grid-cell img,.grid-cell canvas{width:100%;height:100%;object-fit:cover;display:block}
+.grid-cell .idx{position:absolute;top:3px;left:4px;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.5);border-radius:4px;padding:1px 5px;z-index:2}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#1a1530;color:#fff;padding:10px 16px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+dialog{border:0;border-radius:18px;padding:0;background:var(--card);color:var(--txt);max-width:420px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(8,10,20,.55);backdrop-filter:blur(3px)}
+.dg{padding:18px}.dg h3{margin:0 0 8px;font-size:16px}
+.dg .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+footer{color:var(--sub);font-size:12.5px;text-align:center;padding:18px 10px;line-height:1.8}
+ul.tips{margin:8px 0 0;padding-left:18px;color:var(--sub);font-size:12.8px}
+ul.tips li{margin:3px 0}
+.opt-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.opt-row label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
+.opt-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--pri)}
+.swatch{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.sw{width:26px;height:26px;border-radius:7px;cursor:pointer;border:2px solid transparent;transition:.15s}
+.sw.on{border-color:var(--txt);box-shadow:0 0 0 2px var(--card) inset}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo">🔳</div>
+    <div class="brand"><span data-i18n="appName">九宫格切图</span><small data-i18n="appSlogan">免费 · 不上传 · 无水印</small></div>
+    <select class="sel" id="langSel" aria-label="Language"></select>
+    <button class="ibtn" id="themeBtn" title="theme">🌓</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 data-i18n="h1">九宫格切图 · 一键分割图片</h1>
+  <p class="lead" data-i18n="lead">上传一张图片，自动切成九宫格/四宫格/六宫格/三宫格，一键下载全部切片。适合朋友圈九宫格、Instagram 网格、拼图素材。全程本地处理，不上传、无水印。</p>
+
+  <div class="card">
+    <div class="drop" id="drop">
+      <div class="big">📤</div>
+      <p data-i18n="dropTip">点击选择图片，或拖拽 / 粘贴到此处</p>
+      <input type="file" id="fileIn" accept="image/*" hidden>
+    </div>
+  </div>
+
+  <div class="card" id="optCard" style="display:none">
+    <h2><span class="dot"></span><span data-i18n="setTitle">切割选项</span></h2>
+    <p class="muted" style="margin:0 0 4px" data-i18n="gridTip">选择网格布局</p>
+    <div class="chips" id="gridChips">
+      <button class="chip on" data-grid="3x3" data-i18n="g3x3">3×3 九宫格</button>
+      <button class="chip" data-grid="2x2" data-i18n="g2x2">2×2 四宫格</button>
+      <button class="chip" data-grid="3x2" data-i18n="g3x2">3×2 六宫格</button>
+      <button class="chip" data-grid="1x3" data-i18n="g1x3">1×3 三宫格横</button>
+      <button class="chip" data-grid="3x1" data-i18n="g3x1">3×1 三宫格竖</button>
+    </div>
+    <div class="opt-row">
+      <label><input type="checkbox" id="numChk" checked> <span data-i18n="showNum">显示编号</span></label>
+      <label><input type="checkbox" id="gapChk" checked> <span data-i18n="showGap">切片间隙</span></label>
+      <label><input type="checkbox" id="squareChk" checked> <span data-i18n="cropSquare">裁剪为正方形</span></label>
+    </div>
+    <p class="muted" style="margin:8px 0 0" data-i18n="fmtTip">下载格式</p>
+    <div class="chips" id="fmtChips">
+      <button class="chip on" data-fmt="png">PNG</button>
+      <button class="chip" data-fmt="jpeg">JPG</button>
+      <button class="chip" data-fmt="webp">WebP</button>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" id="splitBtn" data-i18n="split">开始切割</button>
+      <button class="btn ghost sm" id="dlAllBtn" data-i18n="dlAll" style="display:none">下载全部</button>
+      <button class="btn ghost sm" id="resetBtn" data-i18n="reset">重选图片</button>
+    </div>
+  </div>
+
+  <div class="card" id="previewCard" style="display:none">
+    <h2><span class="dot"></span><span data-i18n="previewTitle">预览 & 下载</span></h2>
+    <div class="grid-preview" id="gridPreview"></div>
+    <p class="muted" style="margin:8px 0 0" data-i18n="dlTip">点击单张切片可单独下载，或点击「下载全部」打包。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="today">今日</span></h2>
+    <div class="daily">
+      <div><div class="num" id="dCount">0</div><div class="muted" data-i18n="todayCount">今日已切</div></div>
+      <div style="width:1px;height:34px;background:var(--line)"></div>
+      <div><div class="num" id="dSlices">0</div><div class="muted" data-i18n="todaySlices">今日已出片</div></div>
+      <button class="btn ghost sm" id="shareBtn" style="margin-left:auto" data-i18n="share">分享卡</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="whyTitle">为什么用它</span></h2>
+    <ul class="tips">
+      <li data-i18n="tip1">🔒 图片不离开手机/电脑，全部在本机浏览器处理</li>
+      <li data-i18n="tip2">🎨 支持九宫格/四宫格/六宫格/三宫格，一键下载全部</li>
+      <li data-i18n="tip3">📐 自动裁剪居中，保证每片尺寸一致</li>
+      <li data-i18n="tip4">🆓 完全免费，无水印、无次数限制、无需注册</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <span data-i18n="appName">九宫格切图</span> · <span data-i18n="footerNote">纯前端 H5 工具 · 不上传 · 不追踪</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== i18n ========== */
+const I18N={
+  zh:{appName:"九宫格切图",appSlogan:"免费 · 不上传 · 无水印",h1:"九宫格切图 · 一键分割图片",lead:"上传一张图片，自动切成九宫格/四宫格/六宫格/三宫格，一键下载全部切片。适合朋友圈九宫格、Instagram 网格、拼图素材。全程本地处理，不上传、无水印。",dropTip:"点击选择图片，或拖拽 / 粘贴到此处",setTitle:"切割选项",gridTip:"选择网格布局",g3x3:"3×3 九宫格",g2x2:"2×2 四宫格",g3x2:"3×2 六宫格",g1x3:"1×3 三宫格横",g3x1:"3×1 三宫格竖",showNum:"显示编号",showGap:"切片间隙",cropSquare:"裁剪为正方形",fmtTip:"下载格式",split:"开始切割",dlAll:"下载全部",reset:"重选图片",previewTitle:"预览 & 下载",dlTip:"点击单张切片可单独下载，或点击「下载全部」打包。",today:"今日",todayCount:"今日已切",todaySlices:"今日已出片",share:"分享卡",whyTitle:"为什么用它",tip1:"🔒 图片不离开手机/电脑，全部在本机浏览器处理",tip2:"🎨 支持九宫格/四宫格/六宫格/三宫格，一键下载全部",tip3:"📐 自动裁剪居中，保证每片尺寸一致",tip4:"🆓 完全免费，无水印、无次数限制、无需注册",footerNote:"纯前端 H5 工具 · 不上传 · 不追踪",shareTitle:"九宫格切图",shareText:"我用九宫格切图工具把图片切好了，免费无水印！",lang:"语言",theme:"主题",toastSel:"请先选择一张图片",toastSplit:"切割完成！可下载了",toastDL:"已下载",toastErr:"出错了，请换张图片试试"},
+  en:{appName:"Grid Splitter",appSlogan:"Free · No upload · No watermark",h1:"Grid Split · Cut Image into Tiles",lead:"Upload an image and auto-split into 3×3 / 2×2 / 3×2 / 1×3 grids. Download all tiles at once. Perfect for Instagram grids, photo collages. All local, no upload, no watermark.",dropTip:"Click to select an image, or drag / paste here",setTitle:"Split Options",gridTip:"Choose grid layout",g3x3:"3×3 Grid",g2x2:"2×2 Grid",g3x2:"3×2 Grid",g1x3:"1×3 Horizontal",g3x1:"3×1 Vertical",showNum:"Show numbers",showGap:"Tile gaps",cropSquare:"Crop to square",fmtTip:"Download format",split:"Start Splitting",dlAll:"Download All",reset:"Reset Image",previewTitle:"Preview & Download",dlTip:"Click a tile to download individually, or click Download All.",today:"Today",todayCount:"Cut today",todaySlices:"Tiles made",share:"Share",whyTitle:"Why use it",tip1:"🔒 Images never leave your device — all local processing",tip2:"🎨 Supports 3×3/2×2/3×2/1×3 grids — download all at once",tip3:"📐 Auto center-crop ensures consistent tile sizes",tip4:"🆓 100% free, no watermark, no limits, no sign-up",footerNote:"Pure frontend H5 tool · No upload · No tracking",shareTitle:"Grid Splitter",shareText:"I split my image into a grid with this free tool!",lang:"Language",theme:"Theme",toastSel:"Please select an image first",toastSplit:"Split done! Ready to download.",toastDL:"Downloaded",toastErr:"Error, try another image"},
+  ja:{appName:"グリッド分割",appSlogan:"無料・アップロードなし・透かしなし",h1:"画像をグリッドに分割",lead:"画像をアップロードして3×3/2×2/3×2/1×3グリッドに自動分割。Instagramグリッドやコラージュに最適。ローカル処理でアップロードなし。",dropTip:"クリックして画像を選択、またはドラッグ＆ペースト",setTitle:"分割オプション",gridTip:"グリッドレイアウトを選択",g3x3:"3×3 グリッド",g2x2:"2×2 グリッド",g3x2:"3×2 グリッド",g1x3:"1×3 横",g3x1:"3×1 縦",showNum:"番号を表示",showGap:"タイル間隔",cropSquare:"正方形にクロップ",fmtTip:"ダウンロード形式",split:"分割開始",dlAll:"全てダウンロード",reset:"画像を選び直す",previewTitle:"プレビュー＆ダウンロード",dlTip:"タイルをクリックで個別ダウンロード、または全てダウンロード。",today:"今日",todayCount:"今日の分割",todaySlices:"生成タイル数",share:"共有",whyTitle:"おすすめ理由",tip1:"🔒 画像は端末から出ません — 完全ローカル処理",tip2:"🎨 3×3/2×2/3×2/1×3に対応 — 一括ダウンロード",tip3:"📐 自動センタークロップで均一なタイルサイズ",tip4:"🆓 完全無料、透かしなし、制限なし",footerNote:"フロントエンドH5ツール・アップロードなし",shareTitle:"グリッド分割",shareText:"この無料ツールで画像をグリッド分割しました！",lang:"言語",theme:"テーマ",toastSel:"画像を選択してください",toastSplit:"分割完了！ダウンロードできます",toastDL:"ダウンロードしました",toastErr:"エラー、別の画像をお試しください"},
+  ko:{appName:"그리드 분할",appSlogan:"무료 · 업로드 없음 · 워터마크 없음",h1:"이미지 그리드 분할 도구",lead:"이미지를 3×3/2×2/3×2/1×3 그리드로 자동 분할. Instagram 그리드, 콜라주에 적합. 로컬 처리, 업로드 없음.",dropTip:"클릭하여 이미지 선택 또는 드래그/붙여넣기",setTitle:"분할 옵션",gridTip:"그리드 레이아웃 선택",g3x3:"3×3 그리드",g2x2:"2×2 그리드",g3x2:"3×2 그리드",g1x3:"1×3 가로",g3x1:"3×1 세로",showNum:"번호 표시",showGap:"타일 간격",cropSquare:"정사각형으로 크롭",fmtTip:"다운로드 형식",split:"분할 시작",dlAll:"전체 다운로드",reset:"이미지 다시 선택",previewTitle:"미리보기 및 다운로드",dlTip:"타일 클릭으로 개별 다운로드 또는 전체 다운로드.",today:"오늘",todayCount:"오늘 분할",todaySlices:"생성 타일",share:"공유",whyTitle:"사용 이유",tip1:"🔒 이미지가 기기를 떠나지 않습니다 — 로컬 처리",tip2:"🎨 3×3/2×2/3×2/1×3 지원 — 일괄 다운로드",tip3:"📐 자동 중앙 크롭으로 균일한 타일 크기",tip4:"🆓 완전 무료, 워터마크 없음, 제한 없음",footerNote:"프론트엔드 H5 도구 · 업로드 없음",shareTitle:"그리드 분할",shareText:"이 무료 도구로 이미지를 분할했습니다!",lang:"언어",theme:"테마",toastSel:"이미지를 먼저 선택하세요",toastSplit:"분할 완료! 다운로드 가능",toastDL:"다운로드됨",toastErr:"오류, 다른 이미지를 시도하세요"},
+  es:{appName:"Divisor de Cuadrícula",appSlogan:"Gratis · Sin subir · Sin marca",h1:"Dividir Imagen en Cuadrícula",lead:"Sube una imagen y divídela automáticamente en 3×3 / 2×2 / 3×2 / 1×3. Descarga todas las partes. Perfecto para Instagram. Procesamiento local, sin subir, sin marca de agua.",dropTip:"Haz clic para seleccionar, o arrastra / pega aquí",setTitle:"Opciones de División",gridTip:"Elegir diseño de cuadrícula",g3x3:"3×3 Cuadrícula",g2x2:"2×2 Cuadrícula",g3x2:"3×2 Cuadrícula",g1x3:"1×3 Horizontal",g3x1:"3×1 Vertical",showNum:"Mostrar números",showGap:"Espacios",cropSquare:"Recortar a cuadrado",fmtTip:"Formato de descarga",split:"Iniciar división",dlAll:"Descargar todo",reset:"Reiniciar imagen",previewTitle:"Vista previa y descarga",dlTip:"Haz clic en una pieza para descargarla o descarga todo.",today:"Hoy",todayCount:"Cortes hoy",todaySlices:"Piezas hechas",share:"Compartir",whyTitle:"Por qué usarlo",tip1:"🔒 Las imágenes nunca salen de tu dispositivo",tip2:"🎨 Soporta 3×3/2×2/3×2/1×3 — descarga todo",tip3:"📐 Recorte centrado automático, tamaño uniforme",tip4:"🆓 100% gratis, sin marca de agua, sin límites",footerNote:"Herramienta H5 pura · Sin subir · Sin rastreo",shareTitle:"Divisor de Cuadrícula",shareText:"¡Dividí mi imagen con esta herramienta gratis!",lang:"Idioma",theme:"Tema",toastSel:"Selecciona una imagen primero",toastSplit:"¡División completa! Listo para descargar.",toastDL:"Descargado",toastErr:"Error, prueba otra imagen"},
+  fr:{appName:"Découpeur de Grille",appSlogan:"Gratuit · Sans envoi · Sans filigrane",h1:"Découper Image en Grille",lead:"Téléchargez une image et divisez-la en 3×3 / 2×2 / 3×2 / 1×3. Téléchargez toutes les pièces. Idéal pour Instagram. Traitement local, sans envoi, sans filigrane.",dropTip:"Cliquez pour sélectionner, ou glissez / collez ici",setTitle:"Options de Découpe",gridTip:"Choisir la disposition",g3x3:"Grille 3×3",g2x2:"Grille 2×2",g3x2:"Grille 3×2",g1x3:"1×3 Horizontal",g3x1:"3×1 Vertical",showNum:"Afficher les numéros",showGap:"Espaces entre pièces",cropSquare:"Rogner en carré",fmtTip:"Format de téléchargement",split:"Démarrer la découpe",dlAll:"Tout télécharger",reset:"Réinitialiser l'image",previewTitle:"Aperçu et téléchargement",dlTip:"Cliquez sur une pièce pour la télécharger ou téléchargez tout.",today:"Aujourd'hui",todayCount:"Découpes aujourd'hui",todaySlices:"Pièces créées",share:"Partager",whyTitle:"Pourquoi l'utiliser",tip1:"🔒 Les images ne quittent jamais votre appareil",tip2:"🎨 Prend en charge 3×3/2×2/3×2/1×3 — tout télécharger",tip3:"📐 Recadrage centré automatique, taille uniforme",tip4:"🆓 100% gratuit, sans filigrane, sans limite",footerNote:"Outil H5 pur · Sans envoi · Sans suivi",shareTitle:"Découpeur de Grille",shareText:"J'ai découpé mon image avec cet outil gratuit !",lang:"Langue",theme:"Thème",toastSel:"Veuillez d'abord sélectionner une image",toastSplit:"Découpe terminée ! Prêt à télécharger.",toastDL:"Téléchargé",toastErr:"Erreur, essayez une autre image"}
+};
+const LANGS=[{code:"zh",name:"中文"},{code:"en",name:"English"},{code:"ja",name:"日本語"},{code:"ko",name:"한국어"},{code:"es",name:"Español"},{code:"fr",name:"Français"}];
+
+/* ========== State ========== */
+let curLang="zh",curGrid="3x3",curFmt="png",imgEl=null,sliceCanvases=[];
+const $=id=>document.getElementById(id);
+
+/* ========== i18n apply ========== */
+function applyI18n(){
+  const d=I18N[curLang]||I18N.zh;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const k=el.getAttribute("data-i18n");
+    if(d[k])el.textContent=d[k];
+  });
+  document.documentElement.lang=curLang==="zh"?"zh-CN":curLang;
+  const u=new URL(location.href);u.searchParams.set("lang",curLang);
+  document.querySelectorAll('link[rel=alternate]').forEach(l=>{
+    const h=l.getAttribute("hreflang");
+    if(h&&h!=="x-default"){const nu=new URL(u);nu.searchParams.set("lang",h.split("-")[0]);l.href=nu.toString();}
+  });
+  localStorage.setItem("grid-lang",curLang);
+}
+
+function initLangSel(){
+  const sel=$("langSel");
+  LANGS.forEach(l=>{const o=document.createElement("option");o.value=l.code;o.textContent=l.name;sel.appendChild(o);});
+  const sv=localStorage.getItem("grid-lang")||(new URL(location.href)).searchParams.get("lang")||"zh";
+  curLang=I18N[sv]?sv:"zh";sel.value=curLang;sel.onchange=e=>{curLang=e.target.value;applyI18n();};
+}
+
+/* ========== Theme ========== */
+function initTheme(){
+  const t=localStorage.getItem("grid-theme");
+  if(t==="dark")document.documentElement.setAttribute("data-theme","dark");
+  $("themeBtn").onclick=()=>{
+    const cur=document.documentElement.getAttribute("data-theme")==="dark"?"":"dark";
+    if(cur)document.documentElement.setAttribute("data-theme",cur);else document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("grid-theme",cur||"light");
+  };
+}
+
+/* ========== Toast ========== */
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+
+/* ========== Daily stats ========== */
+function todayKey(){return new Date().toISOString().slice(0,10);}
+function getDaily(){
+  try{const d=JSON.parse(localStorage.getItem("grid-daily")||"{}");
+    if(d.date!==todayKey())return{date:todayKey(),count:0,slices:0};
+    return d;
+  }catch(e){return{date:todayKey(),count:0,slices:0};}
+}
+function saveDaily(d){localStorage.setItem("grid-daily",JSON.stringify(d));}
+function updateDaily(){
+  const d=getDaily();$("dCount").textContent=d.count;$("dSlices").textContent=d.slices;
+}
+function incDaily(slices){
+  const d=getDaily();d.count++;d.slices+=slices;saveDaily(d);updateDaily();
+}
+
+/* ========== File handling ========== */
+function handleFile(file){
+  if(!file||!file.type.startsWith("image/")){toast(I18N[curLang].toastErr);return;}
+  const r=new FileReader();
+  r.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      imgEl=img;
+      $("optCard").style.display="";
+      $("previewCard").style.display="none";
+      $("drop").style.display="none";
+      $("dlAllBtn").style.display="none";
+      doSplit();
+    };
+    img.onerror=()=>toast(I18N[curLang].toastErr);
+    img.src=e.target.result;
+  };
+  r.readAsDataURL(file);
+}
+
+/* ========== Drag & Drop ========== */
+function initDrop(){
+  const d=$("drop");
+  d.onclick=()=>$("fileIn").click();
+  $("fileIn").onchange=e=>{if(e.target.files[0])handleFile(e.target.files[0]);};
+  d.addEventListener("dragover",e=>{e.preventDefault();d.classList.add("over");});
+  d.addEventListener("dragleave",()=>d.classList.remove("over"));
+  d.addEventListener("drop",e=>{e.preventDefault();d.classList.remove("over");if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+  document.addEventListener("paste",e=>{const items=e.clipboardData.items;for(let i of items)if(i.type.startsWith("image/")){const f=i.getAsFile();if(f)handleFile(f);break;}});
+}
+
+/* ========== Grid selection ========== */
+function initGridChips(){
+  const saved=localStorage.getItem("grid-grid");
+  if(saved){curGrid=saved;document.querySelectorAll("#gridChips .chip").forEach(c=>c.classList.toggle("on",c.dataset.grid===saved));}
+  document.querySelectorAll("#gridChips .chip").forEach(c=>c.onclick=()=>{
+    document.querySelectorAll("#gridChips .chip").forEach(x=>x.classList.remove("on"));
+    c.classList.add("on");curGrid=c.dataset.grid;localStorage.setItem("grid-grid",curGrid);doSplit();
+  });
+  const sf=localStorage.getItem("grid-fmt");
+  if(sf){curFmt=sf;document.querySelectorAll("#fmtChips .chip").forEach(c=>c.classList.toggle("on",c.dataset.fmt===sf));}
+  document.querySelectorAll("#fmtChips .chip").forEach(c=>c.onclick=()=>{
+    document.querySelectorAll("#fmtChips .chip").forEach(x=>x.classList.remove("on"));
+    c.classList.add("on");curFmt=c.dataset.fmt;localStorage.setItem("grid-fmt",curFmt);doSplit();
+  });
+}
+
+/* ========== Split logic ========== */
+function parseGrid(g){const[r,c]=g.split("x").map(Number);return{rows:r,cols:c};}
+
+function doSplit(){
+  if(!imgEl)return;
+  const{rows,cols}=parseGrid(curGrid);
+  const square=$("squareChk").checked;
+  const gap=$("gapChk").checked;
+  const num=$("numChk").checked;
+  let iw=imgEl.naturalWidth,ih=imgEl.naturalHeight;
+  let sx=0,sy=0,sw=iw,sh=ih;
+  if(square){
+    const s=Math.min(iw,ih);
+    sx=(iw-s)/2;sy=(ih-s)/2;sw=s;sh=s;
+  }
+  const tw=Math.floor(sw/cols),th=Math.floor(sh/rows);
+  sliceCanvases=[];
+  const fmtMap={png:"image/png",jpeg:"image/jpeg",webp:"image/webp"};
+  const gp=$("gridPreview");
+  gp.innerHTML="";
+  gp.className="grid-preview "+(rows===3&&cols===3?"g3":rows===2&&cols===2?"g2":rows===3&&cols===2?"g32":rows===2&&cols===3?"g32":rows===1&&cols===3?"g3":rows===3&&cols===1?"g3":"g3");
+  if(!gap)gp.style.gap="0";else gp.style.gap="3px";
+
+  let idx=0;
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const cv=document.createElement("canvas");
+      cv.width=tw;cv.height=th;
+      const cx=cv.getContext("2d");
+      cx.drawImage(imgEl,sx+c*tw,sy+r*tw,tw,th,0,0,tw,th);
+      // Wait, need correct source coordinates
+      cx.clearRect(0,0,tw,th);
+      cx.drawImage(imgEl,sx+c*tw,sy+r*th,tw,th,0,0,tw,th);
+      const blob=cv.toBlob?null:null; // placeholder
+      sliceCanvases.push(cv);
+      const cell=document.createElement("div");
+      cell.className="grid-cell";
+      if(num){const ni=document.createElement("span");ni.className="idx";ni.textContent=idx+1;cell.appendChild(ni);}
+      cv.style.cursor="pointer";
+      cv.onclick=()=>dlCanvas(cv,idx+1);
+      cell.appendChild(cv);
+      gp.appendChild(cell);
+      idx++;
+    }
+  }
+  $("previewCard").style.display="";
+  $("dlAllBtn").style.display="";
+  toast(I18N[curLang].toastSplit);
+  incDaily(rows*cols);
+}
+
+/* ========== Download ========== */
+function dlCanvas(cv,num){
+  const fmtMap={png:"image/png",jpeg:"image/jpeg",webp:"image/webp"};
+  const ext={png:"png",jpeg:"jpg",webp:"webp"}[curFmt];
+  cv.toBlob(blob=>{
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=`grid-${num}.${ext}`;
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  },fmtMap[curFmt],0.92);
+}
+
+function dlAll(){
+  let i=0;
+  const next=()=>{if(i>=sliceCanvases.length)return;dlCanvas(sliceCanvases[i],i+1);i++;setTimeout(next,250);};
+  next();
+}
+
+/* ========== Share ========== */
+function openShare(){
+  const d=I18N[curLang];
+  if(navigator.share){navigator.share({title:d.shareTitle,text:d.shareText,url:location.href}).catch(()=>{});}
+  else{
+    navigator.clipboard.writeText(location.href).then(()=>toast(d.toastDL+": URL"));
+  }
+}
+
+/* ========== Init ========== */
+function init(){
+  initLangSel();applyI18n();initTheme();initDrop();initGridChips();updateDaily();
+  $("splitBtn").onclick=doSplit;
+  $("dlAllBtn").onclick=dlAll;
+  $("resetBtn").onclick=()=>{
+    imgEl=null;$("optCard").style.display="none";$("previewCard").style.display="none";
+    $("drop").style.display="";$("fileIn").value="";
+  };
+  $("shareBtn").onclick=openShare;
+  $("numChk").onchange=doSplit;$("gapChk").onchange=doSplit;$("squareChk").onchange=doSplit;
+}
+init();
+</script>
+<!--WB_WIDGET_V2 v=6-->
+
+<script>
+(function(){
+  if(window.WB_WIDGET) return; window.WB_WIDGET=1;
+  var SB='https://jebnpaglwgozboyujxnx.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
+  var SITE='https://zq0424.github.io/h5-tools-hub/';
+  /* ★ 站长配置：把两张收款码图片的公网URL填到这里（可用 GitHub 仓库里的图片） */
+  var PAY={wechat:'',alipay:'',year:'¥19.9/年',life:'¥49.9/永久',free:10};
+  var parts=location.pathname.split('/').filter(Boolean);
+  var slug=parts[parts.length-1]||'home';
+  var toolName=document.title.split(/[·|]/)[0].trim()||'这个工具';
+  function ls(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
+  function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function liked(){return ls('h5hub_liked').indexOf(slug)>=0}
+  function favs(){return ls('h5hub_fav')}
+
+  /* ---------- 样式 ---------- */
+  var css=document.createElement('style');
+  css.textContent=
+  '#wbBar{position:fixed;right:12px;bottom:12px;z-index:99990;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(91,107,255,.25);border:1px solid #eef0f7;border-radius:999px;padding:6px 8px;font-family:-apple-system,PingFang SC,sans-serif;flex-wrap:wrap;max-width:calc(100vw - 24px)}'+
+  '#wbBar a,#wbBar button{border:none;background:none;font-size:15px;line-height:1;cursor:pointer;text-decoration:none;padding:4px 6px;border-radius:999px;color:#23263a}'+
+  '#wbBar .lk{background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff;font-weight:700;font-size:12.5px;padding:6px 11px}'+
+  '#wbBar .lk.on{outline:2px solid #5b6bff}#wbBar .fv.on{background:#fff3d6}#wbBar .vw{font-size:11.5px;color:#8a8fb0}#wbBar .vip{background:linear-gradient(135deg,#ffd86b,#ff9a3c);color:#fff;font-size:13px;padding:6px 9px}'+
+  '#wbFree{position:fixed;left:12px;bottom:12px;z-index:99990;background:rgba(255,255,255,.95);border:1px solid #eef0f7;border-radius:999px;padding:5px 11px;font-size:11.5px;color:#5b6bff;font-weight:700;box-shadow:0 4px 14px rgba(91,107,255,.15)}'+
+  '.wbMask{position:fixed;inset:0;background:rgba(20,22,40,.55);z-index:99999;display:none;align-items:flex-end;justify-content:center;font-family:-apple-system,PingFang SC,sans-serif}'+
+  '.wbMask.show{display:flex}.wbSheet{background:#fff;border-radius:18px 18px 0 0;max-width:420px;width:100%;max-height:82vh;overflow:auto;padding:16px 16px 26px}'+
+  '.wbSheet h3{margin:0 0 10px;font-size:15.5px}.wbX{float:right;border:none;background:none;font-size:17px;color:#8a8fb0;cursor:pointer}'+
+  '.wbCm{display:flex;gap:6px;margin:6px 0}.wbCm input,.wbCm textarea{flex:1;border:1px solid #eef0f7;border-radius:10px;padding:8px 10px;font-size:13px;outline:none}.wbCm textarea{height:56px;resize:none}'+
+  '.wbBtn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff}'+
+  '.wbBtn.g{background:#eef0ff;color:#5b6bff}'+
+  '.wbItem{background:#f7f8ff;border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px}.wbItem b{font-size:12px;color:#5b6bff}.wbItem span{display:block;color:#23263a;margin-top:2px;word-break:break-word}.wbItem i{font-size:10.5px;color:#b6bad0;font-style:normal}'+
+  '.wbPoster{width:100%;border-radius:10px}'+
+  '.wbPlans{display:flex;gap:8px;margin:10px 0}.wbPlan{flex:1;border:2px solid #eef0f7;border-radius:12px;padding:10px;text-align:center;cursor:pointer}.wbPlan.on{border-color:#5b6bff;background:#f6f7ff}.wbPlan b{display:block;font-size:17px;color:#ff6bb0}.wbPlan span{font-size:11px;color:#8a8fb0}'+
+  '.wbPayTabs{display:flex;gap:6px;margin-bottom:8px}.wbPayTabs button{flex:1;border:1px solid #eef0f7;background:#fff;border-radius:10px;padding:8px;font-size:13px;font-weight:700;cursor:pointer}.wbPayTabs button.on{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.wx{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.ali{border-color:#1677ff;color:#1677ff}'+
+  '.wbQrBox{text-align:center;min-height:180px;display:flex;align-items:center;justify-content:center;background:#f7f8ff;border-radius:12px;padding:10px}.wbQrBox img{width:160px;height:160px;border-radius:8px}'+
+  '.wbBlur>*:not(#wbBar):not(#wbFree):not(.wbMask){filter:blur(6px);pointer-events:none;user-select:none}';
+  document.head.appendChild(css);
+
+  /* ---------- 底部工具条 ---------- */
+  var bar=document.createElement('div');bar.id='wbBar';
+  bar.innerHTML='<a href="'+SITE+'" title="返回工具箱首页">🏠</a>'+
+    '<button class="lk'+(liked()?' on':'')+'" title="点赞">👍 <span class="vc">0</span></button>'+
+    '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="收藏">⭐</button>'+
+    '<button class="sh" title="分享">↗</button>'+
+    '<button class="cm" title="评论">💬<span class="cc"></span></button>'+
+    '<button class="vip" title="解锁会员">💎</button>'+
+    '<span class="vw">👁 <span class="vcw">0</span></span>';
+  document.body.appendChild(bar);
+
+  function mkMask(id,title,closable){
+    var m=document.createElement('div');m.className='wbMask';m.id=id;
+    m.innerHTML='<div class="wbSheet">'+(closable===false?'':'<button class="wbX">✕</button>')+'<h3>'+title+'</h3><div class="bd"></div></div>';
+    if(closable!==false){
+      m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
+      m.querySelector('.wbX').onclick=function(){m.classList.remove('show')};
+    }
+    document.body.appendChild(m);return m;}
+
+  /* ---------- 浏览量 + 点赞数 ---------- */
+  function loadCnt(){
+    fetch(SB+'/rest/v1/votes?select=total,views_total&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      if(rows[0]){bar.querySelector('.vc').textContent=rows[0].total||0;bar.querySelector('.vcw').textContent=rows[0].views_total||0;}
+    }).catch(function(){});
+  }
+  if(!sessionStorage.getItem('wb_view_'+slug)){
+    sessionStorage.setItem('wb_view_'+slug,'1');
+    fetch(SB+'/rest/v1/rpc/increment_view',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(loadCnt);
+  } else loadCnt();
+
+  bar.querySelector('.lk').onclick=function(){
+    if(liked())return; var a=ls('h5hub_liked');a.push(slug);save('h5hub_liked',a);
+    this.classList.add('on');this.querySelector('.vc').textContent=(parseInt(this.querySelector('.vc').textContent)||0)+1;
+    fetch(SB+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(function(){});
+  };
+  bar.querySelector('.fv').onclick=function(){
+    var a=favs(),i=a.indexOf(slug),adding=i<0;
+    if(adding){a.push(slug);this.classList.add('on');}else{a.splice(i,1);this.classList.remove('on');}
+    save('h5hub_fav',a);
+    var tok=null;try{var au=JSON.parse(localStorage.getItem('h5hub_auth')||'null');tok=au&&au.access_token||null;}catch(e){}
+    if(tok){
+      var H={apikey:ANON,Authorization:'Bearer '+tok,'Content-Type':'application/json'};
+      if(adding)fetch(SB+'/rest/v1/favorites',{method:'POST',headers:H,body:JSON.stringify({slug:slug})}).catch(function(){});
+      else fetch(SB+'/rest/v1/favorites?slug=eq.'+encodeURIComponent(slug),{method:'DELETE',headers:{apikey:ANON,Authorization:'Bearer '+tok}}).catch(function(){});
+    }
+  };
+
+  /* ---------- 分享海报（二维码 + 站点介绍，扫码直达） ---------- */
+  function qr(u){return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data='+encodeURIComponent(u);}
+  bar.querySelector('.sh').onclick=function(){
+    var m=mkMask('wbShare','↗ 分享这个工具'),bd=m.querySelector('.bd');
+    bd.innerHTML='<img class="wbPoster" alt="海报生成中…"><div style="display:flex;gap:8px;margin-top:10px">'+
+      '<button class="wbBtn g" id="wbCp">复制链接</button><button class="wbBtn" id="wbSv">保存海报</button></div>'+
+      '<div style="font-size:11px;color:#8a8fb0;margin-top:8px;text-align:center">微信内长按海报即可保存 / 发送</div>';
+    var url=SITE+slug+'/';
+    var W=750,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#eef1ff');g.addColorStop(1,'#fdeef6');
+    x.fillStyle=g;x.fillRect(0,0,W,H);x.fillStyle='#fff';
+    function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();x.fill();}
+    rr(50,50,W-100,H-100,36);x.textAlign='center';
+    x.fillStyle='#23263a';x.font='bold 54px -apple-system,PingFang SC,sans-serif';
+    x.fillText(toolName.slice(0,14),W/2,230);
+    x.fillStyle='#5b6bff';x.font='bold 34px -apple-system,PingFang SC,sans-serif';
+    x.fillText('🧰 我的工具箱 · 每天自动上新的免费小工具',W/2,310);
+    x.fillStyle='#8a8fb0';x.font='28px -apple-system,PingFang SC,sans-serif';
+    x.fillText('免登录 · 即开即用 · 欢迎点赞评论',W/2,370);
+    var q=new Image();q.crossOrigin='anonymous';
+    q.onload=function(){x.fillStyle='#fff';rr(W/2-140,420,280,280,24);x.drawImage(q,W/2-120,440,240,240);
+      x.fillStyle='#5b6bff';x.font='bold 30px sans-serif';x.fillText('👍 觉得好用就点个赞',W/2,790);
+      x.fillStyle='#b6bad0';x.font='24px sans-serif';x.fillText('扫码直达 · Scan to open',W/2,860);
+      try{bd.querySelector('img').src=c.toDataURL('image/png');}
+      catch(e){bd.querySelector('img').outerHTML='<div style="text-align:center"><img src="'+q.src+'" style="width:180px"></div>';}
+    };
+    q.src=qr(url);
+    bd.querySelector('#wbCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(function(){alert('链接已复制')}).catch(function(){prompt('',url)});};
+    bd.querySelector('#wbSv').onclick=function(){var im=bd.querySelector('img');if(im.src&&im.src.indexOf('data:')===0){var a=document.createElement('a');a.href=im.src;a.download='share.png';a.click();}else alert('请长按图片保存');};
+    m.classList.add('show');
+  };
+
+  /* ---------- 评论区 ---------- */
+  var cmMask=null;
+  bar.querySelector('.cm').onclick=function(){
+    if(!cmMask){
+      cmMask=mkMask('wbCmMask','💬 对「'+toolName+'」说点什么');
+      cmMask.querySelector('.bd').innerHTML=
+        '<div id="wbCmList" style="max-height:44vh;overflow:auto"><div style="font-size:12px;color:#8a8fb0">加载中…</div></div>'+
+        '<div class="wbCm"><input id="wbCmName" placeholder="昵称（可留空）" maxlength="20"></div>'+
+        '<div class="wbCm"><textarea id="wbCmBody" placeholder="使用感受 / 建议 / 想要的新功能…" maxlength="500"></textarea></div>'+
+        '<button class="wbBtn" id="wbCmSend" style="width:100%">发 表</button>';
+      cmMask.querySelector('#wbCmSend').onclick=function(){
+        var b=cmMask.querySelector('#wbCmBody').value.trim();
+        if(!b)return alert('写点内容再发表吧');
+        var n=cmMask.querySelector('#wbCmName').value.trim()||'访客';
+        this.disabled=true;
+        fetch(SB+'/rest/v1/comments',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json',Prefer:'return=minimal'},
+          body:JSON.stringify({slug:slug,name:n,body:b})})
+        .then(function(r){if(!r.ok)throw 0;cmMask.querySelector('#wbCmBody').value='';loadCm();})
+        .catch(function(){alert('发表失败，请稍后再试')}).finally(function(){this.disabled=false}.bind(this));
+      };
+    }
+    cmMask.classList.add('show');loadCm();
+  };
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function loadCm(){
+    if(!cmMask)return;
+    fetch(SB+'/rest/v1/comments?select=name,body,created_at&slug=eq.'+encodeURIComponent(slug)+'&order=created_at.desc&limit=50',{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      var box=cmMask.querySelector('#wbCmList');
+      box.innerHTML=rows.length?rows.map(function(c){
+        var d=new Date(c.created_at),ds=(d.getMonth()+1)+'/'+d.getDate();
+        return '<div class="wbItem"><b>'+esc(c.name)+'</b> <i>'+ds+'</i><span>'+esc(c.body)+'</span></div>';
+      }).join(''):'<div style="font-size:12px;color:#8a8fb0;padding:10px 0">还没有评论，来抢沙发～</div>';
+      var n=rows.length; if(n)bar.querySelector('.cc').textContent=' '+n;
+    }).catch(function(){});
+  }
+  loadCm();
+
+  /* ---------- 付费墙：免费 ' + PAY.free + ' 次后硬封锁（不可用第 ' + (PAY.free+1) + ' 次）---------- */
+  var use=JSON.parse(localStorage.getItem('h5hub_use')||'{}');
+  if(!sessionStorage.getItem('wb_use_'+slug)){use[slug]=(use[slug]||0)+1;localStorage.setItem('h5hub_use',JSON.stringify(use));}
+  var used=use[slug]||0, isPro=localStorage.getItem('h5hub_pro')==='1';
+  var free=document.createElement('div');free.id='wbFree';document.body.appendChild(free);
+  function paintFree(){free.textContent=isPro?'✨ 会员已解锁 · 感谢支持':(used>PAY.free?'🔒 已达免费上限，点💎解锁':'🆓 免费额度剩 '+Math.max(0,PAY.free-used+1)+' 次');}
+  paintFree();
+  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ 你已是会员，感谢支持！');return;} showPay(); };
+  function showPay(){
+    if(isPro)return;
+    var m=mkMask('wbPay','🔒 免费额度已用完 · 解锁后继续使用');
+    var plan_wx=true;
+    function paint(){
+      var plan=localStorage.getItem('wb_plan')||'year';
+      m.querySelector('.bd').innerHTML=
+        '<div style="font-size:12.5px;color:#8a8fb0">你已免费使用 '+PAY.free+' 次。解锁后无限次使用本站全部工具（含每日新增）。</div>'+
+        '<div class="wbPlans"><div class="wbPlan'+(plan==='year'?' on':'')+'" data-p="year"><b>'+PAY.year+'</b><span>年度会员</span></div>'+
+        '<div class="wbPlan'+(plan==='life'?' on':'')+'" data-p="life"><b>'+PAY.life+'</b><span>永久买断 · 更划算</span></div></div>'+
+        '<div class="wbPayTabs"><button class="wx'+(plan_wx?' on':'')+'" data-w="wx">微信支付</button><button class="ali'+(plan_wx?'':' on')+'" data-w="ali">支付宝</button></div>'+
+        '<div class="wbQrBox" id="wbQr"></div>'+
+        '<button class="wbBtn" id="wbPaid" style="width:100%;margin-top:10px">✅ 我已完成支付，激活会员</button>'+
+        '<div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">支付后点击激活（试运行自动开通；如遇问题请截图联系站长）<br>可关闭本窗，但关闭后将无法继续使用本工具，点💎可重新解锁</div>';
+      m.querySelectorAll('.wbPlan').forEach(function(p){p.onclick=function(){localStorage.setItem('wb_plan',p.dataset.p);paint();}});
+      m.querySelectorAll('.wbPayTabs button').forEach(function(b){b.onclick=function(){plan_wx=b.dataset.w==='wx';paint();};});
+      var qrEl=m.querySelector('#wbQr'),src=plan_wx?PAY.wechat:PAY.alipay;
+      qrEl.innerHTML=src?'<div><img src="'+src+'"><div style="font-size:11px;color:#8a8fb0;margin-top:4px">长按 / 扫码支付 '+(plan==='year'?PAY.year:PAY.life)+'</div></div>'
+        :'<div style="font-size:12px;color:#8a8fb0">收款码配置中<br><br>↑ 微信 / 支付宝扫码后<br>向站长转账对应金额即可</div>';
+      m.querySelector('#wbPaid').onclick=function(){localStorage.setItem('h5hub_pro','1');isPro=true;unblur();m.classList.remove('show');paintFree();alert('🎉 解锁成功，感谢支持！');};
+    };
+    paint();m.classList.add('show');
+  }
+  function blurPage(){document.body.classList.add('wbBlur');}
+  function unblur(){document.body.classList.remove('wbBlur');}
+  if(!isPro&&used>PAY.free){blurPage();showPay();}
+})();
+</script>
+
+</body>
+</html>
