@@ -1,52 +1,209 @@
 {
-  "portal": "（待部署到你的公网托管后填写）",
+  "site": "H5 工具矩阵",
   "updated": "2026-10-15",
-  "note": "本清单由 AI 每日生产线维护。当前 5 个工具为首批验证集，后续按数据筛选赢家并沉淀小程序。",
+  "portal": "https://zq0424.github.io/h5-tools-hub/",
+  "note": "合并自两线产物：pkg3 6工具(已评分) + pkg1 5工具(门户主线)。综合评价分为百分制自评。",
   "apps": [
+    {
+      "slug": "lucky-wheel",
+      "name": "转盘抽奖 · 随机点名",
+      "desc": "免费无水印的转盘抽奖与随机点名工具，支持权重、抽后去重、历史本地保存、一键分享卡片；适合门店活动、年会抽奖、课堂点名。",
+      "icon": "🎯",
+      "color": "#6366f1",
+      "keywords": [
+        "转盘抽奖",
+        "随机点名",
+        "抽奖转盘生成器",
+        "权重抽奖",
+        "年会抽奖",
+        "课堂点名",
+        "lucky wheel",
+        "random name picker"
+      ],
+      "path": "lucky-wheel/",
+      "generated": "2026-10-15",
+      "综合评价分": 92,
+      "score": 92
+    },
+    {
+      "slug": "img-kb-compress",
+      "name": "图片压缩到指定KB",
+      "desc": "批量把图片压到 20KB/50KB/100KB 等目标大小，二分法自动逼近体积，支持批量下载与格式转换；全程本机处理不上传，适合考试报名、证件上传、网站配图。",
+      "icon": "🗜️",
+      "color": "#0ea5e9",
+      "keywords": [
+        "图片压缩",
+        "照片压缩到20kb",
+        "照片改大小",
+        "批量压缩图片",
+        "报名照片压缩",
+        "image compressor",
+        "target file size"
+      ],
+      "path": "img-kb-compress/",
+      "generated": "2026-10-15",
+      "综合评价分": 90,
+      "score": 90
+    },
+    {
+      "slug": "shift-schedule",
+      "name": "排班表生成器",
+      "desc": "三班倒、上五休二、白夜休等轮转规则一键生成整月排班表，支持手动微调、工时统计、打印存 PDF 与导出 CSV；适合餐饮门店、工厂、医院、物业保安。",
+      "icon": "📅",
+      "color": "#f97316",
+      "keywords": [
+        "排班表生成器",
+        "三班倒排班表",
+        "员工排班",
+        "值班表模板",
+        "自动排班",
+        "倒班日历",
+        "shift schedule",
+        "rotation roster"
+      ],
+      "path": "shift-schedule/",
+      "generated": "2026-10-15",
+      "综合评价分": 88,
+      "score": 88
+    },
+    {
+      "slug": "grid-split",
+      "name": "九宫格切图",
+      "desc": "上传一张图片自动切成九宫格/四宫格/六宫格/三宫格，一键下载全部切片，支持编号、间隙、裁剪为正方形。适合朋友圈九宫格、Instagram网格、拼图素材。纯前端Canvas处理，不上传、无水印、免费不限次数。",
+      "icon": "🔳",
+      "color": "#8b5cf6",
+      "keywords": [
+        "九宫格切图",
+        "朋友圈九宫格",
+        "图片切割",
+        "九宫格分割",
+        "Instagram网格",
+        "四宫格",
+        "六宫格",
+        "图片分割器",
+        "grid split",
+        "image grid cutter"
+      ],
+      "path": "grid-split/",
+      "generated": "2026-10-15",
+      "综合评价分": 89,
+      "score": 89
+    },
+    {
+      "slug": "bmi-tracker",
+      "name": "BMI计算器 · 健康打卡",
+      "desc": "在线BMI体质指数计算器，支持公制/英制、基础代谢率BMR、每日消耗TDEE、理想体重，每日健康打卡与体重趋势图。数据本地存储不上传，适合减肥健身、健康管理。",
+      "icon": "⚖️",
+      "color": "#10b981",
+      "keywords": [
+        "BMI计算器",
+        "体质指数",
+        "体重指数计算",
+        "BMR基础代谢率",
+        "健康打卡",
+        "每日体重记录",
+        "减肥追踪",
+        "体重管理",
+        "bmi calculator",
+        "bmr calculator",
+        "health tracker"
+      ],
+      "path": "bmi-tracker/",
+      "generated": "2026-10-15",
+      "综合评价分": 87,
+      "score": 87
+    },
+    {
+      "slug": "pwd-gen",
+      "name": "密码生成器",
+      "desc": "使用浏览器加密随机源(crypto.getRandomValues)生成高强度密码，可调长度4-64位、6种字符集选项、排除相似/歧义字符，密码强度评估，历史记录本地存储。纯前端零后端，密码不离开浏览器，免费不限次数。",
+      "icon": "🔐",
+      "color": "#f59e0b",
+      "keywords": [
+        "密码生成器",
+        "随机密码",
+        "强密码生成",
+        "密码强度",
+        "安全密码",
+        "在线密码工具",
+        "password generator",
+        "random password",
+        "secure password"
+      ],
+      "path": "pwd-gen/",
+      "generated": "2026-10-15",
+      "综合评价分": 88,
+      "score": 88
+    },
     {
       "slug": "xiaohongshu-formatter",
       "name": "小红书笔记排版器",
       "desc": "一键生成带 emoji、分段、话题标签的爆款排版，支持多套风格与实时预览",
       "icon": "📒",
-      "keywords": ["小红书排版", "笔记排版工具", "小红书笔记生成"],
+      "keywords": [
+        "小红书排版",
+        "笔记排版工具",
+        "小红书笔记生成"
+      ],
       "path": "xiaohongshu-formatter/",
-      "generated": "2026-10-15"
+      "generated": "2026-10-15",
+      "综合评价分": null
     },
     {
       "slug": "weekly-report",
       "name": "AI 周报生成器",
       "desc": "输入工作要点，自动生成规范周报/日报，支持正式/轻松/向上管理风格与历史留存",
       "icon": "📝",
-      "keywords": ["周报生成器", "日报生成", "AI 周报"],
+      "keywords": [
+        "周报生成器",
+        "日报生成",
+        "AI 周报"
+      ],
       "path": "weekly-report/",
-      "generated": "2026-10-15"
+      "generated": "2026-10-15",
+      "综合评价分": null
     },
     {
       "slug": "countdown",
       "name": "倒计时 · 纪念日",
       "desc": "实时秒级倒数，支持分类标签与本地保存，适合考研/生日/假期",
       "icon": "⏳",
-      "keywords": ["倒计时工具", "考研倒计时", "纪念日提醒"],
+      "keywords": [
+        "倒计时工具",
+        "考研倒计时",
+        "纪念日提醒"
+      ],
       "path": "countdown/",
-      "generated": "2026-10-15"
+      "generated": "2026-10-15",
+      "综合评价分": null
     },
     {
       "slug": "unit-converter",
       "name": "单位换算器",
       "desc": "长度/重量/温度/面积/体积/时间/速度/数据实时换算，支持全部单位对照",
       "icon": "📐",
-      "keywords": ["单位换算", "单位换算器", "长度换算"],
+      "keywords": [
+        "单位换算",
+        "单位换算器",
+        "长度换算"
+      ],
       "path": "unit-converter/",
-      "generated": "2026-10-15"
+      "generated": "2026-10-15",
+      "综合评价分": null
     },
     {
       "slug": "copywriter",
       "name": "爆款文案生成器",
       "desc": "输入产品与卖点，一键生成小红书标题/电商卖点/朋友圈文案/短视频钩子",
       "icon": "✍️",
-      "keywords": ["文案生成器", "标题生成器", "小红书标题"],
+      "keywords": [
+        "文案生成器",
+        "标题生成器",
+        "小红书标题"
+      ],
       "path": "copywriter/",
-      "generated": "2026-10-15"
+      "generated": "2026-10-15",
+      "综合评价分": null
     }
   ]
 }
