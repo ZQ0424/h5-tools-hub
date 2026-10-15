@@ -1,0 +1,15 @@
+{
+  "name": "排班表生成器 · 三班倒排班日历",
+  "short_name": "排班表",
+  "description": "一键生成整月排班表，支持三班倒、上五休二等轮转规则，可打印导出。",
+  "start_url": "./?utm_source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fbf7f3",
+  "theme_color": "#f97316",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
