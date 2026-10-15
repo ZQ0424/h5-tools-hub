@@ -33,6 +33,11 @@ header .sub{color:var(--muted);font-size:11px;margin-top:3px}
 .tab{flex:1;text-align:center;padding:7px 9px;border-radius:10px;font-size:12.5px;font-weight:700;
   background:#fff;color:var(--muted);cursor:pointer;border:1px solid var(--line);white-space:nowrap;min-width:64px}
 .tab.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:transparent}
+.cats{display:flex;gap:6px;margin:8px 0;overflow-x:auto;padding-bottom:2px}
+.cat{flex:0 0 auto;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:700;
+  background:#fff;color:var(--muted);cursor:pointer;border:1px solid var(--line);white-space:nowrap}
+.cat.on{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:transparent}
+.cat .n{font-size:10px;opacity:.75;margin-left:2px}
 .hot{display:none;margin-bottom:10px}
 .hot.show{display:block}
 .hot h3{font-size:11.5px;color:var(--muted);margin:0 0 6px;font-weight:700}
@@ -116,6 +121,7 @@ footer{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;line-
     <div><span data-i="updated">更新：</span><b id="upd">—</b></div>
   </div>
   <div class="search"><input id="q" type="search" autocomplete="off"></div>
+  <div class="cats" id="cats"></div>
   <div class="tabs">
     <div class="tab active" data-mode="new" data-i="tab_new">🆕 最新</div>
     <div class="tab" data-mode="fav" data-i="tab_fav">⭐ 收藏</div>
@@ -327,7 +333,7 @@ async function syncFav(){
   }catch(e){render();}
 }
 function slugOf(t){return t.slug||(t.path||'').replace(/\//g,'')}
-let APPS=[], MODE='new', Q='', serverVotes={}, serverReady=false;
+let APPS=[], MODE='new', Q='', CAT='全部', CATS=[], serverVotes={}, serverReady=false;
 function metric(s){const v=serverVotes[s];if(!v)return 0;
   if(MODE==='week')return v.week||0; if(MODE==='month')return v.month||0; return v.total||0;}
 function viewCnt(s){const v=serverVotes[s];return v?(v.views_total||0):0;}
@@ -346,12 +352,21 @@ async function loadServer(){
 }
 
 /* ---- 渲染 ---- */
+function buildCats(){
+  const box=document.getElementById('cats');
+  box.innerHTML=CATS.map(c=>{
+    const n=c.key==='全部'?APPS.length:APPS.filter(t=>(t.category||'办公')===c.key).length;
+    return `<div class="cat${CAT===c.key?' on':''}" data-c="${c.key}">${c.icon} ${c.key}<span class="n">${n}</span></div>`;
+  }).join('');
+  box.querySelectorAll('.cat').forEach(el=>el.onclick=()=>{CAT=el.dataset.c;buildCats();render();});
+}
 function render(){
   const favs=getFav(), liked=getLiked();
   document.getElementById('cnt').textContent=APPS.length;
   document.getElementById('vcnt').textContent=totalVotes();
   let list=APPS.filter(t=>{
     if(MODE==='fav'&&!favs.includes(slugOf(t)))return false;
+    if(CAT!=='全部'&&(t.category||'办公')!==CAT)return false;
     if(!Q)return true;
     const hay=(t.name+' '+(t.keywords||[]).join(' ')+' '+(t.desc||'')).toLowerCase();
     return hay.includes(Q.toLowerCase());
@@ -504,9 +519,10 @@ document.getElementById('payMask').addEventListener('click',e=>{if(e.target.id==
 document.getElementById('vipBtn').onclick=function(){if(localStorage.getItem('h5hub_pro')==='1'){alert(LANG==='zh'?'已是会员，感谢支持！':'Already a member, thanks!');return;}paintPay();document.getElementById('payMask').classList.add('show');};
 
 fetch('./manifest.json').then(r=>r.json()).then(m=>{
-  APPS=m.apps||FALLBACK;document.getElementById('upd').textContent=m.updated||'今日';
-  applyLang();paintUser();loadServer().then(syncFav);
-}).catch(()=>{APPS=FALLBACK;applyLang();paintUser();loadServer().then(syncFav)});
+  APPS=m.apps||FALLBACK;CATS=m.categories||[{key:'全部',icon:'🧩'}];
+  document.getElementById('upd').textContent=m.updated||'今日';
+  buildCats();applyLang();paintUser();loadServer().then(syncFav);
+}).catch(()=>{APPS=FALLBACK;CATS=[{key:'全部',icon:'🧩'}];buildCats();applyLang();paintUser();loadServer().then(syncFav)});
 </script>
 </body>
 </html>
