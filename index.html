@@ -63,6 +63,11 @@ footer{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;line-
 .vipbtn{border:none;border-radius:999px;padding:8px 18px;font-size:13px;font-weight:700;color:#fff;
   background:linear-gradient(135deg,#ffd86b,#ff9a3c);box-shadow:0 6px 16px rgba(255,154,60,.3);cursor:pointer}
 .vipbtn:active{transform:scale(.96)}
+.userbtn{border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:13px;background:#fff;color:var(--text);cursor:pointer;box-shadow:var(--shadow)}
+.userbtn.on{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:transparent}
+.authFld{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;margin:6px 0;outline:none}
+.authFld:focus{border-color:var(--primary)}
+.authToggle{font-size:12px;color:var(--primary);cursor:pointer;text-align:center;margin:6px 0}
 .payPlans{display:flex;gap:8px;margin:8px 0}
 .payPlan{flex:1;border:2px solid var(--line);border-radius:12px;padding:10px;text-align:center;cursor:pointer}
 .payPlan.on{border-color:var(--primary);background:#f6f7ff}
@@ -95,12 +100,15 @@ footer{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;line-
       <h1>🧰 <span id="t_title">我的工具箱</span></h1>
       <div class="sub" id="t_sub">每天 06:00 自动新增 · 免费 H5 小工具 · 即开即用</div>
     </div>
-    <div class="langsel">🌐 <select id="lang" aria-label="Language">
+    <div style="display:flex;align-items:center;gap:6px">
+      <button id="userBtn" class="userbtn" title="登录/云同步">👤</button>
+      <div class="langsel">🌐 <select id="lang" aria-label="Language">
       <option value="zh">中文</option><option value="en">English</option>
       <option value="ja">日本語</option><option value="ko">한국어</option>
       <option value="es">Español</option><option value="fr">Français</option>
       <option value="de">Deutsch</option><option value="ru">Русский</option>
     </select></div>
+    </div>
   </header>
   <div class="stat">
     <div><b id="cnt">…</b> <span data-i="tools">个工具</span></div>
@@ -130,6 +138,19 @@ footer{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;line-
     <div class="payQr" id="payQr"></div>
     <button class="b1" id="payPaid" style="width:100%;margin-top:10px"></button>
     <div id="payHint" style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center"></div>
+  </div>
+</div>
+
+<div class="mask" id="authMask">
+  <div class="sheet" style="max-width:340px">
+    <button class="x" onclick="document.getElementById('authMask').classList.remove('show')">✕</button>
+    <h3 id="authH3">👤 登录 / 注册</h3>
+    <input class="authFld" id="authEmail" type="email" placeholder="邮箱（用于云同步收藏/会员）">
+    <input class="authFld" id="authPwd" type="password" placeholder="密码（至少 6 位）">
+    <div id="authMsg" style="font-size:12px;color:#e74c3c;min-height:16px;text-align:center"></div>
+    <button class="b1" id="authSubmit" style="width:100%">登录</button>
+    <div class="authToggle" id="authToggle">没有账号？点此注册 →</div>
+    <div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">登录后收藏/会员状态云端同步，换设备也能用</div>
   </div>
 </div>
 
@@ -245,6 +266,66 @@ function getLiked(){try{return JSON.parse(localStorage.getItem(LKEY)||'[]')}catc
 function setLiked(a){localStorage.setItem(LKEY,JSON.stringify(a))}
 function getFav(){try{return JSON.parse(localStorage.getItem(FKEY)||'[]')}catch(e){return[]}}
 function setFav(a){localStorage.setItem(FKEY,JSON.stringify(a))}
+/* ---- 登录 + 收藏云同步 ---- */
+const AKEY='h5hub_auth';
+function getAuth(){try{return JSON.parse(localStorage.getItem(AKEY)||'null')}catch(e){return null}}
+function setAuth(a){if(a)localStorage.setItem(AKEY,JSON.stringify(a));else localStorage.removeItem(AKEY)}
+function authHdr(){const a=getAuth();const t=a?a.access_token:ANON_KEY;return{apikey:ANON_KEY,Authorization:'Bearer '+t};}
+function authBearer(){const a=getAuth();return a&&a.access_token?a.access_token:null;}
+let authMode='signin';
+document.getElementById('userBtn').onclick=function(){
+  const a=getAuth();
+  if(a){if(confirm('已登录：'+(a.user&&a.user.email||'')+'\n退出登录？')){setAuth(null);paintUser();render();}return;}
+  document.getElementById('authMsg').textContent='';
+  document.getElementById('authMask').classList.add('show');
+};
+document.getElementById('authToggle').onclick=function(){
+  authMode=authMode==='signin'?'signup':'signin';
+  document.getElementById('authH3').textContent=authMode==='signin'?'👤 登录':'📝 注册';
+  document.getElementById('authSubmit').textContent=authMode==='signin'?'登录':'注册并登录';
+  this.textContent=authMode==='signin'?'没有账号？点此注册 →':'已有账号？点此登录 →';
+};
+document.getElementById('authSubmit').onclick=async function(){
+  const email=document.getElementById('authEmail').value.trim();
+  const pwd=document.getElementById('authPwd').value;
+  const msg=document.getElementById('authMsg');
+  if(!email||pwd.length<6){msg.textContent='请填邮箱，密码至少6位';return;}
+  this.disabled=true;msg.textContent='请稍候…';
+  try{
+    let r,d;
+    if(authMode==='signup'){
+      r=await fetch(SUPABASE_URL+'/auth/v1/signup',{method:'POST',headers:{apikey:ANON_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password:pwd})});
+      d=await r.json();
+      if(!r.ok){msg.textContent=d.msg||'注册失败';return;}
+      if(d.access_token){setAuth(d);}else{msg.textContent='注册成功！请到邮箱点确认链接后再登录';return;}
+    }else{
+      r=await fetch(SUPABASE_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:ANON_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password:pwd})});
+      d=await r.json();
+      if(!r.ok){msg.textContent=d.msg||'登录失败，检查邮箱密码';return;}
+      setAuth(d);
+    }
+    document.getElementById('authMask').classList.remove('show');
+    paintUser();await syncFav();
+  }catch(e){msg.textContent='网络错误，请重试';}finally{this.disabled=false;}
+};
+function paintUser(){
+  const a=getAuth(),b=document.getElementById('userBtn');
+  if(a){b.textContent='👤✓';b.classList.add('on');b.title='已登录：'+(a.user&&a.user.email||'')+'（点此退出）';}
+  else{b.textContent='👤';b.classList.remove('on');b.title='登录/云同步';}
+}
+async function syncFav(){
+  const tok=authBearer();if(!tok){render();return;}
+  try{
+    const r=await fetch(SUPABASE_URL+'/rest/v1/favorites?select=slug',{headers:authHdr()});
+    if(!r.ok){render();return;}
+    const srv=(await r.json()).map(x=>x.slug);
+    const local=getFav();
+    const toPush=local.filter(s=>!srv.includes(s));
+    setFav([...new Set([...srv,...local])]);
+    for(const s of toPush){await fetch(SUPABASE_URL+'/rest/v1/favorites',{method:'POST',headers:{...authHdr(),'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({slug:s})}).catch(()=>{});}
+    render();
+  }catch(e){render();}
+}
 function slugOf(t){return t.slug||(t.path||'').replace(/\//g,'')}
 let APPS=[], MODE='new', Q='', serverVotes={}, serverReady=false;
 function metric(s){const v=serverVotes[s];if(!v)return 0;
@@ -329,10 +410,18 @@ async function like(s){
     const v=getVotes(); v[s]=(v[s]||0)+1; setVotes(v); render();
   }
 }
-function toggleFav(s){
+async function toggleFav(s){
   const f=getFav(), i=f.indexOf(s);
-  if(i>=0) f.splice(i,1); else f.push(s);
-  setFav(f); render();
+  const adding=i<0;
+  if(adding)f.push(s);else f.splice(i,1);
+  setFav(f);render();
+  const tok=authBearer();
+  if(tok){
+    try{
+      if(adding) await fetch(SUPABASE_URL+'/rest/v1/favorites',{method:'POST',headers:{...authHdr(),'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({slug:s})});
+      else await fetch(SUPABASE_URL+'/rest/v1/favorites?slug=eq.'+encodeURIComponent(s),{method:'DELETE',headers:authHdr()});
+    }catch(e){}
+  }
 }
 
 /* ---- 分享海报（Canvas 生成图 + 二维码，图上带站点介绍，扫码直达）---- */
@@ -416,8 +505,8 @@ document.getElementById('vipBtn').onclick=function(){if(localStorage.getItem('h5
 
 fetch('./manifest.json').then(r=>r.json()).then(m=>{
   APPS=m.apps||FALLBACK;document.getElementById('upd').textContent=m.updated||'今日';
-  applyLang();loadServer().then(render);
-}).catch(()=>{APPS=FALLBACK;applyLang();loadServer().then(render)});
+  applyLang();paintUser();loadServer().then(syncFav);
+}).catch(()=>{APPS=FALLBACK;applyLang();paintUser();loadServer().then(syncFav)});
 </script>
 </body>
 </html>
