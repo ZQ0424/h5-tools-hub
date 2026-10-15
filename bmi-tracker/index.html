@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BMI计算器 · 健康体重指数在线计算与每日打卡 | 免费健康追踪工具</title>
+<meta name="description" content="在线BMI计算器，输入身高体重即可计算体质指数，支持公制/英制、基础代谢率BMR、每日健康打卡与趋势图。数据本地存储不上传。适合减肥健身、健康管理。">
+<meta name="keywords" content="BMI计算器,体质指数,体重指数计算,BMR基础代谢率,健康打卡,每日体重记录,减肥追踪,体重管理,bmi calculator,bmr calculator,health tracker">
+<meta name="theme-color" content="#10b981">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="BMI计算器 · 健康体重指数计算与每日打卡工具">
+<meta property="og:description" content="在线计算BMI体质指数，支持BMR基础代谢率、每日健康打卡、趋势图。数据本地存储，免费使用。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://h5tools.pages.dev/bmi-tracker/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="zh-CN" href="?lang=zh">
+<link rel="alternate" hreflang="en" href="?lang=en">
+<link rel="alternate" hreflang="ja" href="?lang=ja">
+<link rel="alternate" hreflang="ko" href="?lang=ko">
+<link rel="alternate" hreflang="es" href="?lang=es">
+<link rel="alternate" hreflang="fr" href="?lang=fr">
+<link rel="alternate" hreflang="x-default" href="?lang=zh">
+<link rel="canonical" href="https://h5tools.pages.dev/bmi-tracker/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BMI">
+<style>
+:root{
+  --bg:#f0fdf4; --card:#fff; --txt:#0f172a; --sub:#64748b; --line:#e2e8f0;
+  --pri:#10b981; --pri2:#059669; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+  --shadow:0 1px 2px rgba(15,23,42,.05),0 10px 26px rgba(15,23,42,.07); --r:16px;
+}
+html[data-theme="dark"]{--bg:#0a0f14;--card:#132020;--txt:#e8f5e9;--sub:#88a8a0;--line:#1e3028;--shadow:0 1px 2px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.4)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Noto Sans CJK SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;padding:0 14px 40px}
+header{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hd{max-width:940px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;color:#fff;font-weight:800;flex:none;box-shadow:0 4px 12px rgba(16,185,129,.35)}
+.brand{font-weight:800;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--sub)}
+.sel{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;padding:6px 8px;font-size:13px;max-width:110px}
+.ibtn{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;font-size:15px}
+.ibtn:active{transform:scale(.94)}
+h1{font-size:23px;margin:22px 0 6px;letter-spacing:-.3px}
+.lead{color:var(--sub);margin:0 0 18px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:7px}
+.card h2 .dot{width:6px;height:6px;border-radius:50%;background:var(--pri)}
+.btn{border:0;border-radius:11px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-family:inherit;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--bg);color:var(--txt);border:1px solid var(--line)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn:disabled{opacity:.55;cursor:default}
+.muted{color:var(--sub);font-size:12.5px}
+.input-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.input-grid{grid-template-columns:1fr}}
+.fld label{display:block;font-size:12.5px;color:var(--sub);margin-bottom:5px;font-weight:600}
+.fld input,.fld select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--txt);border-radius:11px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none}
+.fld input:focus,.fld select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(16,185,129,.14)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--txt);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer;transition:.15s;font-weight:600}
+.chip.on{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(16,185,129,.3)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bmi-display{text-align:center;padding:18px 10px 6px}
+.bmi-num{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1;background:linear-gradient(135deg,var(--pri),var(--pri2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.bmi-cat{font-size:15px;font-weight:700;margin-top:6px}
+.bmi-range{display:flex;justify-content:center;gap:2px;margin-top:12px;border-radius:8px;overflow:hidden}
+.bmi-range .seg{flex:1;padding:5px 2px;font-size:10px;text-align:center;font-weight:600;color:#fff;white-space:nowrap}
+.bmi-range .seg.under{background:#3b82f6}
+.bmi-range .seg.normal{background:var(--ok)}
+.bmi-range .seg.over{background:var(--warn)}
+.bmi-range .seg.obese{background:var(--danger)}
+.bmi-range .seg .bar{height:4px;border-radius:2px;margin-top:3px;background:rgba(255,255,255,.4)}
+.bmi-range .seg.active .bar{background:#fff;height:6px}
+.bmr-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.bmr-row:last-child{border:0}
+.bmr-row .lab{font-size:13px;color:var(--sub)}
+.bmr-row .val{font-size:15px;font-weight:700}
+.daily{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(5,150,105,.1));border:1px solid var(--line)}
+.daily .num{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.checkin{display:flex;flex-direction:column;gap:10px}
+.checkin .row2{display:flex;gap:8px}
+.trend-list{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+.trend-item{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:9px;background:var(--bg);border:1px solid var(--line);font-size:13px}
+.trend-item .dt{color:var(--sub)}
+.trend-item .w{font-weight:700}
+.spark{width:100%;height:60px;display:block}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#0a0f14;color:#fff;padding:10px 16px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+footer{color:var(--sub);font-size:12.5px;text-align:center;padding:18px 10px;line-height:1.8}
+ul.tips{margin:8px 0 0;padding-left:18px;color:var(--sub);font-size:12.8px}
+ul.tips li{margin:3px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo">⚖️</div>
+    <div class="brand"><span data-i18n="appName">BMI 计算器</span><small data-i18n="appSlogan">免费 · 本地存储 · 每日打卡</small></div>
+    <select class="sel" id="langSel" aria-label="Language"></select>
+    <button class="ibtn" id="themeBtn" title="theme">🌓</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 data-i18n="h1">BMI 计算器 · 健康体重指数</h1>
+  <p class="lead" data-i18n="lead">输入身高体重即可计算体质指数（BMI），同时给出基础代谢率（BMR）与每日热量建议。支持每日打卡、趋势追踪，数据全部存在本机。</p>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="calcTitle">身体数据</span></h2>
+    <div class="chips" style="margin-bottom:12px">
+      <button class="chip on" data-unit="metric" data-i18n="metric">公制 (cm/kg)</button>
+      <button class="chip" data-unit="imperial" data-i18n="imperial">英制 (ft/lb)</button>
+    </div>
+    <div class="input-grid">
+      <div class="fld"><label data-i18n="height">身高</label><input type="number" id="heightIn" placeholder="170" step="0.1" min="50" max="300"></div>
+      <div class="fld"><label data-i18n="weight">体重</label><input type="number" id="weightIn" placeholder="65" step="0.1" min="10" max="500"></div>
+      <div class="fld"><label data-i18n="age">年龄</label><input type="number" id="ageIn" placeholder="25" min="1" max="120"></div>
+      <div class="fld"><label data-i18n="gender">性别</label><select id="genderSel"><option value="male" data-i18n="male">男</option><option value="female" data-i18n="female">女</option></select></div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" id="calcBtn" data-i18n="calc">计算 BMI</button>
+      <button class="btn ghost sm" id="checkinBtn" data-i18n="checkin">每日打卡</button>
+      <button class="btn ghost sm" id="clearBtn" data-i18n="clearData">清除记录</button>
+    </div>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none">
+    <div class="bmi-display">
+      <div class="bmi-num" id="bmiNum">--</div>
+      <div class="bmi-cat" id="bmiCat">--</div>
+    </div>
+    <div class="bmi-range" id="bmiRange">
+      <div class="seg under" data-i18n="underw">偏瘦<div class="bar"></div></div>
+      <div class="seg normal" data-i18n="normalw">正常<div class="bar"></div></div>
+      <div class="seg over" data-i18n="overw">偏胖<div class="bar"></div></div>
+      <div class="seg obese" data-i18n="obesew">肥胖<div class="bar"></div></div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="bmr-row"><span class="lab" data-i18n="bmr">基础代谢率 BMR</span><span class="val" id="bmrVal">--</span></div>
+      <div class="bmr-row"><span class="lab" data-i18n="tdee">每日消耗 TDEE</span><span class="val" id="tdeeVal">--</span></div>
+      <div class="bmr-row"><span class="lab" data-i18n="idealW">理想体重</span><span class="val" id="idealVal">--</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="today">今日</span></h2>
+    <div class="daily">
+      <div><div class="num" id="dStreak">0</div><div class="muted" data-i18n="streak">连续打卡</div></div>
+      <div style="width:1px;height:34px;background:var(--line)"></div>
+      <div><div class="num" id="dTotal">0</div><div class="muted" data-i18n="totalDays">总打卡天数</div></div>
+      <button class="btn ghost sm" id="shareBtn" style="margin-left:auto" data-i18n="share">分享</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="trendTitle">体重趋势</span></h2>
+    <canvas class="spark" id="sparkChart"></canvas>
+    <div class="trend-list" id="trendList"></div>
+    <p class="muted" id="emptyTrend" data-i18n="emptyTrend">还没有打卡记录，点「每日打卡」开始记录吧。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="whyTitle">为什么用它</span></h2>
+    <ul class="tips">
+      <li data-i18n="tip1">🔒 数据全部存在你手机/电脑本地，不上传任何服务器</li>
+      <li data-i18n="tip2">📊 BMI + BMR + TDEE + 理想体重，一次全算好</li>
+      <li data-i18n="tip3">📅 每日打卡 + 趋势图，帮你持续追踪变化</li>
+      <li data-i18n="tip4">🆓 完全免费，无广告、无次数限制、无需注册</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <span data-i18n="appName">BMI 计算器</span> · <span data-i18n="footerNote">纯前端 H5 工具 · 数据本地 · 不追踪</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== i18n ========== */
+const I18N={
+  zh:{appName:"BMI 计算器",appSlogan:"免费 · 本地存储 · 每日打卡",h1:"BMI 计算器 · 健康体重指数",lead:"输入身高体重即可计算体质指数（BMI），同时给出基础代谢率（BMR）与每日热量建议。支持每日打卡、趋势追踪，数据全部存在本机。",calcTitle:"身体数据",metric:"公制 (cm/kg)",imperial:"英制 (ft/lb)",height:"身高",weight:"体重",age:"年龄",gender:"性别",male:"男",female:"女",calc:"计算 BMI",checkin:"每日打卡",clearData:"清除记录",today:"今日",streak:"连续打卡",totalDays:"总打卡天数",share:"分享",trendTitle:"体重趋势",emptyTrend:"还没有打卡记录，点「每日打卡」开始记录吧。",whyTitle:"为什么用它",tip1:"🔒 数据全部存在你手机/电脑本地，不上传任何服务器",tip2:"📊 BMI + BMR + TDEE + 理想体重，一次全算好",tip3:"📅 每日打卡 + 趋势图，帮你持续追踪变化",tip4:"🆓 完全免费，无广告、无次数限制、无需注册",footerNote:"纯前端 H5 工具 · 数据本地 · 不追踪",underw:"偏瘦",normalw:"正常",overw:"偏胖",obesew:"肥胖",bmr:"基础代谢率 BMR",tdee:"每日消耗 TDEE",idealW:"理想体重",toastCheckin:"打卡成功！继续加油",toastCheckinDup:"今天已经打卡过了",toastCleared:"记录已清除",catUnder:"偏瘦",catNormal:"正常",catOver:"偏胖",catObese:"肥胖",idealHint:"kg",dailyKcal:"kcal/天",sedentary:"久坐",lightAct:"轻度活动",modAct:"中度活动",veryAct:"高度活动",toastInput:"请填写身高和体重"},
+  en:{appName:"BMI Calculator",appSlogan:"Free · Local data · Daily check-in",h1:"BMI Calculator · Health Weight Index",lead:"Enter height and weight to calculate Body Mass Index (BMI), plus BMR and daily calorie suggestions. Supports daily check-ins and trend tracking. All data stored locally.",calcTitle:"Body Data",metric:"Metric (cm/kg)",imperial:"Imperial (ft/lb)",height:"Height",weight:"Weight",age:"Age",gender:"Gender",male:"Male",female:"Female",calc:"Calculate BMI",checkin:"Daily Check-in",clearData:"Clear Records",today:"Today",streak:"Streak",totalDays:"Total Days",share:"Share",trendTitle:"Weight Trend",emptyTrend:"No check-in records yet. Tap Daily Check-in to start.",whyTitle:"Why use it",tip1:"🔒 All data stored locally — never uploaded",tip2:"📊 BMI + BMR + TDEE + ideal weight — all at once",tip3:"📅 Daily check-in + trend chart for continuous tracking",tip4:"🆓 100% free, no ads, no limits, no sign-up",footerNote:"Pure frontend H5 · Local data · No tracking",underw:"Under",normalw:"Normal",overw:"Over",obesew:"Obese",bmr:"Basal Metabolic Rate (BMR)",tdee:"Daily Energy (TDEE)",idealW:"Ideal Weight",toastCheckin:"Check-in done! Keep going!",toastCheckinDup:"Already checked in today",toastCleared:"Records cleared",catUnder:"Underweight",catNormal:"Normal",catOver:"Overweight",catObese:"Obese",idealHint:"kg",dailyKcal:"kcal/day",sedentary:"Sedentary",lightAct:"Light",modAct:"Moderate",veryAct:"Active",toastInput:"Please enter height and weight"},
+  ja:{appName:"BMI計算機",appSlogan:"無料・ローカル保存・毎日チェック",h1:"BMI計算機 · 健康体重指数",lead:"身長と体重を入力してBMIを計算。基礎代謝率(BMR)と1日カロリーも。毎日チェックインとトレンド追跡。データはローカル保存。",calcTitle:"身体データ",metric:"メートル法",imperial:"ヤード・ポンド法",height:"身長",weight:"体重",age:"年齢",gender:"性別",male:"男性",female:"女性",calc:"BMI計算",checkin:"毎日チェック",clearData:"記録削除",today:"今日",streak:"連続日数",totalDays:"総日数",share:"共有",trendTitle:"体重推移",emptyTrend:"まだ記録がありません。毎日チェックインで開始。",whyTitle:"おすすめ理由",tip1:"🔒 データは端末にローカル保存・送信なし",tip2:"📊 BMI+BMR+TDEE+理想体重を一括計算",tip3:"📅 毎日チェックイン+トレンドチャート",tip4:"🆓 完全無料、広告なし、制限なし",footerNote:"フロントエンドH5・ローカルデータ",underw:"低い",normalw:"正常",overw:"過体重",obesew:"肥満",bmr:"基礎代謝率 BMR",tdee:"1日消費 TDEE",idealW:"理想体重",toastCheckin:"チェックイン完了！頑張って",toastCheckinDup:"今日は既にチェックイン済み",toastCleared:"記録を削除しました",catUnder:"低体重",catNormal:"正常",catOver:"過体重",catObese:"肥満",idealHint:"kg",dailyKcal:"kcal/日",sedentary:"座りがち",lightAct:"軽い活動",modAct:"中程度",veryAct:"活発",toastInput:"身長と体重を入力してください"},
+  ko:{appName:"BMI 계산기",appSlogan:"무료 · 로컬 저장 · 매일 체크인",h1:"BMI 계산기 · 건강 체중 지수",lead:"키와 몸무게를 입력하여 BMI를 계산. BMR과 일일 칼로리 제안 포함. 매일 체크인과 추세 추적. 데이터 로컬 저장.",calcTitle:"신체 데이터",metric:"미터법",imperial:"야드파운드법",height:"키",weight:"몸무게",age:"나이",gender:"성별",male:"남성",female:"여성",calc:"BMI 계산",checkin:"매일 체크인",clearData:"기록 삭제",today:"오늘",streak:"연속 일수",totalDays:"총 일수",share:"공유",trendTitle:"체중 추세",emptyTrend:"아직 기록이 없습니다. 매일 체크인으로 시작하세요.",whyTitle:"사용 이유",tip1:"🔒 모든 데이터 로컬 저장, 업로드 없음",tip2:"📊 BMI+BMR+TDEE+이상 체중 한번에",tip3:"📅 매일 체크인+추세 차트",tip4:"🆓 완전 무료, 광고 없음, 제한 없음",footerNote:"프론트엔드 H5 · 로컬 데이터",underw:"저체중",normalw:"정상",overw:"과체중",obesew:"비만",bmr:"기초대사량 BMR",tdee:"일일 소비 TDEE",idealW:"이상 체중",toastCheckin:"체크인 완료! 계속하세요",toastCheckinDup:"오늘 이미 체크인했습니다",toastCleared:"기록이 삭제되었습니다",catUnder:"저체중",catNormal:"정상",catOver:"과체중",catObese:"비만",idealHint:"kg",dailyKcal:"kcal/일",sedentary:"앉아있는",lightAct:"가벼운 활동",modAct:"중간 활동",veryAct:"적극적",toastInput:"키와 몸무게를 입력하세요"},
+  es:{appName:"Calculadora BMI",appSlogan:"Gratis · Datos locales · Check-in diario",h1:"Calculadora BMI · Índice de Salud",lead:"Introduce altura y peso para calcular el IMC, además de TMB y calorías diarias. Check-in diario y seguimiento de tendencia. Datos locales.",calcTitle:"Datos Corporales",metric:"Métrico (cm/kg)",imperial:"Imperial (ft/lb)",height:"Altura",weight:"Peso",age:"Edad",gender:"Género",male:"Hombre",female:"Mujer",calc:"Calcular BMI",checkin:"Check-in diario",clearData:"Borrar registros",today:"Hoy",streak:"Racha",totalDays:"Días totales",share:"Compartir",trendTitle:"Tendencia de peso",emptyTrend:"Sin registros aún. Toca Check-in para empezar.",whyTitle:"Por qué usarlo",tip1:"🔒 Todos los datos se guardan localmente",tip2:"📊 BMI+BMR+TDEE+peso ideal de una vez",tip3:"📅 Check-in diario + gráfico de tendencia",tip4:"🆓 100% gratis, sin anuncios, sin límites",footerNote:"H5 puro · Datos locales",underw:"Bajo",normalw:"Normal",overw:"Sobrepeso",obesew:"Obeso",bmr:"Tasa Metabólica Basal (BMR)",tdee:"Consumo Diario (TDEE)",idealW:"Peso Ideal",toastCheckin:"¡Check-in hecho! ¡Sigue así!",toastCheckinDup:"Ya hiciste check-in hoy",toastCleared:"Registros eliminados",catUnder:"Bajo peso",catNormal:"Normal",catOver:"Sobrepeso",catObese:"Obesidad",idealHint:"kg",dailyKcal:"kcal/día",sedentary:"Sedentario",lightAct:"Ligero",modAct:"Moderado",veryAct:"Activo",toastInput:"Introduce altura y peso"},
+  fr:{appName:"Calculateur IMC",appSlogan:"Gratuit · Données locales · Check-in quotidien",h1:"Calculateur IMC · Indice de Santé",lead:"Entrez taille et poids pour calculer l'IMC, plus le métabolisme de base et les calories quotidiennes. Check-in quotidien et suivi des tendances. Données locales.",calcTitle:"Données Corporelles",metric:"Métrique (cm/kg)",imperial:"Impérial (ft/lb)",height:"Taille",weight:"Poids",age:"Âge",gender:"Genre",male:"Homme",female:"Femme",calc:"Calculer IMC",checkin:"Check-in quotidien",clearData:"Effacer les enregistrements",today:"Aujourd'hui",streak:"Série",totalDays:"Jours totaux",share:"Partager",trendTitle:"Tendance du poids",emptyTrend:"Pas encore d'enregistrements. Touchez Check-in pour commencer.",whyTitle:"Pourquoi l'utiliser",tip1:"🔒 Toutes les données stockées localement",tip2:"📊 IMC+BMR+TDEE+poids idéal en une fois",tip3:"📅 Check-in quotidien + graphique de tendance",tip4:"🆓 100% gratuit, sans publicité, sans limite",footerNote:"H5 pur · Données locales",underw:"Sous",normalw:"Normal",overw:"Surpoids",obesew:"Obèse",bmr:"Métabolisme de base (BMR)",tdee:"Dépense journalière (TDEE)",idealW:"Poids idéal",toastCheckin:"Check-in fait ! Continuez !",toastCheckinDup:"Déjà fait aujourd'hui",toastCleared:"Enregistrements effacés",catUnder:"Insuffisant",catNormal:"Normal",catOver:"Surpoids",catObese:"Obésité",idealHint:"kg",dailyKcal:"kcal/jour",sedentary:"Sédentaire",lightAct:"Léger",modAct:"Modéré",veryAct:"Actif",toastInput:"Entrez taille et poids"}
+};
+const LANGS=[{code:"zh",name:"中文"},{code:"en",name:"English"},{code:"ja",name:"日本語"},{code:"ko",name:"한국어"},{code:"es",name:"Español"},{code:"fr",name:"Français"}];
+const $=id=>document.getElementById(id);
+let curLang="zh",curUnit="metric";
+
+/* ========== i18n apply ========== */
+function applyI18n(){
+  const d=I18N[curLang]||I18N.zh;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.getAttribute("data-i18n");if(d[k]!==undefined){const tag=el.tagName;if(tag==="OPTION")el.textContent=d[k];else el.textContent=d[k];}});
+  document.documentElement.lang=curLang==="zh"?"zh-CN":curLang;
+  const u=new URL(location.href);u.searchParams.set("lang",curLang);
+  document.querySelectorAll('link[rel=alternate]').forEach(l=>{const h=l.getAttribute("hreflang");if(h&&h!=="x-default"){const nu=new URL(u);nu.searchParams.set("lang",h.split("-")[0]);l.href=nu.toString();}});
+  localStorage.setItem("bmi-lang",curLang);
+}
+function initLangSel(){
+  const sel=$("langSel");LANGS.forEach(l=>{const o=document.createElement("option");o.value=l.code;o.textContent=l.name;sel.appendChild(o);});
+  const sv=localStorage.getItem("bmi-lang")||(new URL(location.href)).searchParams.get("lang")||"zh";
+  curLang=I18N[sv]?sv:"zh";sel.value=curLang;sel.onchange=e=>{curLang=e.target.value;applyI18n();updatePlaceholders();};
+}
+function updatePlaceholders(){
+  if(curUnit==="metric"){$("heightIn").placeholder="170";$("weightIn").placeholder="65";}
+  else{$("heightIn").placeholder="5.7";$("weightIn").placeholder="143";}
+}
+/* ========== Theme ========== */
+function initTheme(){
+  const t=localStorage.getItem("bmi-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");
+  $("themeBtn").onclick=()=>{const cur=document.documentElement.getAttribute("data-theme")==="dark"?"":"dark";if(cur)document.documentElement.setAttribute("data-theme",cur);else document.documentElement.removeAttribute("data-theme");localStorage.setItem("bmi-theme",cur||"light");};
+}
+/* ========== Toast ========== */
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+
+/* ========== Check-in storage ========== */
+function getRecords(){
+  try{return JSON.parse(localStorage.getItem("bmi-records")||"[]");}catch(e){return[];}
+}
+function saveRecords(r){localStorage.setItem("bmi-records",JSON.stringify(r));}
+function todayKey(){return new Date().toISOString().slice(0,10);}
+
+function getStreak(){
+  const records=getRecords();if(records.length===0)return 0;
+  let streak=0;let d=new Date();
+  const sorted=[...records].sort((a,b)=>b.date.localeCompare(a.date));
+  if(sorted[0].date===todayKey()||sorted[0].date===new Date(Date.now()-86400000).toISOString().slice(0,10)){
+    let checkDate=new Date(sorted[0].date+"T00:00:00");
+    for(const r of sorted){
+      if(r.date===checkDate.toISOString().slice(0,10)){streak++;checkDate=new Date(checkDate.getTime()-86400000);}
+      else break;
+    }
+  }
+  return streak;
+}
+function updateDaily(){
+  const records=getRecords();
+  $("dStreak").textContent=getStreak();
+  $("dTotal").textContent=records.length;
+  // render trend
+  const list=$("trendList");
+  list.innerHTML="";
+  const sorted=[...records].sort((a,b)=>b.date.localeCompare(a.date));
+  sorted.slice(0,20).forEach(r=>{
+    const it=document.createElement("div");it.className="trend-item";
+    it.innerHTML=`<span class="dt">${r.date}</span><span class="w">${r.weight} ${curUnit==="metric"?"kg":"lb"}</span>`;
+    list.appendChild(it);
+  });
+  $("emptyTrend").style.display=records.length?"none":"";
+  drawSpark(sorted.slice(0,30).reverse());
+}
+function drawSpark(data){
+  const cv=$("sparkChart");const ctx=cv.getContext("2d");
+  const w=cv.clientWidth||300,h=60;cv.width=w*2;cv.height=h*2;cv.style.height=h+"px";ctx.scale(2,2);
+  ctx.clearRect(0,0,w,h);
+  if(data.length<2){ctx.fillStyle="#64748b";ctx.font="12px sans-serif";ctx.textAlign="center";ctx.fillText(I18N[curLang].emptyTrend,w/2,h/2);return;}
+  const weights=data.map(d=>d.weight);const min=Math.min(...weights)-1;const max=Math.max(...weights)+1;
+  const stepX=w/(data.length-1);const pad=8;
+  ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--pri").trim()||"#10b981";
+  ctx.lineWidth=2;ctx.beginPath();
+  data.forEach((d,i)=>{
+    const x=i*stepX;const y=pad+(h-pad*2)*(1-(d.weight-min)/(max-min||1));
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();
+  ctx.fillStyle="rgba(16,185,129,.12)";ctx.fill();
+  // dots
+  ctx.fillStyle=(getComputedStyle(document.documentElement).getPropertyValue("--pri").trim()||"#10b981");
+  data.forEach((d,i)=>{const x=i*stepX;const y=pad+(h-pad*2)*(1-(d.weight-min)/(max-min||1));ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill();});
+}
+
+/* ========== BMI calculation ========== */
+function calcBMI(){
+  let h=parseFloat($("heightIn").value);
+  let w=parseFloat($("weightIn").value);
+  const age=parseInt($("ageIn").value)||25;
+  const gender=$("genderSel").value;
+  if(!h||!w){toast(I18N[curLang].toastInput);return;}
+  if(curUnit==="imperial"){h=h*30.48;w=w*0.453592;}
+  const bmi=w/((h/100)**2);
+  let cat="";
+  if(bmi<18.5)cat="under";else if(bmi<24)cat="normal";else if(bmi<28)cat="over";else cat="obese";
+  const d=I18N[curLang];
+  $("bmiNum").textContent=bmi.toFixed(1);
+  $("bmiCat").textContent=d["cat"+cat.charAt(0).toUpperCase()+cat.slice(1)]||"";
+  $("resultCard").style.display="";
+  // highlight range
+  document.querySelectorAll("#bmiRange .seg").forEach(s=>s.classList.remove("active"));
+  document.querySelector("#bmiRange .seg."+cat)?.classList.add("active");
+  // BMR (Mifflin-St Jeor)
+  let bmr=gender==="male"?10*w+6.25*h-5*age+5:10*w+6.25*h-5*age-161;
+  // TDEE (sedentary 1.2, light 1.375, moderate 1.55, active 1.725) — default moderate
+  const tdee=bmr*1.375;
+  const unitLabel=curUnit==="metric"?"kg":"lb";
+  const idealMetric=22*Math.pow(h/100,2);
+  const ideal=curUnit==="metric"?idealMetric:(idealMetric/0.453592);
+  $("bmrVal").textContent=Math.round(bmr)+" "+d.dailyKcal;
+  $("tdeeVal").textContent=Math.round(tdee)+" "+d.dailyKcal;
+  $("idealVal").textContent=ideal.toFixed(1)+" "+d.idealHint;
+  // save last input
+  localStorage.setItem("bmi-last",JSON.stringify({h:$("heightIn").value,w:$("weightIn").value,age:age,gender:gender,unit:curUnit}));
+}
+function doCheckin(){
+  const records=getRecords();
+  const tk=todayKey();
+  if(records.find(r=>r.date===tk)){toast(I18N[curLang].toastCheckinDup);return;}
+  let w=parseFloat($("weightIn").value);
+  if(!w){toast(I18N[curLang].toastInput);return;}
+  if(curUnit==="imperial")w=w*0.453592;
+  records.push({date:tk,weight:parseFloat(w.toFixed(1))});
+  saveRecords(records);updateDaily();
+  toast(I18N[curLang].toastCheckin);
+}
+
+/* ========== Unit selection ========== */
+function initUnits(){
+  const saved=localStorage.getItem("bmi-unit");
+  if(saved){curUnit=saved;document.querySelectorAll('[data-unit]').forEach(c=>c.classList.toggle("on",c.dataset.unit===saved));}
+  document.querySelectorAll('[data-unit]').forEach(c=>c.onclick=()=>{
+    document.querySelectorAll('[data-unit]').forEach(x=>x.classList.remove("on"));
+    c.classList.add("on");curUnit=c.dataset.unit;localStorage.setItem("bmi-unit",curUnit);updatePlaceholders();
+  });
+}
+
+/* ========== Share ========== */
+function openShare(){
+  const d=I18N[curLang];
+  if(navigator.share){navigator.share({title:d.appName,text:`${d.appName} - ${d.appSlogan}`,url:location.href}).catch(()=>{});}
+  else{navigator.clipboard.writeText(location.href).then(()=>toast(d.toastCleared));}
+}
+
+/* ========== Init ========== */
+function init(){
+  initLangSel();applyI18n();initTheme();initUnits();updateDaily();updatePlaceholders();
+  // restore last input
+  try{
+    const last=JSON.parse(localStorage.getItem("bmi-last")||"{}");
+    if(last.h)$("heightIn").value=last.h;if(last.w)$("weightIn").value=last.w;
+    if(last.age)$("ageIn").value=last.age;if(last.gender)$("genderSel").value=last.gender;
+  }catch(e){}
+  $("calcBtn").onclick=calcBMI;
+  $("checkinBtn").onclick=doCheckin;
+  $("clearBtn").onclick=()=>{if(confirm("Clear all records?")){localStorage.removeItem("bmi-records");updateDaily();toast(I18N[curLang].toastCleared);}};
+  $("shareBtn").onclick=openShare;
+}
+init();
+</script>
+<!--WB_WIDGET_V2 v=6-->
+
+<script>
+(function(){
+  if(window.WB_WIDGET) return; window.WB_WIDGET=1;
+  var SB='https://jebnpaglwgozboyujxnx.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
+  var SITE='https://zq0424.github.io/h5-tools-hub/';
+  /* ★ 站长配置：把两张收款码图片的公网URL填到这里（可用 GitHub 仓库里的图片） */
+  var PAY={wechat:'',alipay:'',year:'¥19.9/年',life:'¥49.9/永久',free:10};
+  var parts=location.pathname.split('/').filter(Boolean);
+  var slug=parts[parts.length-1]||'home';
+  var toolName=document.title.split(/[·|]/)[0].trim()||'这个工具';
+  function ls(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
+  function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function liked(){return ls('h5hub_liked').indexOf(slug)>=0}
+  function favs(){return ls('h5hub_fav')}
+
+  /* ---------- 样式 ---------- */
+  var css=document.createElement('style');
+  css.textContent=
+  '#wbBar{position:fixed;right:12px;bottom:12px;z-index:99990;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(91,107,255,.25);border:1px solid #eef0f7;border-radius:999px;padding:6px 8px;font-family:-apple-system,PingFang SC,sans-serif;flex-wrap:wrap;max-width:calc(100vw - 24px)}'+
+  '#wbBar a,#wbBar button{border:none;background:none;font-size:15px;line-height:1;cursor:pointer;text-decoration:none;padding:4px 6px;border-radius:999px;color:#23263a}'+
+  '#wbBar .lk{background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff;font-weight:700;font-size:12.5px;padding:6px 11px}'+
+  '#wbBar .lk.on{outline:2px solid #5b6bff}#wbBar .fv.on{background:#fff3d6}#wbBar .vw{font-size:11.5px;color:#8a8fb0}#wbBar .vip{background:linear-gradient(135deg,#ffd86b,#ff9a3c);color:#fff;font-size:13px;padding:6px 9px}'+
+  '#wbFree{position:fixed;left:12px;bottom:12px;z-index:99990;background:rgba(255,255,255,.95);border:1px solid #eef0f7;border-radius:999px;padding:5px 11px;font-size:11.5px;color:#5b6bff;font-weight:700;box-shadow:0 4px 14px rgba(91,107,255,.15)}'+
+  '.wbMask{position:fixed;inset:0;background:rgba(20,22,40,.55);z-index:99999;display:none;align-items:flex-end;justify-content:center;font-family:-apple-system,PingFang SC,sans-serif}'+
+  '.wbMask.show{display:flex}.wbSheet{background:#fff;border-radius:18px 18px 0 0;max-width:420px;width:100%;max-height:82vh;overflow:auto;padding:16px 16px 26px}'+
+  '.wbSheet h3{margin:0 0 10px;font-size:15.5px}.wbX{float:right;border:none;background:none;font-size:17px;color:#8a8fb0;cursor:pointer}'+
+  '.wbCm{display:flex;gap:6px;margin:6px 0}.wbCm input,.wbCm textarea{flex:1;border:1px solid #eef0f7;border-radius:10px;padding:8px 10px;font-size:13px;outline:none}.wbCm textarea{height:56px;resize:none}'+
+  '.wbBtn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff}'+
+  '.wbBtn.g{background:#eef0ff;color:#5b6bff}'+
+  '.wbItem{background:#f7f8ff;border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px}.wbItem b{font-size:12px;color:#5b6bff}.wbItem span{display:block;color:#23263a;margin-top:2px;word-break:break-word}.wbItem i{font-size:10.5px;color:#b6bad0;font-style:normal}'+
+  '.wbPoster{width:100%;border-radius:10px}'+
+  '.wbPlans{display:flex;gap:8px;margin:10px 0}.wbPlan{flex:1;border:2px solid #eef0f7;border-radius:12px;padding:10px;text-align:center;cursor:pointer}.wbPlan.on{border-color:#5b6bff;background:#f6f7ff}.wbPlan b{display:block;font-size:17px;color:#ff6bb0}.wbPlan span{font-size:11px;color:#8a8fb0}'+
+  '.wbPayTabs{display:flex;gap:6px;margin-bottom:8px}.wbPayTabs button{flex:1;border:1px solid #eef0f7;background:#fff;border-radius:10px;padding:8px;font-size:13px;font-weight:700;cursor:pointer}.wbPayTabs button.on{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.wx{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.ali{border-color:#1677ff;color:#1677ff}'+
+  '.wbQrBox{text-align:center;min-height:180px;display:flex;align-items:center;justify-content:center;background:#f7f8ff;border-radius:12px;padding:10px}.wbQrBox img{width:160px;height:160px;border-radius:8px}'+
+  '.wbBlur>*:not(#wbBar):not(#wbFree):not(.wbMask){filter:blur(6px);pointer-events:none;user-select:none}';
+  document.head.appendChild(css);
+
+  /* ---------- 底部工具条 ---------- */
+  var bar=document.createElement('div');bar.id='wbBar';
+  bar.innerHTML='<a href="'+SITE+'" title="返回工具箱首页">🏠</a>'+
+    '<button class="lk'+(liked()?' on':'')+'" title="点赞">👍 <span class="vc">0</span></button>'+
+    '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="收藏">⭐</button>'+
+    '<button class="sh" title="分享">↗</button>'+
+    '<button class="cm" title="评论">💬<span class="cc"></span></button>'+
+    '<button class="vip" title="解锁会员">💎</button>'+
+    '<span class="vw">👁 <span class="vcw">0</span></span>';
+  document.body.appendChild(bar);
+
+  function mkMask(id,title,closable){
+    var m=document.createElement('div');m.className='wbMask';m.id=id;
+    m.innerHTML='<div class="wbSheet">'+(closable===false?'':'<button class="wbX">✕</button>')+'<h3>'+title+'</h3><div class="bd"></div></div>';
+    if(closable!==false){
+      m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
+      m.querySelector('.wbX').onclick=function(){m.classList.remove('show')};
+    }
+    document.body.appendChild(m);return m;}
+
+  /* ---------- 浏览量 + 点赞数 ---------- */
+  function loadCnt(){
+    fetch(SB+'/rest/v1/votes?select=total,views_total&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      if(rows[0]){bar.querySelector('.vc').textContent=rows[0].total||0;bar.querySelector('.vcw').textContent=rows[0].views_total||0;}
+    }).catch(function(){});
+  }
+  if(!sessionStorage.getItem('wb_view_'+slug)){
+    sessionStorage.setItem('wb_view_'+slug,'1');
+    fetch(SB+'/rest/v1/rpc/increment_view',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(loadCnt);
+  } else loadCnt();
+
+  bar.querySelector('.lk').onclick=function(){
+    if(liked())return; var a=ls('h5hub_liked');a.push(slug);save('h5hub_liked',a);
+    this.classList.add('on');this.querySelector('.vc').textContent=(parseInt(this.querySelector('.vc').textContent)||0)+1;
+    fetch(SB+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(function(){});
+  };
+  bar.querySelector('.fv').onclick=function(){
+    var a=favs(),i=a.indexOf(slug),adding=i<0;
+    if(adding){a.push(slug);this.classList.add('on');}else{a.splice(i,1);this.classList.remove('on');}
+    save('h5hub_fav',a);
+    var tok=null;try{var au=JSON.parse(localStorage.getItem('h5hub_auth')||'null');tok=au&&au.access_token||null;}catch(e){}
+    if(tok){
+      var H={apikey:ANON,Authorization:'Bearer '+tok,'Content-Type':'application/json'};
+      if(adding)fetch(SB+'/rest/v1/favorites',{method:'POST',headers:H,body:JSON.stringify({slug:slug})}).catch(function(){});
+      else fetch(SB+'/rest/v1/favorites?slug=eq.'+encodeURIComponent(slug),{method:'DELETE',headers:{apikey:ANON,Authorization:'Bearer '+tok}}).catch(function(){});
+    }
+  };
+
+  /* ---------- 分享海报（二维码 + 站点介绍，扫码直达） ---------- */
+  function qr(u){return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data='+encodeURIComponent(u);}
+  bar.querySelector('.sh').onclick=function(){
+    var m=mkMask('wbShare','↗ 分享这个工具'),bd=m.querySelector('.bd');
+    bd.innerHTML='<img class="wbPoster" alt="海报生成中…"><div style="display:flex;gap:8px;margin-top:10px">'+
+      '<button class="wbBtn g" id="wbCp">复制链接</button><button class="wbBtn" id="wbSv">保存海报</button></div>'+
+      '<div style="font-size:11px;color:#8a8fb0;margin-top:8px;text-align:center">微信内长按海报即可保存 / 发送</div>';
+    var url=SITE+slug+'/';
+    var W=750,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#eef1ff');g.addColorStop(1,'#fdeef6');
+    x.fillStyle=g;x.fillRect(0,0,W,H);x.fillStyle='#fff';
+    function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();x.fill();}
+    rr(50,50,W-100,H-100,36);x.textAlign='center';
+    x.fillStyle='#23263a';x.font='bold 54px -apple-system,PingFang SC,sans-serif';
+    x.fillText(toolName.slice(0,14),W/2,230);
+    x.fillStyle='#5b6bff';x.font='bold 34px -apple-system,PingFang SC,sans-serif';
+    x.fillText('🧰 我的工具箱 · 每天自动上新的免费小工具',W/2,310);
+    x.fillStyle='#8a8fb0';x.font='28px -apple-system,PingFang SC,sans-serif';
+    x.fillText('免登录 · 即开即用 · 欢迎点赞评论',W/2,370);
+    var q=new Image();q.crossOrigin='anonymous';
+    q.onload=function(){x.fillStyle='#fff';rr(W/2-140,420,280,280,24);x.drawImage(q,W/2-120,440,240,240);
+      x.fillStyle='#5b6bff';x.font='bold 30px sans-serif';x.fillText('👍 觉得好用就点个赞',W/2,790);
+      x.fillStyle='#b6bad0';x.font='24px sans-serif';x.fillText('扫码直达 · Scan to open',W/2,860);
+      try{bd.querySelector('img').src=c.toDataURL('image/png');}
+      catch(e){bd.querySelector('img').outerHTML='<div style="text-align:center"><img src="'+q.src+'" style="width:180px"></div>';}
+    };
+    q.src=qr(url);
+    bd.querySelector('#wbCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(function(){alert('链接已复制')}).catch(function(){prompt('',url)});};
+    bd.querySelector('#wbSv').onclick=function(){var im=bd.querySelector('img');if(im.src&&im.src.indexOf('data:')===0){var a=document.createElement('a');a.href=im.src;a.download='share.png';a.click();}else alert('请长按图片保存');};
+    m.classList.add('show');
+  };
+
+  /* ---------- 评论区 ---------- */
+  var cmMask=null;
+  bar.querySelector('.cm').onclick=function(){
+    if(!cmMask){
+      cmMask=mkMask('wbCmMask','💬 对「'+toolName+'」说点什么');
+      cmMask.querySelector('.bd').innerHTML=
+        '<div id="wbCmList" style="max-height:44vh;overflow:auto"><div style="font-size:12px;color:#8a8fb0">加载中…</div></div>'+
+        '<div class="wbCm"><input id="wbCmName" placeholder="昵称（可留空）" maxlength="20"></div>'+
+        '<div class="wbCm"><textarea id="wbCmBody" placeholder="使用感受 / 建议 / 想要的新功能…" maxlength="500"></textarea></div>'+
+        '<button class="wbBtn" id="wbCmSend" style="width:100%">发 表</button>';
+      cmMask.querySelector('#wbCmSend').onclick=function(){
+        var b=cmMask.querySelector('#wbCmBody').value.trim();
+        if(!b)return alert('写点内容再发表吧');
+        var n=cmMask.querySelector('#wbCmName').value.trim()||'访客';
+        this.disabled=true;
+        fetch(SB+'/rest/v1/comments',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json',Prefer:'return=minimal'},
+          body:JSON.stringify({slug:slug,name:n,body:b})})
+        .then(function(r){if(!r.ok)throw 0;cmMask.querySelector('#wbCmBody').value='';loadCm();})
+        .catch(function(){alert('发表失败，请稍后再试')}).finally(function(){this.disabled=false}.bind(this));
+      };
+    }
+    cmMask.classList.add('show');loadCm();
+  };
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function loadCm(){
+    if(!cmMask)return;
+    fetch(SB+'/rest/v1/comments?select=name,body,created_at&slug=eq.'+encodeURIComponent(slug)+'&order=created_at.desc&limit=50',{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      var box=cmMask.querySelector('#wbCmList');
+      box.innerHTML=rows.length?rows.map(function(c){
+        var d=new Date(c.created_at),ds=(d.getMonth()+1)+'/'+d.getDate();
+        return '<div class="wbItem"><b>'+esc(c.name)+'</b> <i>'+ds+'</i><span>'+esc(c.body)+'</span></div>';
+      }).join(''):'<div style="font-size:12px;color:#8a8fb0;padding:10px 0">还没有评论，来抢沙发～</div>';
+      var n=rows.length; if(n)bar.querySelector('.cc').textContent=' '+n;
+    }).catch(function(){});
+  }
+  loadCm();
+
+  /* ---------- 付费墙：免费 ' + PAY.free + ' 次后硬封锁（不可用第 ' + (PAY.free+1) + ' 次）---------- */
+  var use=JSON.parse(localStorage.getItem('h5hub_use')||'{}');
+  if(!sessionStorage.getItem('wb_use_'+slug)){use[slug]=(use[slug]||0)+1;localStorage.setItem('h5hub_use',JSON.stringify(use));}
+  var used=use[slug]||0, isPro=localStorage.getItem('h5hub_pro')==='1';
+  var free=document.createElement('div');free.id='wbFree';document.body.appendChild(free);
+  function paintFree(){free.textContent=isPro?'✨ 会员已解锁 · 感谢支持':(used>PAY.free?'🔒 已达免费上限，点💎解锁':'🆓 免费额度剩 '+Math.max(0,PAY.free-used+1)+' 次');}
+  paintFree();
+  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ 你已是会员，感谢支持！');return;} showPay(); };
+  function showPay(){
+    if(isPro)return;
+    var m=mkMask('wbPay','🔒 免费额度已用完 · 解锁后继续使用');
+    var plan_wx=true;
+    function paint(){
+      var plan=localStorage.getItem('wb_plan')||'year';
+      m.querySelector('.bd').innerHTML=
+        '<div style="font-size:12.5px;color:#8a8fb0">你已免费使用 '+PAY.free+' 次。解锁后无限次使用本站全部工具（含每日新增）。</div>'+
+        '<div class="wbPlans"><div class="wbPlan'+(plan==='year'?' on':'')+'" data-p="year"><b>'+PAY.year+'</b><span>年度会员</span></div>'+
+        '<div class="wbPlan'+(plan==='life'?' on':'')+'" data-p="life"><b>'+PAY.life+'</b><span>永久买断 · 更划算</span></div></div>'+
+        '<div class="wbPayTabs"><button class="wx'+(plan_wx?' on':'')+'" data-w="wx">微信支付</button><button class="ali'+(plan_wx?'':' on')+'" data-w="ali">支付宝</button></div>'+
+        '<div class="wbQrBox" id="wbQr"></div>'+
+        '<button class="wbBtn" id="wbPaid" style="width:100%;margin-top:10px">✅ 我已完成支付，激活会员</button>'+
+        '<div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">支付后点击激活（试运行自动开通；如遇问题请截图联系站长）<br>可关闭本窗，但关闭后将无法继续使用本工具，点💎可重新解锁</div>';
+      m.querySelectorAll('.wbPlan').forEach(function(p){p.onclick=function(){localStorage.setItem('wb_plan',p.dataset.p);paint();}});
+      m.querySelectorAll('.wbPayTabs button').forEach(function(b){b.onclick=function(){plan_wx=b.dataset.w==='wx';paint();};});
+      var qrEl=m.querySelector('#wbQr'),src=plan_wx?PAY.wechat:PAY.alipay;
+      qrEl.innerHTML=src?'<div><img src="'+src+'"><div style="font-size:11px;color:#8a8fb0;margin-top:4px">长按 / 扫码支付 '+(plan==='year'?PAY.year:PAY.life)+'</div></div>'
+        :'<div style="font-size:12px;color:#8a8fb0">收款码配置中<br><br>↑ 微信 / 支付宝扫码后<br>向站长转账对应金额即可</div>';
+      m.querySelector('#wbPaid').onclick=function(){localStorage.setItem('h5hub_pro','1');isPro=true;unblur();m.classList.remove('show');paintFree();alert('🎉 解锁成功，感谢支持！');};
+    };
+    paint();m.classList.add('show');
+  }
+  function blurPage(){document.body.classList.add('wbBlur');}
+  function unblur(){document.body.classList.remove('wbBlur');}
+  if(!isPro&&used>PAY.free){blurPage();showPay();}
+})();
+</script>
+
+</body>
+</html>
