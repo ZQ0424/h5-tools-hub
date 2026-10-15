@@ -82,9 +82,9 @@ footer{text-align:center;font-size:11.5px;color:var(--muted);margin-top:24px;lin
     <div class="tab active" data-mode="new">🆕 最新</div>
     <div class="tab" data-mode="hot">🔥 最热</div>
   </div>
-  <div class="hot" id="hot"><h3>🔥 本机热度榜</h3><div class="hot-row" id="hotRow"></div></div>
+  <div class="hot" id="hot"><h3>🔥 全网热度榜</h3><div class="hot-row" id="hotRow"></div></div>
   <div id="grid" class="grid"><div class="empty">正在加载工具列表…</div></div>
-  <footer>纯前端工具矩阵 · 无需登录 · 链接长期有效<br>👍 点赞在同设备累计；想做全站真实排行榜可加轻量后端</footer>
+  <footer>纯前端工具矩阵 · 无需登录 · 链接长期有效<br>👍 点赞全网实时累计（基于 Supabase）</footer>
 </div>
 <script>
 const FALLBACK=[
@@ -94,14 +94,29 @@ const FALLBACK=[
   {icon:"📐",name:"单位换算器",desc:"长度/重量/温度/面积/体积/时间等实时换算",path:"unit-converter/",kw:"单位换算 / 长度换算",generated:"2026-10-15"},
   {icon:"✍️",name:"爆款文案生成器",desc:"小红书标题/电商卖点/朋友圈文案/短视频钩子",path:"copywriter/",kw:"文案生成器 / 标题生成",generated:"2026-10-15"}
 ];
-const VKEY='h5hub_votes';
+const SUPABASE_URL='https://jebnpaglwgozboyujxnx.supabase.co';
+const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
+const VKEY='h5hub_votes', LKEY='h5hub_liked';
 function getVotes(){try{return JSON.parse(localStorage.getItem(VKEY)||'{}')}catch(e){return{}}}
 function setVotes(v){localStorage.setItem(VKEY,JSON.stringify(v))}
+function getLiked(){try{return JSON.parse(localStorage.getItem(LKEY)||'[]')}catch(e){return[]}}
+function setLiked(a){localStorage.setItem(LKEY,JSON.stringify(a))}
 function slugOf(t){return t.slug||(t.path||'').replace(/\//g,'')}
-let APPS=[], MODE='new', Q='';
-function totalVotes(){const v=getVotes();return Object.values(v).reduce((a,b)=>a+b,0)}
+let APPS=[], MODE='new', Q='', serverVotes={}, serverReady=false;
+function displayCnt(s){ return serverReady ? (serverVotes[s]||0) : (getVotes()[s]||0); }
+function totalVotes(){ return serverReady ? Object.values(serverVotes).reduce((a,b)=>a+b,0) : Object.values(getVotes()).reduce((a,b)=>a+b,0); }
+async function loadServer(){
+  if(!ANON_KEY) return;
+  try{
+    const r=await fetch(SUPABASE_URL+'/rest/v1/votes?select=slug,cnt',{headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY}});
+    if(!r.ok) return;
+    const rows=await r.json();
+    rows.forEach(x=>serverVotes[x.slug]=x.cnt);
+    serverReady=true;
+  }catch(e){}
+}
 function render(){
-  const v=getVotes();
+  const liked=getLiked();
   document.getElementById('cnt').textContent=APPS.length;
   document.getElementById('vcnt').textContent=totalVotes();
   let list=APPS.filter(t=>{
@@ -109,8 +124,8 @@ function render(){
     const hay=(t.name+' '+(t.keywords||[]).join(' ')+' '+(t.desc||'')).toLowerCase();
     return hay.includes(Q.toLowerCase());
   });
-  if(MODE==='hot') list=list.slice().sort((a,b)=>(v[slugOf(b)]||0)-(v[slugOf(a)]||0));
-  const hot=APPS.map(t=>({t,c:v[slugOf(t)]||0})).filter(x=>x.c>0).sort((a,b)=>b.c-a.c).slice(0,5);
+  if(MODE==='hot') list=list.slice().sort((a,b)=>displayCnt(slugOf(b))-displayCnt(slugOf(a)));
+  const hot=APPS.map(t=>({t,c:displayCnt(slugOf(t))})).filter(x=>x.c>0).sort((a,b)=>b.c-a.c).slice(0,5);
   const hotBox=document.getElementById('hot');
   if(MODE==='hot'&&hot.length){
     hotBox.classList.add('show');
@@ -125,22 +140,38 @@ function render(){
   if(!list.length){g.innerHTML='<div class="empty">没有匹配的工具</div>';return;}
   g.innerHTML='';
   list.forEach((t,i)=>{
-    const s=slugOf(t), c=v[s]||0, liked=c>0;
+    const s=slugOf(t), c=displayCnt(s), likedF=liked.includes(s);
     const a=document.createElement('a');a.className='tool';a.href=t.path;a.target='_blank';a.rel='noopener';
     a.style.animation=`fadeUp .35s ease both`;a.style.animationDelay=(i*0.03)+'s';
     a.innerHTML=`<div class="top"><div class="ic">${t.icon||'🛠️'}</div><div class="nm">${t.name}</div></div>
       <div class="ds">${t.desc||''}</div>
       <div class="kw">${(t.keywords||[]).join(' · ')||''}</div>
       <div class="bot">
-        <button class="like${liked?' liked':''}" data-slug="${s}">👍 <span>${c||''}</span></button>
+        <button class="like${likedF?' liked':''}" data-slug="${s}">👍 <span>${c||''}</span></button>
         <span class="cnt">${t.generated||''}</span>
       </div>`;
     g.appendChild(a);
   });
 }
+async function like(s){
+  const liked=getLiked();
+  if(liked.includes(s)) return;
+  liked.push(s); setLiked(liked);
+  if(serverReady){
+    serverVotes[s]=(serverVotes[s]||0)+1; render();
+    try{
+      await fetch(SUPABASE_URL+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_slug:s})});
+      const r=await fetch(SUPABASE_URL+'/rest/v1/votes?select=cnt&slug=eq.'+encodeURIComponent(s),{headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY}});
+      const rows=await r.json(); if(rows[0]) serverVotes[s]=rows[0].cnt;
+    }catch(e){}
+    render();
+  } else {
+    const v=getVotes(); v[s]=(v[s]||0)+1; setVotes(v); render();
+  }
+}
 document.getElementById('grid').addEventListener('click',e=>{
   const b=e.target.closest('.like');if(!b)return;e.preventDefault();e.stopPropagation();
-  const s=b.dataset.slug,v=getVotes();v[s]=(v[s]||0)+1;setVotes(v);render();
+  like(b.dataset.slug);
 });
 document.getElementById('q').addEventListener('input',e=>{Q=e.target.value.trim();render()});
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
@@ -148,8 +179,9 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   t.classList.add('active');MODE=t.dataset.mode;render();
 }));
 fetch('./manifest.json').then(r=>r.json()).then(m=>{
-  APPS=m.apps||FALLBACK;document.getElementById('upd').textContent=m.updated||'今日';render();
-}).catch(()=>{APPS=FALLBACK;render()});
+  APPS=m.apps||FALLBACK;document.getElementById('upd').textContent=m.updated||'今日';
+  loadServer().then(render);
+}).catch(()=>{APPS=FALLBACK;loadServer().then(render)});
 </script>
 </body>
 </html>
