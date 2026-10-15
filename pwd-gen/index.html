@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>密码生成器 · 随机强密码在线生成工具 | 免费安全不限次数</title>
+<meta name="description" content="在线随机安全密码生成器，使用浏览器加密随机源(crypto.getRandomValues)，可调长度、字符集、排除相似字符，密码强度评估，历史记录本地存储。纯前端零后端，密码不离开浏览器，免费不限次数。">
+<meta name="keywords" content="密码生成器,随机密码,强密码生成,密码强度,安全密码,在线密码工具,password generator,random password,secure password,密码管理">
+<meta name="theme-color" content="#f59e0b">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="密码生成器 · 免费安全随机强密码生成工具">
+<meta property="og:description" content="用加密随机源生成强密码，可调长度和字符集，强度评估，历史记录本地存储。纯前端零后端。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://h5tools.pages.dev/pwd-gen/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="zh-CN" href="?lang=zh">
+<link rel="alternate" hreflang="en" href="?lang=en">
+<link rel="alternate" hreflang="ja" href="?lang=ja">
+<link rel="alternate" hreflang="ko" href="?lang=ko">
+<link rel="alternate" hreflang="es" href="?lang=es">
+<link rel="alternate" hreflang="fr" href="?lang=fr">
+<link rel="alternate" hreflang="x-default" href="?lang=zh">
+<link rel="canonical" href="https://h5tools.pages.dev/pwd-gen/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PwdGen">
+<style>
+:root{
+  --bg:#fffbeb; --card:#fff; --txt:#1c1917; --sub:#78716c; --line:#e7e5e4;
+  --pri:#f59e0b; --pri2:#d97706; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444; --info:#3b82f6;
+  --shadow:0 1px 2px rgba(28,25,23,.05),0 10px 26px rgba(28,25,23,.08); --r:16px;
+}
+html[data-theme="dark"]{--bg:#1a1208;--card:#29200d;--txt:#fef3c7;--sub:#a8a29e;--line:#3d3320;--shadow:0 1px 2px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.4)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Noto Sans CJK SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;padding:0 14px 40px}
+header{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hd{max-width:940px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;color:#fff;font-weight:800;flex:none;box-shadow:0 4px 12px rgba(245,158,11,.35)}
+.brand{font-weight:800;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--sub)}
+.sel{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;padding:6px 8px;font-size:13px;max-width:110px}
+.ibtn{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;font-size:15px}
+.ibtn:active{transform:scale(.94)}
+h1{font-size:23px;margin:22px 0 6px;letter-spacing:-.3px}
+.lead{color:var(--sub);margin:0 0 18px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:7px}
+.card h2 .dot{width:6px;height:6px;border-radius:50%;background:var(--pri)}
+.btn{border:0;border-radius:11px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-family:inherit;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--bg);color:var(--txt);border:1px solid var(--line)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn:disabled{opacity:.55;cursor:default}
+.muted{color:var(--sub);font-size:12.5px}
+.pwd-box{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-family:"SF Mono","Cascadia Code","Fira Code",Consolas,Monaco,monospace;font-size:18px;font-weight:700;letter-spacing:.5px;word-break:break-all;line-height:1.5;cursor:pointer}
+.pwd-box:active{transform:scale(.99)}
+.pwd-box .copy{margin-left:auto;flex:none;font-size:13px;font-weight:600;font-family:inherit;border:0;background:var(--pri);color:#fff;border-radius:8px;padding:5px 10px;cursor:pointer;white-space:nowrap}
+.strength-bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:10px}
+.strength-bar i{display:block;height:100%;width:0;transition:width .4s,background .4s;border-radius:4px}
+.strength-label{font-size:13px;font-weight:700;margin-top:6px;display:flex;align-items:center;gap:6px}
+.slider-row{display:flex;align-items:center;gap:12px;margin:8px 0}
+.slider-row label{font-size:14px;font-weight:600;min-width:70px}
+.slider-row input[type=range]{flex:1;accent-color:var(--pri);height:6px}
+.slider-row .val{font-size:16px;font-weight:800;min-width:32px;text-align:right}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+@media(max-width:640px){.opt-grid{grid-template-columns:1fr}}
+.opt{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;cursor:pointer;transition:.15s}
+.opt:active{transform:scale(.97)}
+.opt.on{border-color:var(--pri);background:rgba(245,158,11,.08)}
+.opt input[type=checkbox]{width:20px;height:20px;accent-color:var(--pri)}
+.opt .lab{font-size:13.5px;font-weight:600}
+.opt .set{font-family:monospace;font-size:12px;color:var(--sub)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.daily{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(217,119,6,.1));border:1px solid var(--line)}
+.daily .num{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.hist-list{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+.hist-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:var(--bg);border:1px solid var(--line);font-size:13px;font-family:monospace;cursor:pointer}
+.hist-item .pwd{flex:1;word-break:break-all;font-weight:600}
+.hist-item .time{color:var(--sub);font-size:11px;white-space:nowrap}
+.hist-item .copy2{font-size:11px;font-weight:600;border:0;background:var(--pri);color:#fff;border-radius:6px;padding:3px 7px;cursor:pointer;white-space:nowrap;flex:none}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#1a1208;color:#fff;padding:10px 16px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+footer{color:var(--sub);font-size:12.5px;text-align:center;padding:18px 10px;line-height:1.8}
+ul.tips{margin:8px 0 0;padding-left:18px;color:var(--sub);font-size:12.8px}
+ul.tips li{margin:3px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo">🔐</div>
+    <div class="brand"><span data-i18n="appName">密码生成器</span><small data-i18n="appSlogan">免费 · 加密随机 · 不离开浏览器</small></div>
+    <select class="sel" id="langSel" aria-label="Language"></select>
+    <button class="ibtn" id="themeBtn" title="theme">🌓</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 data-i18n="h1">密码生成器 · 随机强密码</h1>
+  <p class="lead" data-i18n="lead">使用浏览器加密随机源生成高强度密码，可调长度、字符集、排除相似字符。密码不离开浏览器，纯前端零后端，免费不限次数。</p>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="genTitle">生成的密码</span></h2>
+    <div class="pwd-box" id="pwdBox">
+      <span id="pwdTxt">—</span>
+      <button class="copy" id="copyBtn" data-i18n="copy">复制</button>
+    </div>
+    <div class="strength-bar"><i id="strengthBar"></i></div>
+    <div class="strength-label"><span id="strengthLabel" data-i18n="strengthNone">强度: —</span></div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" id="genBtn" data-i18n="generate">生成密码</button>
+      <button class="btn ghost sm" id="copyBtn2" data-i18n="copy">复制</button>
+      <button class="btn ghost sm" id="batchBtn" data-i18n="batch">批量10个</button>
+    </div>
+    <div id="batchList" style="margin-top:10px;display:flex;flex-direction:column;gap:6px"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="optTitle">选项</span></h2>
+    <div class="slider-row">
+      <label data-i18n="length">长度</label>
+      <input type="range" id="lenSlider" min="4" max="64" value="16">
+      <span class="val" id="lenVal">16</span>
+    </div>
+    <div class="opt-grid">
+      <label class="opt on" data-opt="upper"><input type="checkbox" checked> <span><span class="lab" data-i18n="upper">大写字母</span><br><span class="set">A-Z</span></span></label>
+      <label class="opt on" data-opt="lower"><input type="checkbox" checked> <span><span class="lab" data-i18n="lower">小写字母</span><br><span class="set">a-z</span></span></label>
+      <label class="opt on" data-opt="digits"><input type="checkbox" checked> <span><span class="lab" data-i18n="digits">数字</span><br><span class="set">0-9</span></span></label>
+      <label class="opt" data-opt="symbols"><input type="checkbox"> <span><span class="lab" data-i18n="symbols">特殊符号</span><br><span class="set">!@#$%...</span></span></label>
+      <label class="opt" data-opt="noSimilar"><input type="checkbox"> <span><span class="lab" data-i18n="noSimilar">排除相似</span><br><span class="set">0Oo1lI</span></span></label>
+      <label class="opt" data-opt="noAmbig"><input type="checkbox"> <span><span class="lab" data-i18n="noAmbig">排除歧义</span><br><span class="set">{}[]()/</span></span></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="today">今日</span></h2>
+    <div class="daily">
+      <div><div class="num" id="dCount">0</div><div class="muted" data-i18n="todayCount">今日已生成</div></div>
+      <div style="width:1px;height:34px;background:var(--line)"></div>
+      <div><div class="num" id="dStrong">0</div><div class="muted" data-i18n="todayStrong">强密码数</div></div>
+      <button class="btn ghost sm" id="shareBtn" style="margin-left:auto" data-i18n="share">分享</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="histTitle">历史记录</span></h2>
+    <div class="hist-list" id="histList"></div>
+    <p class="muted" id="emptyHist" data-i18n="emptyHist">还没有记录，点击生成密码即可。</p>
+    <button class="btn ghost sm" id="clearHistBtn" style="margin-top:8px" data-i18n="clearHist">清除历史</button>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="whyTitle">为什么用它</span></h2>
+    <ul class="tips">
+      <li data-i18n="tip1">🔒 使用 crypto.getRandomValues 加密随机源，比 Math.random 安全</li>
+      <li data-i18n="tip2">⚙️ 可调长度 4-64 位、6 种字符集选项</li>
+      <li data-i18n="tip3">📊 密码强度评估 + 历史记录（本地存储，不上传）</li>
+      <li data-i18n="tip4">🆓 完全免费，无广告、无次数限制、无需注册</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <span data-i18n="appName">密码生成器</span> · <span data-i18n="footerNote">纯前端 H5 工具 · 密码不离开浏览器</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== i18n ========== */
+const I18N={
+  zh:{appName:"密码生成器",appSlogan:"免费 · 加密随机 · 不离开浏览器",h1:"密码生成器 · 随机强密码",lead:"使用浏览器加密随机源生成高强度密码，可调长度、字符集、排除相似字符。密码不离开浏览器，纯前端零后端，免费不限次数。",genTitle:"生成的密码",copy:"复制",generate:"生成密码",batch:"批量10个",optTitle:"选项",length:"长度",upper:"大写字母",lower:"小写字母",digits:"数字",symbols:"特殊符号",noSimilar:"排除相似",noAmbig:"排除歧义",today:"今日",todayCount:"今日已生成",todayStrong:"强密码数",share:"分享",histTitle:"历史记录",emptyHist:"还没有记录，点击生成密码即可。",clearHist:"清除历史",whyTitle:"为什么用它",tip1:"🔒 使用 crypto.getRandomValues 加密随机源，比 Math.random 安全",tip2:"⚙️ 可调长度 4-64 位、6 种字符集选项",tip3:"📊 密码强度评估 + 历史记录（本地存储，不上传）",tip4:"🆓 完全免费，无广告、无次数限制、无需注册",footerNote:"纯前端 H5 工具 · 密码不离开浏览器",strengthNone:"强度: —",strengthVeryWeak:"强度: 非常弱",strengthWeak:"强度: 弱",strengthFair:"强度: 一般",strengthGood:"强度: 好",strengthStrong:"强度: 强",strengthVeryStrong:"强度: 非常强",toastCopied:"已复制到剪贴板",toastCleared:"历史已清除",toastGen:"密码已生成"},
+  en:{appName:"Password Generator",appSlogan:"Free · Crypto-random · Stays in browser",h1:"Password Generator · Random Strong Password",lead:"Generate high-strength passwords using browser crypto random source. Adjustable length, charset, exclude similar chars. Passwords never leave your browser. Pure frontend, free, unlimited.",genTitle:"Generated Password",copy:"Copy",generate:"Generate Password",batch:"Batch 10",optTitle:"Options",length:"Length",upper:"Uppercase",lower:"Lowercase",digits:"Digits",symbols:"Symbols",noSimilar:"No Similar",noAmbig:"No Ambiguous",today:"Today",todayCount:"Generated today",todayStrong:"Strong count",share:"Share",histTitle:"History",emptyHist:"No records yet. Click Generate to start.",clearHist:"Clear History",whyTitle:"Why use it",tip1:"🔒 Uses crypto.getRandomValues — safer than Math.random",tip2:"⚙️ Adjustable length 4-64, 6 charset options",tip3:"📊 Strength meter + local history (never uploaded)",tip4:"🆓 100% free, no ads, no limits, no sign-up",footerNote:"Pure frontend H5 · Passwords stay in browser",strengthNone:"Strength: —",strengthVeryWeak:"Strength: Very Weak",strengthWeak:"Strength: Weak",strengthFair:"Strength: Fair",strengthGood:"Strength: Good",strengthStrong:"Strength: Strong",strengthVeryStrong:"Strength: Very Strong",toastCopied:"Copied to clipboard",toastCleared:"History cleared",toastGen:"Password generated"},
+  ja:{appName:"パスワード生成",appSlogan:"無料・暗号乱数・ブラウザ内完結",h1:"パスワード生成器 · 強力パスワード",lead:"暗号乱数で強力なパスワードを生成。長さ・文字種・似た文字除外を調整可能。パスワードはブラウザから出ません。完全無料。",genTitle:"生成されたパスワード",copy:"コピー",generate:"パスワード生成",batch:"10個一括",optTitle:"オプション",length:"長さ",upper:"大文字",lower:"小文字",digits:"数字",symbols:"記号",noSimilar:"似た文字除外",noAmbig:"曖昧文字除外",today:"今日",todayCount:"今日の生成",todayStrong:"強パスワード数",share:"共有",histTitle:"履歴",emptyHist:"まだ記録がありません。生成をクリック。",clearHist:"履歴削除",whyTitle:"おすすめ理由",tip1:"🔒 crypto.getRandomValues使用で安全",tip2:"⚙️ 長さ4-64、6種文字セット",tip3:"📊 強度表示+ローカル履歴",tip4:"🆓 完全無料、広告なし、制限なし",footerNote:"フロントエンドH5・ブラウザ内完結",strengthNone:"強度: —",strengthVeryWeak:"強度: 非常に弱い",strengthWeak:"強度: 弱い",strengthFair:"強度: 普通",strengthGood:"強度: 良い",strengthStrong:"強度: 強い",strengthVeryStrong:"強度: 非常に強い",toastCopied:"クリップボードにコピー",toastCleared:"履歴を削除しました",toastGen:"パスワードを生成しました"},
+  ko:{appName:"비밀번호 생성기",appSlogan:"무료 · 암호난수 · 브라우저 내 완결",h1:"비밀번호 생성기 · 강력한 무작위 비밀번호",lead:"암호 난수로 강력한 비밀번호 생성. 길이·문자종류·유사 문자 제외 조정 가능. 비밀번호는 브라우저를 떠나지 않음. 완전 무료.",genTitle:"생성된 비밀번호",copy:"복사",generate:"비밀번호 생성",batch:"10개 일괄",optTitle:"옵션",length:"길이",upper:"대문자",lower:"소문자",digits:"숫자",symbols:"기호",noSimilar:"유사문자 제외",noAmbig:"모호문자 제외",today:"오늘",todayCount:"오늘 생성 수",todayStrong:"강비밀번호 수",share:"공유",histTitle:"기록",emptyHist:"아직 기록이 없습니다. 생성 클릭.",clearHist:"기록 삭제",whyTitle:"사용 이유",tip1:"🔒 crypto.getRandomValues 사용으로 안전",tip2:"⚙️ 길이 4-64, 6종 문자셋",tip3:"📊 강도 표시+로컬 기록",tip4:"🆓 완전 무료, 광고 없음, 제한 없음",footerNote:"프론트엔드 H5·브라우저 내 완결",strengthNone:"강도: —",strengthVeryWeak:"강도: 매우 약함",strengthWeak:"강도: 약함",strengthFair:"강도: 보통",strengthGood:"강도: 좋음",strengthStrong:"강도: 강함",strengthVeryStrong:"강도: 매우 강함",toastCopied:"클립보드에 복사됨",toastCleared:"기록이 삭제되었습니다",toastGen:"비밀번호가 생성되었습니다"},
+  es:{appName:"Generador de Contraseñas",appSlogan:"Gratis · Crypto-aleatorio · En el navegador",h1:"Generador de Contraseñas · Contraseña Fuerte",lead:"Genera contraseñas de alta seguridad usando fuente criptográfica del navegador. Longitud, conjunto de caracteres y exclusión de similares ajustables. Sin salir del navegador. Gratis.",genTitle:"Contraseña Generada",copy:"Copiar",generate:"Generar Contraseña",batch:"Lote 10",optTitle:"Opciones",length:"Longitud",upper:"Mayúsculas",lower:"Minúsculas",digits:"Dígitos",symbols:"Símbolos",noSimilar:"Sin similares",noAmbig:"Sin ambiguos",today:"Hoy",todayCount:"Generadas hoy",todayStrong:"Fuertes",share:"Compartir",histTitle:"Historial",emptyHist:"Sin registros. Clic en Generar.",clearHist:"Borrar historial",whyTitle:"Por qué usarlo",tip1:"🔒 Usa crypto.getRandomValues — más seguro",tip2:"⚙️ Longitud 4-64, 6 conjuntos de caracteres",tip3:"📊 Medidor de fuerza + historial local",tip4:"🆓 100% gratis, sin anuncios, sin límites",footerNote:"H5 puro · Contraseñas en el navegador",strengthNone:"Fuerza: —",strengthVeryWeak:"Fuerza: Muy débil",strengthWeak:"Fuerza: Débil",strengthFair:"Fuerza: Justa",strengthGood:"Fuerza: Buena",strengthStrong:"Fuerza: Fuerte",strengthVeryStrong:"Fuerza: Muy fuerte",toastCopied:"Copiado al portapapeles",toastCleared:"Historial borrado",toastGen:"Contraseña generada"},
+  fr:{appName:"Générateur de Mots de Passe",appSlogan:"Gratuit · Crypto-aléatoire · Dans le navigateur",h1:"Générateur de Mots de Passe · Mot de Passe Fort",lead:"Générez des mots de passe haute sécurité avec la source cryptographique du navigateur. Longueur, jeu de caractères et exclusion des similaires réglables. Reste dans le navigateur. Gratuit.",genTitle:"Mot de Passe Généré",copy:"Copier",generate:"Générer",batch:"Lot de 10",optTitle:"Options",length:"Longueur",upper:"Majuscules",lower:"Minuscules",digits:"Chiffres",symbols:"Symboles",noSimilar:"Sans similaires",noAmbig:"Sans ambigus",today:"Aujourd'hui",todayCount:"Générés aujourd'hui",todayStrong:"Forts",share:"Partager",histTitle:"Historique",emptyHist:"Pas de registre. Cliquez sur Générer.",clearHist:"Effacer l'historique",whyTitle:"Pourquoi l'utiliser",tip1:"🔒 Utilise crypto.getRandomValues — plus sûr",tip2:"⚙️ Longueur 4-64, 6 jeux de caractères",tip3:"📊 Jauge de force + historique local",tip4:"🆓 100% gratuit, sans pub, sans limite",footerNote:"H5 pur · Mots de passe dans le navigateur",strengthNone:"Force: —",strengthVeryWeak:"Force: Très faible",strengthWeak:"Force: Faible",strengthFair:"Force: Correcte",strengthGood:"Force: Bonne",strengthStrong:"Force: Forte",strengthVeryStrong:"Force: Très forte",toastCopied:"Copié dans le presse-papiers",toastCleared:"Historique effacé",toastGen:"Mot de passe généré"}
+};
+const LANGS=[{code:"zh",name:"中文"},{code:"en",name:"English"},{code:"ja",name:"日本語"},{code:"ko",name:"한국어"},{code:"es",name:"Español"},{code:"fr",name:"Français"}];
+const $=id=>document.getElementById(id);
+let curLang="zh";
+
+/* ========== i18n apply ========== */
+function applyI18n(){
+  const d=I18N[curLang]||I18N.zh;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.getAttribute("data-i18n");if(d[k])el.textContent=d[k];});
+  document.documentElement.lang=curLang==="zh"?"zh-CN":curLang;
+  const u=new URL(location.href);u.searchParams.set("lang",curLang);
+  document.querySelectorAll('link[rel=alternate]').forEach(l=>{const h=l.getAttribute("hreflang");if(h&&h!=="x-default"){const nu=new URL(u);nu.searchParams.set("lang",h.split("-")[0]);l.href=nu.toString();}});
+  localStorage.setItem("pwd-lang",curLang);
+}
+function initLangSel(){
+  const sel=$("langSel");LANGS.forEach(l=>{const o=document.createElement("option");o.value=l.code;o.textContent=l.name;sel.appendChild(o);});
+  const sv=localStorage.getItem("pwd-lang")||(new URL(location.href)).searchParams.get("lang")||"zh";
+  curLang=I18N[sv]?sv:"zh";sel.value=curLang;sel.onchange=e=>{curLang=e.target.value;applyI18n();};
+}
+/* ========== Theme ========== */
+function initTheme(){
+  const t=localStorage.getItem("pwd-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");
+  $("themeBtn").onclick=()=>{const cur=document.documentElement.getAttribute("data-theme")==="dark"?"":"dark";if(cur)document.documentElement.setAttribute("data-theme",cur);else document.documentElement.removeAttribute("data-theme");localStorage.setItem("pwd-theme",cur||"light");};
+}
+/* ========== Toast ========== */
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+
+/* ========== Charset ========== */
+const SETS={upper:"ABCDEFGHIJKLMNOPQRSTUVWXYZ",lower:"abcdefghijklmnopqrstuvwxyz",digits:"0123456789",symbols:"!@#$%^&*()_+-=[]{}|;:,.<>?/"};
+const SIMILAR="0Oo1lI1|";const AMBIG="{}[]()/\\\"'`";
+
+function getCharset(){
+  let s="";
+  const opts=getOpts();
+  if(opts.upper)s+=SETS.upper;
+  if(opts.lower)s+=SETS.lower;
+  if(opts.digits)s+=SETS.digits;
+  if(opts.symbols)s+=SETS.symbols;
+  if(opts.noSimilar)s=s.split("").filter(c=>!SIMILAR.includes(c)).join("");
+  if(opts.noAmbig)s=s.split("").filter(c=>!AMBIG.includes(c)).join("");
+  return s||SETS.lower+SETS.digits;
+}
+function getOpts(){
+  const r={};
+  document.querySelectorAll(".opt").forEach(o=>{r[o.dataset.opt]=o.querySelector("input").checked;});
+  return r;
+}
+
+/* ========== Secure random ========== */
+function secureInt(max){
+  if(max<=0)return 0;
+  const buf=new Uint32Array(1);
+  const range=2**32;
+  const lim=range-(range%max);
+  let r;
+  do{crypto.getRandomValues(buf);r=buf[0];}while(r>=lim);
+  return r%max;
+}
+
+/* ========== Generate ========== */
+function generate(){
+  const cs=getCharset();const len=parseInt($("lenSlider").value);
+  let pwd="";
+  for(let i=0;i<len;i++){pwd+=cs[secureInt(cs.length)];}
+  return pwd;
+}
+
+/* ========== Strength ========== */
+function calcEntropy(pwd){
+  const opts=getOpts();let pool=0;
+  if(opts.upper)pool+=26;if(opts.lower)pool+=26;if(opts.digits)pool+=10;if(opts.symbols)pool+=32;
+  if(pool===0)pool=36;
+  return pwd.length*Math.log2(pool);
+}
+function getStrengthLevel(entropy){
+  if(entropy<28)return{level:0,color:"#ef4444",key:"strengthVeryWeak"};
+  if(entropy<36)return{level:1,color:"#f59e0b",key:"strengthWeak"};
+  if(entropy<60)return{level:2,color:"#eab308",key:"strengthFair"};
+  if(entropy<80)return{level:3,color:"#84cc16",key:"strengthGood"};
+  if(entropy<112)return{level:4,color:"#22c55e",key:"strengthStrong"};
+  return{level:5,color:"#16a34a",key:"strengthVeryStrong"};
+}
+function updateStrength(pwd){
+  const ent=calcEntropy(pwd);
+  const s=getStrengthLevel(ent);
+  $("strengthBar").style.width=((s.level+1)/6*100)+"%";
+  $("strengthBar").style.background=s.color;
+  $("strengthLabel").textContent=I18N[curLang][s.key];
+  return s;
+}
+
+/* ========== History ========== */
+function getHist(){try{return JSON.parse(localStorage.getItem("pwd-hist")||"[]").slice(0,50);}catch(e){return[];}}
+function saveHist(h){localStorage.setItem("pwd-hist",JSON.stringify(h));}
+function addHist(pwd){
+  const h=getHist();
+  h.unshift({pwd:pwd,time:new Date().toISOString()});
+  saveHist(h.slice(0,50));renderHist();
+}
+function renderHist(){
+  const h=getHist();const list=$("histList");
+  list.innerHTML="";
+  h.slice(0,15).forEach(r=>{
+    const it=document.createElement("div");it.className="hist-item";
+    const t=new Date(r.time);const ts=t.getHours().toString().padStart(2,"0")+":"+t.getMinutes().toString().padStart(2,"0");
+    it.innerHTML=`<span class="pwd">${r.pwd}</span><span class="time">${ts}</span><button class="copy2">${I18N[curLang].copy}</button>`;
+    it.querySelector(".copy2").onclick=()=>{copyText(r.pwd);};
+    list.appendChild(it);
+  });
+  $("emptyHist").style.display=h.length?"none":"";
+}
+
+/* ========== Daily ========== */
+function todayKey(){return new Date().toISOString().slice(0,10);}
+function getDaily(){
+  try{const d=JSON.parse(localStorage.getItem("pwd-daily")||"{}");if(d.date!==todayKey())return{date:todayKey(),count:0,strong:0};return d;}catch(e){return{date:todayKey(),count:0,strong:0};}
+}
+function saveDaily(d){localStorage.setItem("pwd-daily",JSON.stringify(d));}
+function updateDaily(){const d=getDaily();$("dCount").textContent=d.count;$("dStrong").textContent=d.strong;}
+function incDaily(isStrong){const d=getDaily();d.count++;if(isStrong)d.strong++;saveDaily(d);updateDaily();}
+
+/* ========== Copy ========== */
+function copyText(txt){
+  navigator.clipboard.writeText(txt).then(()=>toast(I18N[curLang].toastCopied)).catch(()=>{
+    const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");toast(I18N[curLang].toastCopied);}catch(e){}
+    document.body.removeChild(ta);
+  });
+}
+
+/* ========== Options UI ========== */
+function initOpts(){
+  const saved=JSON.parse(localStorage.getItem("pwd-opts")||"{}");
+  document.querySelectorAll(".opt").forEach(o=>{
+    const opt=o.dataset.opt;
+    if(saved[opt]!==undefined)o.querySelector("input").checked=saved[opt];
+    const cb=o.querySelector("input");
+    cb.onchange=()=>{o.classList.toggle("on",cb.checked);saveOpts();};
+    // Click on label wrapper also toggles (native behavior, but ensure .on class sync)
+    o.onclick=e=>{if(e.target===o||e.target.classList.contains("lab")||e.target.classList.contains("set")){cb.checked=!cb.checked;o.classList.toggle("on",cb.checked);saveOpts();}};
+  });
+  const sl=$("lenSlider");
+  const slv=localStorage.getItem("pwd-len");if(slv){sl.value=slv;$("lenVal").textContent=slv;}
+  sl.oninput=()=>$("lenVal").textContent=sl.value;
+  sl.onchange=()=>localStorage.setItem("pwd-len",sl.value);
+}
+function saveOpts(){
+  const opts={};document.querySelectorAll(".opt").forEach(o=>{opts[o.dataset.opt]=o.querySelector("input").checked;});
+  localStorage.setItem("pwd-opts",JSON.stringify(opts));
+}
+
+/* ========== Actions ========== */
+function doGenerate(){
+  const pwd=generate();$("pwdTxt").textContent=pwd;
+  const s=updateStrength(pwd);
+  addHist(pwd);incDaily(s.level>=4);
+  toast(I18N[curLang].toastGen);
+}
+function doBatch(){
+  const list=$("batchList");list.innerHTML="";
+  for(let i=0;i<10;i++){
+    const pwd=generate();
+    const it=document.createElement("div");it.className="hist-item";
+    it.innerHTML=`<span class="pwd">${pwd}</span><button class="copy2">${I18N[curLang].copy}</button>`;
+    it.querySelector(".copy2").onclick=()=>copyText(pwd);
+    list.appendChild(it);
+  }
+}
+function openShare(){
+  const d=I18N[curLang];
+  if(navigator.share){navigator.share({title:d.appName,text:d.appSlogan,url:location.href}).catch(()=>{});}
+  else{navigator.clipboard.writeText(location.href).then(()=>toast(d.toastCopied));}
+}
+
+/* ========== Init ========== */
+function init(){
+  initLangSel();applyI18n();initTheme();initOpts();renderHist();updateDaily();
+  $("genBtn").onclick=doGenerate;
+  $("copyBtn").onclick=()=>$("pwdTxt").textContent!=="—"&&copyText($("pwdTxt").textContent);
+  $("copyBtn2").onclick=()=>$("pwdTxt").textContent!=="—"&&copyText($("pwdTxt").textContent);
+  $("pwdBox").onclick=e=>{if(e.target.id!=="copyBtn"&&$("pwdTxt").textContent!=="—")copyText($("pwdTxt").textContent);};
+  $("batchBtn").onclick=doBatch;
+  $("clearHistBtn").onclick=()=>{if(confirm("Clear history?")){localStorage.removeItem("pwd-hist");renderHist();toast(I18N[curLang].toastCleared);}};
+  $("shareBtn").onclick=openShare;
+  // generate on load
+  doGenerate();
+}
+init();
+</script>
+<!--WB_WIDGET_V2 v=6-->
+
+<script>
+(function(){
+  if(window.WB_WIDGET) return; window.WB_WIDGET=1;
+  var SB='https://jebnpaglwgozboyujxnx.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
+  var SITE='https://zq0424.github.io/h5-tools-hub/';
+  /* ★ 站长配置：把两张收款码图片的公网URL填到这里（可用 GitHub 仓库里的图片） */
+  var PAY={wechat:'',alipay:'',year:'¥19.9/年',life:'¥49.9/永久',free:10};
+  var parts=location.pathname.split('/').filter(Boolean);
+  var slug=parts[parts.length-1]||'home';
+  var toolName=document.title.split(/[·|]/)[0].trim()||'这个工具';
+  function ls(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
+  function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function liked(){return ls('h5hub_liked').indexOf(slug)>=0}
+  function favs(){return ls('h5hub_fav')}
+
+  /* ---------- 样式 ---------- */
+  var css=document.createElement('style');
+  css.textContent=
+  '#wbBar{position:fixed;right:12px;bottom:12px;z-index:99990;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(91,107,255,.25);border:1px solid #eef0f7;border-radius:999px;padding:6px 8px;font-family:-apple-system,PingFang SC,sans-serif;flex-wrap:wrap;max-width:calc(100vw - 24px)}'+
+  '#wbBar a,#wbBar button{border:none;background:none;font-size:15px;line-height:1;cursor:pointer;text-decoration:none;padding:4px 6px;border-radius:999px;color:#23263a}'+
+  '#wbBar .lk{background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff;font-weight:700;font-size:12.5px;padding:6px 11px}'+
+  '#wbBar .lk.on{outline:2px solid #5b6bff}#wbBar .fv.on{background:#fff3d6}#wbBar .vw{font-size:11.5px;color:#8a8fb0}#wbBar .vip{background:linear-gradient(135deg,#ffd86b,#ff9a3c);color:#fff;font-size:13px;padding:6px 9px}'+
+  '#wbFree{position:fixed;left:12px;bottom:12px;z-index:99990;background:rgba(255,255,255,.95);border:1px solid #eef0f7;border-radius:999px;padding:5px 11px;font-size:11.5px;color:#5b6bff;font-weight:700;box-shadow:0 4px 14px rgba(91,107,255,.15)}'+
+  '.wbMask{position:fixed;inset:0;background:rgba(20,22,40,.55);z-index:99999;display:none;align-items:flex-end;justify-content:center;font-family:-apple-system,PingFang SC,sans-serif}'+
+  '.wbMask.show{display:flex}.wbSheet{background:#fff;border-radius:18px 18px 0 0;max-width:420px;width:100%;max-height:82vh;overflow:auto;padding:16px 16px 26px}'+
+  '.wbSheet h3{margin:0 0 10px;font-size:15.5px}.wbX{float:right;border:none;background:none;font-size:17px;color:#8a8fb0;cursor:pointer}'+
+  '.wbCm{display:flex;gap:6px;margin:6px 0}.wbCm input,.wbCm textarea{flex:1;border:1px solid #eef0f7;border-radius:10px;padding:8px 10px;font-size:13px;outline:none}.wbCm textarea{height:56px;resize:none}'+
+  '.wbBtn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff}'+
+  '.wbBtn.g{background:#eef0ff;color:#5b6bff}'+
+  '.wbItem{background:#f7f8ff;border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px}.wbItem b{font-size:12px;color:#5b6bff}.wbItem span{display:block;color:#23263a;margin-top:2px;word-break:break-word}.wbItem i{font-size:10.5px;color:#b6bad0;font-style:normal}'+
+  '.wbPoster{width:100%;border-radius:10px}'+
+  '.wbPlans{display:flex;gap:8px;margin:10px 0}.wbPlan{flex:1;border:2px solid #eef0f7;border-radius:12px;padding:10px;text-align:center;cursor:pointer}.wbPlan.on{border-color:#5b6bff;background:#f6f7ff}.wbPlan b{display:block;font-size:17px;color:#ff6bb0}.wbPlan span{font-size:11px;color:#8a8fb0}'+
+  '.wbPayTabs{display:flex;gap:6px;margin-bottom:8px}.wbPayTabs button{flex:1;border:1px solid #eef0f7;background:#fff;border-radius:10px;padding:8px;font-size:13px;font-weight:700;cursor:pointer}.wbPayTabs button.on{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.wx{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.ali{border-color:#1677ff;color:#1677ff}'+
+  '.wbQrBox{text-align:center;min-height:180px;display:flex;align-items:center;justify-content:center;background:#f7f8ff;border-radius:12px;padding:10px}.wbQrBox img{width:160px;height:160px;border-radius:8px}'+
+  '.wbBlur>*:not(#wbBar):not(#wbFree):not(.wbMask){filter:blur(6px);pointer-events:none;user-select:none}';
+  document.head.appendChild(css);
+
+  /* ---------- 底部工具条 ---------- */
+  var bar=document.createElement('div');bar.id='wbBar';
+  bar.innerHTML='<a href="'+SITE+'" title="返回工具箱首页">🏠</a>'+
+    '<button class="lk'+(liked()?' on':'')+'" title="点赞">👍 <span class="vc">0</span></button>'+
+    '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="收藏">⭐</button>'+
+    '<button class="sh" title="分享">↗</button>'+
+    '<button class="cm" title="评论">💬<span class="cc"></span></button>'+
+    '<button class="vip" title="解锁会员">💎</button>'+
+    '<span class="vw">👁 <span class="vcw">0</span></span>';
+  document.body.appendChild(bar);
+
+  function mkMask(id,title,closable){
+    var m=document.createElement('div');m.className='wbMask';m.id=id;
+    m.innerHTML='<div class="wbSheet">'+(closable===false?'':'<button class="wbX">✕</button>')+'<h3>'+title+'</h3><div class="bd"></div></div>';
+    if(closable!==false){
+      m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
+      m.querySelector('.wbX').onclick=function(){m.classList.remove('show')};
+    }
+    document.body.appendChild(m);return m;}
+
+  /* ---------- 浏览量 + 点赞数 ---------- */
+  function loadCnt(){
+    fetch(SB+'/rest/v1/votes?select=total,views_total&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      if(rows[0]){bar.querySelector('.vc').textContent=rows[0].total||0;bar.querySelector('.vcw').textContent=rows[0].views_total||0;}
+    }).catch(function(){});
+  }
+  if(!sessionStorage.getItem('wb_view_'+slug)){
+    sessionStorage.setItem('wb_view_'+slug,'1');
+    fetch(SB+'/rest/v1/rpc/increment_view',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(loadCnt);
+  } else loadCnt();
+
+  bar.querySelector('.lk').onclick=function(){
+    if(liked())return; var a=ls('h5hub_liked');a.push(slug);save('h5hub_liked',a);
+    this.classList.add('on');this.querySelector('.vc').textContent=(parseInt(this.querySelector('.vc').textContent)||0)+1;
+    fetch(SB+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(function(){});
+  };
+  bar.querySelector('.fv').onclick=function(){
+    var a=favs(),i=a.indexOf(slug),adding=i<0;
+    if(adding){a.push(slug);this.classList.add('on');}else{a.splice(i,1);this.classList.remove('on');}
+    save('h5hub_fav',a);
+    var tok=null;try{var au=JSON.parse(localStorage.getItem('h5hub_auth')||'null');tok=au&&au.access_token||null;}catch(e){}
+    if(tok){
+      var H={apikey:ANON,Authorization:'Bearer '+tok,'Content-Type':'application/json'};
+      if(adding)fetch(SB+'/rest/v1/favorites',{method:'POST',headers:H,body:JSON.stringify({slug:slug})}).catch(function(){});
+      else fetch(SB+'/rest/v1/favorites?slug=eq.'+encodeURIComponent(slug),{method:'DELETE',headers:{apikey:ANON,Authorization:'Bearer '+tok}}).catch(function(){});
+    }
+  };
+
+  /* ---------- 分享海报（二维码 + 站点介绍，扫码直达） ---------- */
+  function qr(u){return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data='+encodeURIComponent(u);}
+  bar.querySelector('.sh').onclick=function(){
+    var m=mkMask('wbShare','↗ 分享这个工具'),bd=m.querySelector('.bd');
+    bd.innerHTML='<img class="wbPoster" alt="海报生成中…"><div style="display:flex;gap:8px;margin-top:10px">'+
+      '<button class="wbBtn g" id="wbCp">复制链接</button><button class="wbBtn" id="wbSv">保存海报</button></div>'+
+      '<div style="font-size:11px;color:#8a8fb0;margin-top:8px;text-align:center">微信内长按海报即可保存 / 发送</div>';
+    var url=SITE+slug+'/';
+    var W=750,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#eef1ff');g.addColorStop(1,'#fdeef6');
+    x.fillStyle=g;x.fillRect(0,0,W,H);x.fillStyle='#fff';
+    function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();x.fill();}
+    rr(50,50,W-100,H-100,36);x.textAlign='center';
+    x.fillStyle='#23263a';x.font='bold 54px -apple-system,PingFang SC,sans-serif';
+    x.fillText(toolName.slice(0,14),W/2,230);
+    x.fillStyle='#5b6bff';x.font='bold 34px -apple-system,PingFang SC,sans-serif';
+    x.fillText('🧰 我的工具箱 · 每天自动上新的免费小工具',W/2,310);
+    x.fillStyle='#8a8fb0';x.font='28px -apple-system,PingFang SC,sans-serif';
+    x.fillText('免登录 · 即开即用 · 欢迎点赞评论',W/2,370);
+    var q=new Image();q.crossOrigin='anonymous';
+    q.onload=function(){x.fillStyle='#fff';rr(W/2-140,420,280,280,24);x.drawImage(q,W/2-120,440,240,240);
+      x.fillStyle='#5b6bff';x.font='bold 30px sans-serif';x.fillText('👍 觉得好用就点个赞',W/2,790);
+      x.fillStyle='#b6bad0';x.font='24px sans-serif';x.fillText('扫码直达 · Scan to open',W/2,860);
+      try{bd.querySelector('img').src=c.toDataURL('image/png');}
+      catch(e){bd.querySelector('img').outerHTML='<div style="text-align:center"><img src="'+q.src+'" style="width:180px"></div>';}
+    };
+    q.src=qr(url);
+    bd.querySelector('#wbCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(function(){alert('链接已复制')}).catch(function(){prompt('',url)});};
+    bd.querySelector('#wbSv').onclick=function(){var im=bd.querySelector('img');if(im.src&&im.src.indexOf('data:')===0){var a=document.createElement('a');a.href=im.src;a.download='share.png';a.click();}else alert('请长按图片保存');};
+    m.classList.add('show');
+  };
+
+  /* ---------- 评论区 ---------- */
+  var cmMask=null;
+  bar.querySelector('.cm').onclick=function(){
+    if(!cmMask){
+      cmMask=mkMask('wbCmMask','💬 对「'+toolName+'」说点什么');
+      cmMask.querySelector('.bd').innerHTML=
+        '<div id="wbCmList" style="max-height:44vh;overflow:auto"><div style="font-size:12px;color:#8a8fb0">加载中…</div></div>'+
+        '<div class="wbCm"><input id="wbCmName" placeholder="昵称（可留空）" maxlength="20"></div>'+
+        '<div class="wbCm"><textarea id="wbCmBody" placeholder="使用感受 / 建议 / 想要的新功能…" maxlength="500"></textarea></div>'+
+        '<button class="wbBtn" id="wbCmSend" style="width:100%">发 表</button>';
+      cmMask.querySelector('#wbCmSend').onclick=function(){
+        var b=cmMask.querySelector('#wbCmBody').value.trim();
+        if(!b)return alert('写点内容再发表吧');
+        var n=cmMask.querySelector('#wbCmName').value.trim()||'访客';
+        this.disabled=true;
+        fetch(SB+'/rest/v1/comments',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json',Prefer:'return=minimal'},
+          body:JSON.stringify({slug:slug,name:n,body:b})})
+        .then(function(r){if(!r.ok)throw 0;cmMask.querySelector('#wbCmBody').value='';loadCm();})
+        .catch(function(){alert('发表失败，请稍后再试')}).finally(function(){this.disabled=false}.bind(this));
+      };
+    }
+    cmMask.classList.add('show');loadCm();
+  };
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function loadCm(){
+    if(!cmMask)return;
+    fetch(SB+'/rest/v1/comments?select=name,body,created_at&slug=eq.'+encodeURIComponent(slug)+'&order=created_at.desc&limit=50',{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      var box=cmMask.querySelector('#wbCmList');
+      box.innerHTML=rows.length?rows.map(function(c){
+        var d=new Date(c.created_at),ds=(d.getMonth()+1)+'/'+d.getDate();
+        return '<div class="wbItem"><b>'+esc(c.name)+'</b> <i>'+ds+'</i><span>'+esc(c.body)+'</span></div>';
+      }).join(''):'<div style="font-size:12px;color:#8a8fb0;padding:10px 0">还没有评论，来抢沙发～</div>';
+      var n=rows.length; if(n)bar.querySelector('.cc').textContent=' '+n;
+    }).catch(function(){});
+  }
+  loadCm();
+
+  /* ---------- 付费墙：免费 ' + PAY.free + ' 次后硬封锁（不可用第 ' + (PAY.free+1) + ' 次）---------- */
+  var use=JSON.parse(localStorage.getItem('h5hub_use')||'{}');
+  if(!sessionStorage.getItem('wb_use_'+slug)){use[slug]=(use[slug]||0)+1;localStorage.setItem('h5hub_use',JSON.stringify(use));}
+  var used=use[slug]||0, isPro=localStorage.getItem('h5hub_pro')==='1';
+  var free=document.createElement('div');free.id='wbFree';document.body.appendChild(free);
+  function paintFree(){free.textContent=isPro?'✨ 会员已解锁 · 感谢支持':(used>PAY.free?'🔒 已达免费上限，点💎解锁':'🆓 免费额度剩 '+Math.max(0,PAY.free-used+1)+' 次');}
+  paintFree();
+  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ 你已是会员，感谢支持！');return;} showPay(); };
+  function showPay(){
+    if(isPro)return;
+    var m=mkMask('wbPay','🔒 免费额度已用完 · 解锁后继续使用');
+    var plan_wx=true;
+    function paint(){
+      var plan=localStorage.getItem('wb_plan')||'year';
+      m.querySelector('.bd').innerHTML=
+        '<div style="font-size:12.5px;color:#8a8fb0">你已免费使用 '+PAY.free+' 次。解锁后无限次使用本站全部工具（含每日新增）。</div>'+
+        '<div class="wbPlans"><div class="wbPlan'+(plan==='year'?' on':'')+'" data-p="year"><b>'+PAY.year+'</b><span>年度会员</span></div>'+
+        '<div class="wbPlan'+(plan==='life'?' on':'')+'" data-p="life"><b>'+PAY.life+'</b><span>永久买断 · 更划算</span></div></div>'+
+        '<div class="wbPayTabs"><button class="wx'+(plan_wx?' on':'')+'" data-w="wx">微信支付</button><button class="ali'+(plan_wx?'':' on')+'" data-w="ali">支付宝</button></div>'+
+        '<div class="wbQrBox" id="wbQr"></div>'+
+        '<button class="wbBtn" id="wbPaid" style="width:100%;margin-top:10px">✅ 我已完成支付，激活会员</button>'+
+        '<div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">支付后点击激活（试运行自动开通；如遇问题请截图联系站长）<br>可关闭本窗，但关闭后将无法继续使用本工具，点💎可重新解锁</div>';
+      m.querySelectorAll('.wbPlan').forEach(function(p){p.onclick=function(){localStorage.setItem('wb_plan',p.dataset.p);paint();}});
+      m.querySelectorAll('.wbPayTabs button').forEach(function(b){b.onclick=function(){plan_wx=b.dataset.w==='wx';paint();};});
+      var qrEl=m.querySelector('#wbQr'),src=plan_wx?PAY.wechat:PAY.alipay;
+      qrEl.innerHTML=src?'<div><img src="'+src+'"><div style="font-size:11px;color:#8a8fb0;margin-top:4px">长按 / 扫码支付 '+(plan==='year'?PAY.year:PAY.life)+'</div></div>'
+        :'<div style="font-size:12px;color:#8a8fb0">收款码配置中<br><br>↑ 微信 / 支付宝扫码后<br>向站长转账对应金额即可</div>';
+      m.querySelector('#wbPaid').onclick=function(){localStorage.setItem('h5hub_pro','1');isPro=true;unblur();m.classList.remove('show');paintFree();alert('🎉 解锁成功，感谢支持！');};
+    };
+    paint();m.classList.add('show');
+  }
+  function blurPage(){document.body.classList.add('wbBlur');}
+  function unblur(){document.body.classList.remove('wbBlur');}
+  if(!isPro&&used>PAY.free){blurPage();showPay();}
+})();
+</script>
+
+</body>
+</html>
