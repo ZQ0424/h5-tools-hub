@@ -151,39 +151,53 @@ renderTabs();renderSelects();calc();
 </script>
 
 
+
+
+
 <!--WB_LIKE-->
-<div id="likeBar" style="position:fixed;right:16px;bottom:16px;z-index:99"></div>
 <script>
 (function(){
-  var p=location.pathname.split('/').filter(Boolean);var slug=p[p.length-1]||'home';
-  if(!slug||slug==='h5-tools-hub'||slug==='index.html')return;
-  var SUPABASE_URL='https://jebnpaglwgozboyujxnx.supabase.co';
-  var ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
-  var VKEY='h5hub_votes', LKEY='h5hub_liked';
-  function gv(){try{return JSON.parse(localStorage.getItem(VKEY)||'{}')}catch(e){return{}}}
-  function sv(v){localStorage.setItem(VKEY,JSON.stringify(v))}
-  function gl(){try{return JSON.parse(localStorage.getItem(LKEY)||'[]')}catch(e){return[]}}
-  function sl(a){localStorage.setItem(LKEY,JSON.stringify(a))}
-  var serverCnt=null, serverReady=false;
-  function paint(){
-    var liked=gl().includes(slug);
-    var c = serverReady ? (serverCnt||0) : (gv()[slug]||0);
-    var b=document.getElementById('likeBar');
-    b.innerHTML='<button id="lk" style="border:none;cursor:pointer;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,#5b6bff,#ff6bb0);padding:12px 18px;border-radius:999px;box-shadow:0 8px 24px rgba(91,107,255,.35)">👍 喜欢 '+ (c||'') +'</button>';
-    var btn=document.getElementById('lk');
-    if(liked) btn.style.opacity=.55;
-    btn.onclick=function(){
-      var L=gl(); if(L.includes(slug)) return;
-      L.push(slug); sl(L);
-      if(serverReady){
-        serverCnt=(serverCnt||0)+1; paint();
-        fetch(SUPABASE_URL+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(function(){return fetch(SUPABASE_URL+'/rest/v1/votes?select=cnt&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY}});}).then(function(r){return r.json();}).then(function(rows){if(rows[0]){serverCnt=rows[0].cnt;paint();}}).catch(function(){});
-      } else { var v=gv(); v[slug]=(v[slug]||0)+1; sv(v); paint(); }
-    };
+  if(document.getElementById('wbLikeBar')) return;
+  var SB_URL='https://jebnpaglwgozboyujxnx.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
+  var parts=location.pathname.split('/').filter(Boolean);
+  var slug=parts[parts.length-1]||parts[parts.length-2]||'home';
+  var LKEY='h5hub_liked';
+  function getLiked(){try{return JSON.parse(localStorage.getItem(LKEY)||'[]')}catch(e){return[]}}
+  function setLiked(a){localStorage.setItem(LKEY,JSON.stringify(a))}
+  var bar=document.createElement('div');bar.id='wbLikeBar';
+  bar.innerHTML='<a class="wb-back" href="https://zq0424.github.io/h5-tools-hub/" target="_blank" title="返回工具箱">🏠</a>'+
+    '<button class="wb-like">👍 <span class="wb-vc">0</span></button>'+
+    '<span class="wb-views">👁 <span class="wb-vw">0</span></span>';
+  document.body.appendChild(bar);
+  var css=document.createElement('style');
+  css.textContent='#wbLikeBar{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.96);box-shadow:0 8px 24px rgba(91,107,255,.22);border:1px solid #eef0f7;border-radius:999px;padding:6px 8px;font-family:-apple-system,PingFang SC,sans-serif}'+
+    '.wb-back{text-decoration:none;font-size:16px;line-height:1}.wb-like{border:none;background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff;font-weight:700;font-size:12.5px;padding:6px 12px;border-radius:999px;cursor:pointer}.wb-like:active{transform:scale(.94)}.wb-views{font-size:12px;color:#8a8fb0}';
+  document.head.appendChild(css);
+  var liked=getLiked();
+  if(liked.indexOf(slug)>=0) bar.querySelector('.wb-like').classList.add('wb-liked');
+  function setV(c){bar.querySelector('.wb-vc').textContent=c||0;}
+  function setW(c){bar.querySelector('.wb-vw').textContent=c||0;}
+  async function load(){
+    try{
+      var r=await fetch(SB_URL+'/rest/v1/votes?select=total,views_total&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON,Authorization:'Bearer '+ANON}});
+      var rows=await r.json(); if(rows[0]){setV(rows[0].total||0);setW(rows[0].views_total||0);}
+    }catch(e){}
   }
-  if(ANON_KEY){
-    fetch(SUPABASE_URL+'/rest/v1/votes?select=cnt&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY}}).then(function(r){return r.json();}).then(function(rows){serverReady=true;serverCnt=rows[0]?rows[0].cnt:0;paint();}).catch(function(){paint();});
-  } else { paint(); }
+  // 每次会话仅计一次浏览量，避免刷新刷量
+  if(!sessionStorage.getItem('wb_view_'+slug)){
+    sessionStorage.setItem('wb_view_'+slug,'1');
+    fetch(SB_URL+'/rest/v1/rpc/increment_view',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(load).catch(function(){});
+  } else load();
+  bar.querySelector('.wb-like').addEventListener('click',async function(){
+    var liked=getLiked(); if(liked.indexOf(slug)>=0) return;
+    liked.push(slug); setLiked(liked); this.classList.add('wb-liked');
+    setV((parseInt(bar.querySelector('.wb-vc').textContent)||0)+1);
+    try{
+      await fetch(SB_URL+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})});
+      await load();
+    }catch(e){}
+  });
 })();
 </script>
 
