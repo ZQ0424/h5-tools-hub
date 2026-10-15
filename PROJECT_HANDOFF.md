@@ -31,18 +31,24 @@
 4. 分享↗：现场生成海报（工具图标+名称+站点 slogan+二维码），扫码直达，解决"分享图无法点入"。
 5. 返回首页🏠：每个工具页固定入口。
 6. 付费墙：免费 10 次后**可关闭弹窗但锁死工具**，💎可直接收费；¥19.9/年、¥49.9/永久；微信/支付宝切换。
+7. **登录+收藏云同步**：门户👤邮箱登录，登录后收藏从 Supabase `favorites` 表读取/写入，换设备自动同步；工具页⭐登录后也同步服务端。
 
 ## 数据库 schema（public）
 - `votes(slug PK, total, week, week_start, month, month_start, views_total, views_week, views_month, last_voted_at)` — RLS: anon select
 - `comments(id uuid PK, slug, name, body[1-500], created_at)` — RLS: anon select+insert（delete 被 RLS 拦截）
+- `favorites(id uuid PK, user_id→auth.users, slug, created_at, unique(user_id,slug))` — RLS: authenticated 仅自己的；insert 触发器 `fav_uid_trg` 自动填 user_id=auth.uid()
 - RPC `increment_vote(text)→int`、`increment_view(text)→int`（周/月自动重置）
+
+## ⚠️ 云同步要能登录，需在 Supabase 后台关一项
+默认 Supabase 开了"邮箱确认"，没配 SMTP 时注册后收不到确认邮件就登不进。请在电脑上：
+`supabase.com → 你的项目 jebnpaglwgozboyujxnx → Authentication → Providers → Email → 关闭「Confirm email」`
+关掉后注册即登录。前端已兼容：若仍开启，注册后会提示"请到邮箱点确认链接"。
 
 ## ⏳ 待办 / 待你提供
 1. **微信支付真闭环**：你已开通微信商户（支付宝未开通）。需从 pay.weixin.qq.com 提供：商户号 mchid、APIv3 密钥、商户 API 证书(.pem 私钥+证书序列号)、关联 AppID；并在产品中心开通 **Native 支付**、留支付回调地址给我填。提供后我用 Supabase Edge Function 实现：扫码→自动判到账→自动解锁（替代当前 honor-system 激活）。
 2. **支付宝**：等你开通后给 应用APPID+应用私钥+支付宝公钥。
-3. **登录+收藏云同步**：当前收藏/付费状态存本机 localStorage（换设备不同步）。要跨设备需加 Supabase Auth（邮箱/微信登录）+ favorites 表。你点头即可开做。
-4. （可选）国内提速：买域名+备案回流 EdgeOne Pages。
-5. （可选）热门工具打"🔥热门"角标、更细时间维度排行。
+3. （可选）国内提速：买域名+备案回流 EdgeOne Pages。
+4. （可选）热门工具打"🔥热门"角标、更细时间维度排行、会员状态也云端同步(登录后)。
 
 ## Supabase 容量说明
 免费档 500MB 库 + 1GB 存储 + 5 万月活 + 2GB 月流量；当前小表几千用户无压力、不会崩；7 天无访问会休眠，但每日定时任务会访问所以保持在线。万级日活再升 Pro($25/月)。
