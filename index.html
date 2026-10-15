@@ -8,83 +8,82 @@
 <style>
 :root{
   --bg1:#eef1ff; --bg2:#fdeef6; --card:#fff; --primary:#5b6bff; --primary-2:#ff6bb0;
-  --primary-soft:#e6e9ff; --text:#23263a; --muted:#8a8fb0; --line:#eef0f7; --radius:16px;
-  --shadow:0 10px 30px rgba(91,107,255,.10);
+  --primary-soft:#eef0ff; --text:#23263a; --muted:#8a8fb0; --line:#eef0f7; --radius:14px;
+  --shadow:0 6px 20px rgba(91,107,255,.08);
 }
 *{box-sizing:border-box}
 body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;
   background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--text);
-  padding:18px 14px 60px;min-height:100vh}
-.wrap{max-width:880px;margin:0 auto}
-header{text-align:center;margin-bottom:12px;animation:fadeUp .5s ease both}
-header h1{font-size:25px;margin:0;background:linear-gradient(135deg,var(--primary),var(--primary-2));
-  -webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.5px}
-header .sub{color:var(--muted);font-size:12.5px;margin-top:6px}
-.stat{display:flex;justify-content:center;gap:22px;margin:12px 0 4px}
-.stat div{text-align:center}
-.stat b{display:block;font-size:21px;font-weight:800;color:var(--primary)}
-.stat span{font-size:11px;color:var(--muted)}
+  padding:14px 11px 56px;min-height:100vh}
+.wrap{max-width:980px;margin:0 auto}
+header{margin-bottom:10px}
+header h1{font-size:20px;margin:0;background:linear-gradient(135deg,var(--primary),var(--primary-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.4px}
+header .sub{color:var(--muted);font-size:11px;margin-top:3px}
+.stat{display:flex;gap:14px;margin:8px 0;font-size:11px;color:var(--muted)}
+.stat b{color:var(--primary);font-weight:800}
 
-.search{position:sticky;top:8px;z-index:20;margin:12px 0 10px}
-.search input{width:100%;padding:12px 16px;border:1px solid var(--line);border-radius:999px;
-  font-size:15px;background:rgba(255,255,255,.92);outline:none;box-shadow:var(--shadow);backdrop-filter:blur(6px)}
+.search{position:sticky;top:6px;z-index:20;margin:8px 0}
+.search input{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:999px;
+  font-size:14px;background:rgba(255,255,255,.92);outline:none;box-shadow:var(--shadow)}
 .search input:focus{border-color:var(--primary)}
 
-.tabs{display:flex;gap:8px;margin:0 0 12px}
-.tab{flex:1;text-align:center;padding:9px;border-radius:12px;font-size:13px;font-weight:700;
-  background:#fff;color:var(--muted);cursor:pointer;border:1px solid var(--line);transition:.15s}
+.tabs{display:flex;gap:6px;margin:8px 0}
+.tab{flex:1;text-align:center;padding:7px;border-radius:10px;font-size:12.5px;font-weight:700;
+  background:#fff;color:var(--muted);cursor:pointer;border:1px solid var(--line)}
 .tab.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:transparent}
 
-.hot{display:none;margin-bottom:14px}
+.hot{display:none;margin-bottom:10px}
 .hot.show{display:block}
-.hot h3{font-size:12.5px;color:var(--muted);margin:0 0 8px;font-weight:700}
-.hot-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
-.hot-card{flex:0 0 auto;min-width:138px;background:#fff;border-radius:14px;padding:11px 13px;
+.hot h3{font-size:11.5px;color:var(--muted);margin:0 0 6px;font-weight:700}
+.hot-row{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px}
+.hot-card{flex:0 0 auto;min-width:118px;background:#fff;border-radius:12px;padding:9px 11px;
   box-shadow:var(--shadow);text-decoration:none;color:inherit;border:1px solid var(--line)}
-.hot-card .rk{font-size:12px;color:var(--primary);font-weight:800}
-.hot-card .nm{font-size:13.5px;font-weight:700;margin:3px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hot-card .vt{font-size:12px;color:var(--muted)}
+.hot-card .rk{font-size:11px;color:var(--primary);font-weight:800}
+.hot-card .nm{font-size:12.5px;font-weight:700;margin:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hot-card .vt{font-size:11px;color:var(--muted)}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.tool{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 15px;
-  text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);
-  transition:transform .15s,box-shadow .15s}
-.tool:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(91,107,255,.18)}
-.tool .top{display:flex;align-items:center;gap:8px}
-.tool .ic{font-size:23px}
-.tool .nm{font-size:15px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tool .ds{font-size:12.5px;color:var(--muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.tool .kw{font-size:11px;color:#b0b4cc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tool .bot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
-.tool .like{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--primary);
-  background:var(--primary-soft);border:none;padding:6px 12px;border-radius:999px;cursor:pointer;transition:.12s}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+.tool{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:11px 12px;
+  text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:5px;border:1px solid var(--line);
+  transition:transform .15s,box-shadow .15s;animation:fadeUp .35s ease both}
+.tool:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(91,107,255,.16)}
+.tool .top{display:flex;align-items:center;gap:6px}
+.tool .ic{font-size:19px;line-height:1}
+.tool .nm{font-size:13px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tool .ds{font-size:11.5px;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tool .kw{font-size:10px;color:#b6bad0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tool .bot{display:flex;align-items:center;justify-content:space-between;margin-top:1px}
+.tool .like{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:var(--primary);
+  background:var(--primary-soft);border:none;padding:4px 9px;border-radius:999px;cursor:pointer}
 .tool .like:active{transform:scale(.94)}
 .tool .like.liked{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff}
-.tool .cnt{font-size:11.5px;color:var(--muted)}
-.empty{padding:38px;text-align:center;color:var(--muted)}
-footer{text-align:center;font-size:11.5px;color:var(--muted);margin-top:24px;line-height:1.6}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tool .views{font-size:11px;color:var(--muted)}
+.empty{padding:34px;text-align:center;color:var(--muted);grid-column:1/-1}
+footer{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;line-height:1.6}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>🧰 我的工具箱</h1>
-    <div class="sub">每天 06:00 自动新增的免费 H5 小工具 · 即开即用 · 数据不上传</div>
+    <div class="sub">每天 06:00 自动新增 · 免费 H5 小工具 · 即开即用</div>
+    <div class="stat">
+      <div><b id="cnt">…</b> 个工具</div>
+      <div><b id="vcnt">0</b> 总赞</div>
+      <div>更新：<b id="upd">—</b></div>
+    </div>
   </header>
-  <div class="stat">
-    <div><b id="cnt">…</b><span>工具</span></div>
-    <div><b id="vcnt">0</b><span>总赞</span></div>
-    <div><b id="upd">—</b><span>更新</span></div>
-  </div>
   <div class="search"><input id="q" type="search" placeholder="🔍 搜索工具（名称 / 关键词）" autocomplete="off"></div>
   <div class="tabs">
     <div class="tab active" data-mode="new">🆕 最新</div>
-    <div class="tab" data-mode="hot">🔥 最热</div>
+    <div class="tab" data-mode="week">🔥 本周最热</div>
+    <div class="tab" data-mode="total">🏆 总榜</div>
   </div>
-  <div class="hot" id="hot"><h3>🔥 全网热度榜</h3><div class="hot-row" id="hotRow"></div></div>
+  <div class="hot" id="hot"><h3 id="hotTitle">🔥 热度榜</h3><div class="hot-row" id="hotRow"></div></div>
   <div id="grid" class="grid"><div class="empty">正在加载工具列表…</div></div>
-  <footer>纯前端工具矩阵 · 无需登录 · 链接长期有效<br>👍 点赞全网实时累计（基于 Supabase）</footer>
+  <footer>纯前端工具矩阵 · 无需登录 · 点赞与浏览量全网实时统计（Supabase）</footer>
 </div>
 <script>
 const FALLBACK=[
@@ -103,15 +102,19 @@ function getLiked(){try{return JSON.parse(localStorage.getItem(LKEY)||'[]')}catc
 function setLiked(a){localStorage.setItem(LKEY,JSON.stringify(a))}
 function slugOf(t){return t.slug||(t.path||'').replace(/\//g,'')}
 let APPS=[], MODE='new', Q='', serverVotes={}, serverReady=false;
-function displayCnt(s){ return serverReady ? (serverVotes[s]||0) : (getVotes()[s]||0); }
-function totalVotes(){ return serverReady ? Object.values(serverVotes).reduce((a,b)=>a+b,0) : Object.values(getVotes()).reduce((a,b)=>a+b,0); }
+function metric(s){const v=serverVotes[s];if(!v)return 0;return MODE==='week'?(v.week||0):(v.total||0);}
+function viewCnt(s){const v=serverVotes[s];return v?(v.views_total||0):0;}
+function totalVotes(){
+  if(serverReady) return Object.values(serverVotes).reduce((a,b)=>a+(b.total||0),0);
+  return Object.values(getVotes()).reduce((a,b)=>a+(b||0),0);
+}
 async function loadServer(){
   if(!ANON_KEY) return;
   try{
-    const r=await fetch(SUPABASE_URL+'/rest/v1/votes?select=slug,cnt',{headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY}});
+    const r=await fetch(SUPABASE_URL+'/rest/v1/votes?select=slug,total,week,views_total,views_week',{headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY}});
     if(!r.ok) return;
     const rows=await r.json();
-    rows.forEach(x=>serverVotes[x.slug]=x.cnt);
+    rows.forEach(x=>serverVotes[x.slug]=x);
     serverReady=true;
   }catch(e){}
 }
@@ -124,31 +127,35 @@ function render(){
     const hay=(t.name+' '+(t.keywords||[]).join(' ')+' '+(t.desc||'')).toLowerCase();
     return hay.includes(Q.toLowerCase());
   });
-  if(MODE==='hot') list=list.slice().sort((a,b)=>displayCnt(slugOf(b))-displayCnt(slugOf(a)));
-  const hot=APPS.map(t=>({t,c:displayCnt(slugOf(t))})).filter(x=>x.c>0).sort((a,b)=>b.c-a.c).slice(0,5);
+  if(MODE!=='new') list=list.slice().sort((a,b)=>metric(slugOf(b))-metric(slugOf(a)));
+  const titleEl=document.getElementById('hotTitle');
   const hotBox=document.getElementById('hot');
-  if(MODE==='hot'&&hot.length){
-    hotBox.classList.add('show');
-    document.getElementById('hotRow').innerHTML=hot.map((x,i)=>{
-      const t=x.t;
-      return `<a class="hot-card" href="${t.path}" target="_blank" rel="noopener">
-        <div class="rk">#${i+1}</div><div class="nm">${t.icon||'🛠️'} ${t.name}</div>
-        <div class="vt">👍 ${x.c}</div></a>`;
-    }).join('');
+  if(MODE!=='new'){
+    const ranked=APPS.map(t=>({t,c:metric(slugOf(t))})).filter(x=>x.c>0).sort((a,b)=>b.c-a.c).slice(0,5);
+    if(ranked.length){
+      titleEl.textContent=MODE==='week'?'🔥 本周热度榜 Top5':'🏆 总榜 Top5';
+      document.getElementById('hotRow').innerHTML=ranked.map((x,i)=>{
+        const t=x.t;
+        return `<a class="hot-card" href="${t.path}" target="_blank" rel="noopener">
+          <div class="rk">#${i+1}</div><div class="nm">${t.icon||'🛠️'} ${t.name}</div>
+          <div class="vt">${MODE==='week'?'👍':'👍'} ${x.c} · 👁 ${viewCnt(slugOf(t))}</div></a>`;
+      }).join('');
+      hotBox.classList.add('show');
+    } else hotBox.classList.remove('show');
   } else hotBox.classList.remove('show');
   const g=document.getElementById('grid');
   if(!list.length){g.innerHTML='<div class="empty">没有匹配的工具</div>';return;}
   g.innerHTML='';
   list.forEach((t,i)=>{
-    const s=slugOf(t), c=displayCnt(s), likedF=liked.includes(s);
+    const s=slugOf(t), likedF=liked.includes(s);
     const a=document.createElement('a');a.className='tool';a.href=t.path;a.target='_blank';a.rel='noopener';
-    a.style.animation=`fadeUp .35s ease both`;a.style.animationDelay=(i*0.03)+'s';
+    a.style.animationDelay=(i*0.03)+'s';
     a.innerHTML=`<div class="top"><div class="ic">${t.icon||'🛠️'}</div><div class="nm">${t.name}</div></div>
       <div class="ds">${t.desc||''}</div>
       <div class="kw">${(t.keywords||[]).join(' · ')||''}</div>
       <div class="bot">
-        <button class="like${likedF?' liked':''}" data-slug="${s}">👍 <span>${c||''}</span></button>
-        <span class="cnt">${t.generated||''}</span>
+        <button class="like${likedF?' liked':''}" data-slug="${s}">👍 <span>${metric(s)||''}</span></button>
+        <span class="views">👁 ${viewCnt(s)||0}</span>
       </div>`;
     g.appendChild(a);
   });
@@ -158,11 +165,11 @@ async function like(s){
   if(liked.includes(s)) return;
   liked.push(s); setLiked(liked);
   if(serverReady){
-    serverVotes[s]=(serverVotes[s]||0)+1; render();
+    render();
     try{
       await fetch(SUPABASE_URL+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_slug:s})});
-      const r=await fetch(SUPABASE_URL+'/rest/v1/votes?select=cnt&slug=eq.'+encodeURIComponent(s),{headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY}});
-      const rows=await r.json(); if(rows[0]) serverVotes[s]=rows[0].cnt;
+      const r=await fetch(SUPABASE_URL+'/rest/v1/votes?select=total,week,views_total&slug=eq.'+encodeURIComponent(s),{headers:{apikey:ANON_KEY,Authorization:'Bearer '+ANON_KEY}});
+      const rows=await r.json(); if(rows[0]) serverVotes[s]=rows[0];
     }catch(e){}
     render();
   } else {
