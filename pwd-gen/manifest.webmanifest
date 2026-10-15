@@ -1,0 +1,1 @@
+{"name":"密码生成器","short_name":"PwdGen","description":"加密随机源生成高强度密码","start_url":"./","display":"standalone","background_color":"#fffbeb","theme_color":"#f59e0b","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]}
