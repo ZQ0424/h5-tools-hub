@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>图片压缩到指定KB · 照片改大小在线压缩工具 | 免费不限次数 本地处理</title>
+<meta name="description" content="在线把图片压缩到指定 KB：支持 20KB/50KB/100KB/200KB 等目标大小，批量处理，自动二分逼近体积，保留清晰度。全程浏览器本地处理，不上传服务器、无水印、不限次数，适合考试报名、证件上传、网站图片优化。">
+<meta name="keywords" content="图片压缩,照片压缩到20kb,照片改大小,图片压缩到指定大小,在线压缩图片,批量压缩图片,报名照片压缩,图片体积压缩,image compressor,target file size">
+<meta name="theme-color" content="#0ea5e9">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="图片压缩到指定KB · 免费在线照片改大小工具">
+<meta property="og:description" content="批量把图片压到 20KB/50KB/100KB，浏览器本地处理，不上传、无水印、不限次数。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://h5tools.pages.dev/img-kb-compress/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="zh-CN" href="?lang=zh">
+<link rel="alternate" hreflang="en" href="?lang=en">
+<link rel="alternate" hreflang="ja" href="?lang=ja">
+<link rel="alternate" hreflang="ko" href="?lang=ko">
+<link rel="alternate" hreflang="es" href="?lang=es">
+<link rel="alternate" hreflang="fr" href="?lang=fr">
+<link rel="alternate" hreflang="x-default" href="?lang=zh">
+<link rel="canonical" href="https://h5tools.pages.dev/img-kb-compress/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Compress">
+<style>
+:root{
+  --bg:#f4f7fa; --card:#fff; --txt:#131826; --sub:#67708c; --line:#e4e9f2;
+  --pri:#0ea5e9; --pri2:#6366f1; --ok:#10b981; --warn:#f59e0b; --danger:#ef4444;
+  --shadow:0 1px 2px rgba(18,24,40,.05),0 10px 26px rgba(18,24,40,.07); --r:16px;
+}
+html[data-theme="dark"]{--bg:#0d1018;--card:#171b28;--txt:#eaeefb;--sub:#98a1bd;--line:#262c3d;--shadow:0 1px 2px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.4)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Noto Sans CJK SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;padding:0 14px 40px}
+header{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hd{max-width:940px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;color:#fff;font-weight:800;flex:none;box-shadow:0 4px 12px rgba(14,165,233,.35)}
+.brand{font-weight:800;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--sub)}
+.sel{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;padding:6px 8px;font-size:13px;max-width:110px}
+.ibtn{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;font-size:15px}
+.ibtn:active{transform:scale(.94)}
+h1{font-size:23px;margin:22px 0 6px;letter-spacing:-.3px}
+.lead{color:var(--sub);margin:0 0 18px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:7px}
+.card h2 .dot{width:6px;height:6px;border-radius:50%;background:var(--pri)}
+.drop{border:2px dashed var(--line);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;transition:.18s;background:var(--bg)}
+.drop:hover,.drop.over{border-color:var(--pri);background:rgba(14,165,233,.07)}
+.drop .big{font-size:34px;line-height:1}
+.drop p{margin:8px 0 0;color:var(--sub);font-size:13.5px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--txt);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer;transition:.15s;font-weight:600}
+.chip.on{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(14,165,233,.3)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=number],input[type=text],select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--txt);border-radius:11px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none}
+input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(14,165,233,.14)}
+.btn{border:0;border-radius:11px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-family:inherit;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--bg);color:var(--txt);border:1px solid var(--line)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn.warn{background:linear-gradient(135deg,#f43f5e,#ef4444)}
+.btn:disabled{opacity:.55;cursor:default}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:640px){.fgrid{grid-template-columns:1fr 1fr}}
+.fld label{display:block;font-size:12.5px;color:var(--sub);margin-bottom:5px;font-weight:600}
+.muted{color:var(--sub);font-size:12.5px}
+.list{display:flex;flex-direction:column;gap:9px}
+.it{display:flex;gap:11px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+.it .th{width:48px;height:48px;border-radius:9px;object-fit:cover;background:#dfe4ee;flex:none;border:1px solid var(--line)}
+.it .info{flex:1;min-width:0}
+.it .nm{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.it .sz{font-size:12px;color:var(--sub);margin-top:3px}
+.it .sz b{color:var(--ok)}
+.it .sz .bad{color:var(--warn)}
+.bar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),var(--ok));transition:width .4s}
+.spin{width:15px;height:15px;border:2px solid var(--line);border-top-color:var(--pri);border-radius:50%;animation:sp .7s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.daily{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(14,165,233,.1),rgba(99,102,241,.1));border:1px solid var(--line)}
+.daily .num{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#151a29;color:#fff;padding:10px 16px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+dialog{border:0;border-radius:18px;padding:0;background:var(--card);color:var(--txt);max-width:420px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(8,10,20,.55);backdrop-filter:blur(3px)}
+.dg{padding:18px}.dg h3{margin:0 0 8px;font-size:16px}
+.dg .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+footer{color:var(--sub);font-size:12.5px;text-align:center;padding:18px 10px;line-height:1.8}
+ul.tips{margin:8px 0 0;padding-left:18px;color:var(--sub);font-size:12.8px}
+ul.tips li{margin:3px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo">🗜️</div>
+    <div class="brand"><span data-i18n="appName">图片压缩到指定KB</span><small data-i18n="appSlogan">免费 · 不上传 · 不限次数</small></div>
+    <select class="sel" id="langSel" aria-label="Language"></select>
+    <button class="ibtn" id="themeBtn" title="theme">🌓</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 data-i18n="h1">把图片压缩到指定 KB</h1>
+  <p class="lead" data-i18n="lead">考试报名、证件上传、网站配图常要求「不超过 100KB」。选好目标大小，批量导入即可自动压到目标以内，全程在本机浏览器完成，不上传、无水印、不限次数。</p>
+
+  <div class="card">
+    <div class="drop" id="drop">
+      <div class="big">📥</div>
+      <p data-i18n="dropTip">点击选择图片，或拖拽 / 粘贴到此处（支持多选）</p>
+      <input type="file" id="fileIn" accept="image/*" multiple hidden>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="setTitle">压缩目标</span></h2>
+    <p class="muted" style="margin:0 0 8px" data-i18n="targetTip">目标大小（每张）</p>
+    <div class="chips" id="sizeChips"></div>
+    <div class="fgrid" style="margin-top:14px">
+      <div class="fld"><label data-i18n="custom">自定义 (KB)</label><input type="number" id="customKb" min="1" max="5000" placeholder="100"></div>
+      <div class="fld"><label data-i18n="format">输出格式</label><select id="fmt"><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option><option value="image/png">PNG</option></select></div>
+      <div class="fld"><label data-i18n="maxEdge">最大边长 (px)</label><input type="number" id="maxEdge" min="200" max="8000" placeholder="1920"></div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" id="runBtn" data-i18n="run">开始压缩</button>
+      <button class="btn ghost sm" id="dlAllBtn" data-i18n="dlAll">下载全部</button>
+      <button class="btn ghost sm" id="clearBtn" data-i18n="clearList">清空列表</button>
+      <span class="muted" id="cntTxt"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="today">今日</span></h2>
+    <div class="daily">
+      <div><div class="num" id="dCount">0</div><div class="muted" data-i18n="todayCount">今日已处理</div></div>
+      <div style="width:1px;height:34px;background:var(--line)"></div>
+      <div><div class="num" id="dSave">0 KB</div><div class="muted" data-i18n="todaySave">今日已节省</div></div>
+      <button class="btn ghost sm" id="shareBtn" style="margin-left:auto" data-i18n="share">分享卡</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="resTitle">压缩结果</span></h2>
+    <div class="list" id="list"></div>
+    <p class="muted" id="emptyTxt" data-i18n="emptyList">还没有图片，先添加几张吧。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span><span data-i18n="whyTitle">为什么用它</span></h2>
+    <ul class="tips">
+      <li data-i18n="tip1">🔒 图片不离开手机/电脑，全部在本机浏览器处理，隐私更安全</li>
+      <li data-i18n="tip2">🎯 二分法自动逼近目标 KB，比反复手调质量更快</li>
+      <li data-i18n="tip3">📦 支持批量，一次压完打包下载</li>
+      <li data-i18n="tip4">🆓 完全免费，无水印、无次数限制、无需注册</li>
+    </ul>
+  </div>
+
+  <footer>
+    <div data-i18n="footerPrivacy">🔒 所有图片仅在本机处理，不上传任何服务器</div>
+    <div>H5 工具矩阵 · <span data-i18n="footerName">图片压缩到指定KB</span></div>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+<dialog id="shareDlg"><div class="dg">
+  <h3 data-i18n="shareTitle">分享卡片</h3>
+  <canvas id="shareCv" style="width:100%;border-radius:12px;display:block"></canvas>
+  <div class="acts">
+    <button class="btn ghost sm" id="dlShareBtn" data-i18n="dl">下载图片</button>
+    <button class="btn sm" id="closeShareBtn" data-i18n="close">关闭</button>
+  </div>
+</div></dialog>
+
+<script>
+(function(){
+"use strict";
+var LANGS=["zh","en","ja","ko","es","fr"];
+var LNAME={zh:"简体中文",en:"English",ja:"日本語",ko:"한국어",es:"Español",fr:"Français"};
+var DESC={
+ zh:"在线把图片压缩到指定 KB：支持 20KB/50KB/100KB 等目标，批量处理，自动二分逼近体积。本机处理、不上传服务器、无水印、不限次数。",
+ en:"Compress images to an exact target size in KB (20KB/50KB/100KB...). Batch, automatic binary search, runs locally with no upload, no watermark.",
+ ja:"画像を指定KBまで圧縮（20KB/50KB/100KB対応）。一括処理・自動二分探索・端末内処理でアップロード不要、透かしなし。",
+ ko:"이미지를 지정한 KB로 압축(20KB/50KB/100KB). 일괄 처리, 자동 이분 탐색, 업로드 없는 로컬 처리, 워터마크 없음.",
+ es:"Comprime imágenes a un tamaño exacto en KB (20KB/50KB/100KB). Por lotes, búsqueda binaria automática, sin subidas ni marca de agua.",
+ fr:"Compressez vos images à une taille exacte en Ko (20/50/100 Ko). Par lot, recherche dichotomique, traitement local sans envoi ni filigrane."
+};
+var TITLE={
+ zh:"图片压缩到指定KB · 照片改大小在线压缩 | 免费不限次数 本地处理",
+ en:"Compress Image to Target KB · Online Photo Resizer | Free, Local",
+ ja:"画像を指定KBに圧縮 · オンライン画像サイズ変更 | 無料・端末内処理",
+ ko:"이미지 지정 KB 압축 · 사진 크기 줄이기 | 무료 로컬 처리",
+ es:"Comprimir imagen a KB exactos · Redimensionar foto | Gratis y local",
+ fr:"Compresser une image à un poids précis en Ko | Gratuit et local"
+};
+var T={
+ zh:{appName:"图片压缩到指定KB",appSlogan:"免费 · 不上传 · 不限次数",h1:"把图片压缩到指定 KB",
+  lead:"考试报名、证件上传、网站配图常要求「不超过 100KB」。选好目标大小，批量导入即可自动压到目标以内，全程在本机浏览器完成，不上传、无水印、不限次数。",
+  dropTip:"点击选择图片，或拖拽 / 粘贴到此处（支持多选）",setTitle:"压缩目标",targetTip:"目标大小（每张）",custom:"自定义 (KB)",format:"输出格式",maxEdge:"最大边长 (px)",
+  run:"开始压缩",dlAll:"下载全部",clearList:"清空列表",today:"今日",todayCount:"今日已处理",todaySave:"今日已节省",share:"分享卡",resTitle:"压缩结果",emptyList:"还没有图片，先添加几张吧。",
+  whyTitle:"为什么用它",tip1:"🔒 图片不离开手机/电脑，全部在本机浏览器处理，隐私更安全",tip2:"🎯 二分法自动逼近目标 KB，比反复手调质量更快",tip3:"📦 支持批量，一次压完打包下载",tip4:"🆓 完全免费，无水印、无次数限制、无需注册",
+  footerPrivacy:"🔒 所有图片仅在本机处理，不上传任何服务器",footerName:"图片压缩到指定KB",shareTitle:"分享卡片",dl:"下载图片",close:"关闭",
+  processing:"压缩中…",done:"完成",fail:"失败",over:"略超目标",ok:"已达标",saved:"已节省",noImg:"请先选择图片",dlTip:"开始下载",target:"目标",clearAsk:"清空全部结果？",cleared:"已清空",noRes:"还没有结果"},
+ en:{appName:"Compress to Target KB",appSlogan:"Free · No upload · Unlimited",h1:"Compress Images to an Exact KB",
+  lead:"Forms, IDs and websites often demand \"under 100KB\". Pick a target and batch-compress locally in your browser — no upload, no watermark, no limits.",
+  dropTip:"Click to choose images, or drag / paste here (multiple supported)",setTitle:"Target",targetTip:"Target size (per image)",custom:"Custom (KB)",format:"Output format",maxEdge:"Max edge (px)",
+  run:"Compress",dlAll:"Download all",clearList:"Clear list",today:"Today",todayCount:"processed today",todaySave:"saved today",share:"Share",resTitle:"Results",emptyList:"No images yet — add some first.",
+  whyTitle:"Why this tool",tip1:"🔒 Images never leave your device — processed locally for real privacy",tip2:"🎯 Binary search hits the target KB faster than manual tweaking",tip3:"📦 Batch support — compress and download in one go",tip4:"🆓 Fully free: no watermark, no limits, no sign-up",
+  footerPrivacy:"🔒 Images are processed on your device only. Nothing is uploaded.",footerName:"Compress to Target KB",shareTitle:"Share card",dl:"Download",close:"Close",
+  processing:"Compressing…",done:"Done",fail:"Failed",over:"slightly over",ok:"Target hit",saved:"saved",noImg:"Choose images first",dlTip:"Downloading",target:"Target",clearAsk:"Clear all results?",cleared:"Cleared",noRes:"No results yet"},
+ ja:{appName:"画像を指定KBに圧縮",appSlogan:"無料 · 送信なし · 回数無制限",h1:"画像を指定のKBまで圧縮",
+  lead:"願書や証明写真で「100KB以下」と指定されることが多いです。目標サイズを選んで一括圧縮。端末内で処理するため送信不要・透かしなし・回数無制限。",
+  dropTip:"クリックで選択、またはドラッグ／貼り付け（複数可）",setTitle:"圧縮設定",targetTip:"目標サイズ（1枚あたり）",custom:"カスタム (KB)",format:"出力形式",maxEdge:"最大辺 (px)",
+  run:"圧縮開始",dlAll:"すべて保存",clearList:"一覧を消去",today:"今日",todayCount:"今日の処理数",todaySave:"今日の削減量",share:"シェア",resTitle:"圧縮結果",emptyList:"画像がまだありません。",
+  whyTitle:"選ばれる理由",tip1:"🔒 画像は端末から出ません。すべてローカル処理で安心",tip2:"🎯 二分探索で目標KBに素早く到達",tip3:"📦 一括対応。まとめて保存できます",tip4:"🆓 完全無料。透かしなし・回数制限なし・登録不要",
+  footerPrivacy:"🔒 画像は端末内のみで処理され、送信されません。",footerName:"画像を指定KBに圧縮",shareTitle:"シェアカード",dl:"ダウンロード",close:"閉じる",
+  processing:"圧縮中…",done:"完了",fail:"失敗",over:"目標を少し超過",ok:"目標達成",saved:"削減",noImg:"先に画像を選択してください",dlTip:"保存中",target:"目標",clearAsk:"結果をすべて消去しますか？",cleared:"消去しました",noRes:"結果はまだありません"},
+ ko:{appName:"이미지 지정 KB 압축",appSlogan:"무료 · 업로드 없음 · 무제한",h1:"이미지를 정확한 KB로 압축",
+  lead:"원서 접수나 신분증 사진은 흔히 \"100KB 이하\"를 요구합니다. 목표 크기를 고르고 한 번에 압축하세요. 기기에서만 처리되어 업로드가 없습니다.",
+  dropTip:"클릭해서 선택하거나 드래그 / 붙여넣기(여러 장 가능)",setTitle:"압축 설정",targetTip:"목표 크기(장당)",custom:"직접 입력 (KB)",format:"출력 형식",maxEdge:"최대 변 길이 (px)",
+  run:"압축하기",dlAll:"모두 저장",clearList:"목록 비우기",today:"오늘",todayCount:"오늘 처리",todaySave:"오늘 절감",share:"공유",resTitle:"압축 결과",emptyList:"이미지가 없습니다.",
+  whyTitle:"이 도구를 쓰는 이유",tip1:"🔒 이미지는 기기를 떠나지 않습니다. 로컬에서 처리되어 안전합니다",tip2:"🎯 이분 탐색으로 목표 KB에 빠르게 도달",tip3:"📦 일괄 처리 후 한 번에 저장",tip4:"🆓 완전 무료. 워터마크·제한·가입 없음",
+  footerPrivacy:"🔒 이미지는 기기에서만 처리되며 업로드되지 않습니다.",footerName:"이미지 지정 KB 압축",shareTitle:"공유 카드",dl:"다운로드",close:"닫기",
+  processing:"압축 중…",done:"완료",fail:"실패",over:"목표 초과",ok:"목표 달성",saved:"절감",noImg:"먼저 이미지를 선택하세요",dlTip:"저장 중",target:"목표",clearAsk:"결과를 모두 지울까요?",cleared:"비웠습니다",noRes:"결과가 아직 없습니다"},
+ es:{appName:"Comprimir a KB exactos",appSlogan:"Gratis · Sin subidas · Ilimitado",h1:"Comprime imágenes a un KB exacto",
+  lead:"Formularios y documentos suelen exigir \"menos de 100 KB\". Elige un objetivo y comprime por lotes en tu navegador: sin subidas ni marca de agua.",
+  dropTip:"Haz clic para elegir, o arrastra / pega aquí (varias imágenes)",setTitle:"Ajustes",targetTip:"Tamaño objetivo (por imagen)",custom:"Personalizado (KB)",format:"Formato de salida",maxEdge:"Lado máximo (px)",
+  run:"Comprimir",dlAll:"Descargar todo",clearList:"Vaciar lista",today:"Hoy",todayCount:"procesadas hoy",todaySave:"ahorrado hoy",share:"Compartir",resTitle:"Resultados",emptyList:"Aún no hay imágenes.",
+  whyTitle:"Por qué usarlo",tip1:"🔒 Las imágenes nunca salen de tu dispositivo: se procesan en local",tip2:"🎯 Búsqueda binaria que llega al KB objetivo más rápido",tip3:"📦 Procesamiento por lotes y descarga conjunta",tip4:"🆓 Totalmente gratis: sin marca de agua ni registro",
+  footerPrivacy:"🔒 Las imágenes se procesan solo en tu dispositivo. Nada se sube.",footerName:"Comprimir a KB exactos",shareTitle:"Tarjeta",dl:"Descargar",close:"Cerrar",
+  processing:"Comprimiendo…",done:"Hecho",fail:"Error",over:"algo por encima",ok:"Objetivo logrado",saved:"ahorrado",noImg:"Elige imágenes primero",dlTip:"Descargando",target:"Objetivo",clearAsk:"¿Vaciar todos los resultados?",cleared:"Vaciado",noRes:"Sin resultados"},
+ fr:{appName:"Compresser vers un Ko précis",appSlogan:"Gratuit · Sans envoi · Illimité",h1:"Compressez vos images à un poids précis",
+  lead:"Les formulaires exigent souvent « moins de 100 Ko ». Choisissez une cible et compressez par lot dans le navigateur : aucun envoi, aucun filigrane.",
+  dropTip:"Cliquez pour choisir, ou glissez / collez ici (plusieurs images)",setTitle:"Réglages",targetTip:"Poids cible (par image)",custom:"Personnalisé (Ko)",format:"Format de sortie",maxEdge:"Côté max (px)",
+  run:"Compresser",dlAll:"Tout télécharger",clearList:"Vider la liste",today:"Aujourd'hui",todayCount:"traitées aujourd'hui",todaySave:"économisé aujourd'hui",share:"Partager",resTitle:"Résultats",emptyList:"Pas encore d'images.",
+  whyTitle:"Pourquoi cet outil",tip1:"🔒 Vos images ne quittent jamais l'appareil : traitement local",tip2:"🎯 Recherche dichotomique pour atteindre le poids cible plus vite",tip3:"📦 Traitement par lot et téléchargement groupé",tip4:"🆓 Gratuit : sans filigrane, sans limite, sans inscription",
+  footerPrivacy:"🔒 Les images sont traitées uniquement sur votre appareil. Rien n'est envoyé.",footerName:"Compresser vers un Ko précis",shareTitle:"Carte à partager",dl:"Télécharger",close:"Fermer",
+  processing:"Compression…",done:"Terminé",fail:"Échec",over:"légèrement au-dessus",ok:"Cible atteinte",saved:"économisé",noImg:"Choisissez d'abord des images",dlTip:"Téléchargement",target:"Cible",clearAsk:"Vider tous les résultats ?",cleared:"Vidé",noRes:"Pas encore de résultat"}
+};
+var lang="zh";
+function tr(k){return (T[lang]&&T[lang][k])||T.zh[k]||k;}
+function applyI18n(){
+  document.documentElement.lang=(lang==="zh"?"zh-CN":lang);
+  document.title=TITLE[lang]||TITLE.zh;
+  var md=document.querySelector('meta[name="description"]'); if(md) md.setAttribute("content",DESC[lang]||DESC.zh);
+  document.querySelectorAll("[data-i18n]").forEach(function(el){el.textContent=tr(el.getAttribute("data-i18n"));});
+  document.querySelectorAll("link[rel=alternate]").forEach(function(a){
+    var m={"zh-CN":"zh",en:"en",ja:"ja",ko:"ko",es:"es",fr:"fr","x-default":"zh"};
+    var base=location.href.split("#")[0].split("?")[0];
+    a.setAttribute("href", base+"?lang="+(m[a.getAttribute("hreflang")]||"zh"));
+  });
+  buildChips(); renderList(); renderDaily();
+}
+var PRESETS=[20,50,100,200,500,1024];
+var target=100, files=[], results=[];
+var KEY="ikb_stat_v1";
+function buildChips(){
+  var box=document.getElementById("sizeChips"); box.innerHTML="";
+  PRESETS.forEach(function(p){
+    var b=document.createElement("button"); b.className="chip"+(p===target?" on":"");
+    b.textContent=p+"KB"; b.dataset.v=p;
+    b.onclick=function(){ target=p; buildChips(); };
+    box.appendChild(b);
+  });
+  var c=document.getElementById("customKb");
+  c.oninput=function(){ var v=parseInt(c.value,10); if(v>0&&v<=5000){ target=v; buildChips(); } };
+}
+function fmtSize(b){
+  if(b<1024) return b+" B";
+  if(b<1024*1024) return (b/1024).toFixed(b<10240?1:0)+" KB";
+  return (b/1048576).toFixed(2)+" MB";
+}
+/* ---------- compress core ---------- */
+function loadImage(file){
+  return new Promise(function(res,rej){
+    var url=URL.createObjectURL(file), im=new Image();
+    im.onload=function(){ URL.revokeObjectURL(url); res(im); };
+    im.onerror=function(){ URL.revokeObjectURL(url); rej(new Error("load")); };
+    im.src=url;
+  });
+}
+function toBlob(im,w,h,q,fmt){
+  var c=document.createElement("canvas"); c.width=Math.max(1,w); c.height=Math.max(1,h);
+  var x=c.getContext("2d");
+  if(fmt==="image/jpeg"||fmt==="image/webp"){ x.fillStyle="#fff"; x.fillRect(0,0,c.width,c.height); }
+  x.imageSmoothingQuality="high";
+  x.drawImage(im,0,0,c.width,c.height);
+  return new Promise(function(res){ c.toBlob(function(b){ res(b); },fmt,q); });
+}
+async function compress(im, targetBytes, fmt, maxEdge){
+  var w=im.naturalWidth||im.width, h=im.naturalHeight||im.height;
+  if(maxEdge&&Math.max(w,h)>maxEdge){ var s=maxEdge/Math.max(w,h); w=Math.round(w*s); h=Math.round(h*s); }
+  var lo=0.08, hi=0.95, best=null, bestQ=0.95, guard=0;
+  for(var i=0;i<9;i++){
+    var q=(lo+hi)/2, b=await toBlob(im,w,h,q,fmt);
+    if(!b) break;
+    if(b.size<=targetBytes){ best=b; bestQ=q; lo=q; } else { hi=q; guard=b; }
+  }
+  if(!best){
+    var cw=w, ch=h;
+    for(var k=0;k<8;k++){
+      cw=Math.round(cw*0.82); ch=Math.round(ch*0.82);
+      if(cw<40||ch<40) break;
+      var b2=await toBlob(im,cw,ch,0.6,fmt);
+      if(b2&&b2.size<=targetBytes){ best=b2; break; }
+      if(b2) guard=b2;
+    }
+  }
+  return {blob:best||guard, w:w, h:h};
+}
+/* ---------- list ---------- */
+function renderList(){
+  var box=document.getElementById("list"); box.innerHTML="";
+  results.forEach(function(r,i){
+    var el=document.createElement("div"); el.className="it";
+    var pct = r.orig? Math.min(100, Math.round(r.new/r.orig*100)) : 0;
+    var over = r.new> (target*1024);
+    el.innerHTML='<img class="th" src="'+r.url+'" alt="">'+
+      '<div class="info"><div class="nm">'+esc(r.name)+'</div>'+
+      '<div class="sz">'+fmtSize(r.orig)+' → <b>'+fmtSize(r.new)+'</b> '+
+      (r.done?'<span style="color:'+(over?'var(--warn)':'var(--ok)')+'">('+(over?'⚠ '+tr("over"):'✓ '+tr("ok"))+', -'+Math.round((1-r.new/r.orig)*100)+'%)</span>':'')+
+      '</div><div class="bar"><i style="width:'+(r.done?Math.max(3,pct):8)+'%"></i></div></div>'+
+      (r.done?'<button class="btn sm" data-dl="'+i+'">↓</button>':(r.busy?'<div class="spin"></div>':'<span class="muted" style="font-size:12px">'+tr("fail")+'</span>'));
+    box.appendChild(el);
+  });
+  document.getElementById("emptyTxt").style.display=results.length?"none":"block";
+  document.getElementById("cntTxt").textContent=results.length?results.length+" "+tr("target"):"";
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];});}
+document.getElementById("list").addEventListener("click",function(e){
+  var d=e.target.getAttribute("data-dl"); if(d===null) return;
+  var r=results[+d]; if(r&&r.blob) dl(r.blob, r.out);
+});
+function dl(blob,name){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},4000);}
+/* ---------- daily stat ---------- */
+function todayKey(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
+function stat(){var s={};try{s=JSON.parse(localStorage.getItem(KEY)||"{}");}catch(e){} var k=todayKey(); if(!s[k]) s[k]={c:0,save:0}; return s;}
+function addStat(savedBytes){
+  var s=stat(), k=todayKey(); s[k].c++; s[k].save+=Math.max(0,savedBytes);
+  Object.keys(s).forEach(function(x){ if(x!==k) delete s[x]; });
+  try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){} renderDaily();
+}
+function renderDaily(){
+  var s=stat(), k=todayKey(), d=s[k]||{c:0,save:0};
+  document.getElementById("dCount").textContent=d.c;
+  document.getElementById("dSave").textContent=fmtSize(d.save);
+}
+/* ---------- run ---------- */
+function addFiles(fl){
+  var arr=Array.prototype.slice.call(fl).filter(function(f){return /^image\//.test(f.type);});
+  if(!arr.length){toast(tr("noImg"));return;}
+  arr.forEach(function(f){
+    results.push({name:f.name, size:f.size, orig:f.size, new:0, done:false, busy:false, file:f, url:URL.createObjectURL(f)});
+  });
+  renderList(); runAll();
+}
+async function runAll(){
+  var fmt=document.getElementById("fmt").value;
+  var me=parseInt(document.getElementById("maxEdge").value,10)||0;
+  var tb=target*1024;
+  var btn=document.getElementById("runBtn"); btn.disabled=true;
+  for(var i=0;i<results.length;i++){
+    var r=results[i];
+    if(r.done && r.targetUsed===tb && r.fmtUsed===fmt){ continue; }
+    r.busy=true; renderList();
+    try{
+      var im=await loadImage(r.file);
+      var out=await compress(im,tb,fmt,me);
+      if(out.blob){
+        var ext = fmt==="image/png"?"png":fmt==="image/webp"?"webp":"jpg";
+        r.blob=out.blob; r.new=out.blob.size; r.done=true; r.targetUsed=tb; r.fmtUsed=fmt;
+        r.out=r.name.replace(/\.[^.]+$/,"")+"_"+target+"KB."+ext;
+        addStat(r.orig-r.new);
+      }
+    }catch(err){ r.done=false; }
+    r.busy=false; renderList();
+  }
+  btn.disabled=false; toast(tr("done"));
+}
+/* ---------- share ---------- */
+function buildShare(){
+  var W=640,H=780,c=document.getElementById("shareCv"),x=c.getContext("2d");
+  c.width=W;c.height=H;
+  var g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,"#0ea5e9"); g.addColorStop(1,"#6366f1");
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle="rgba(255,255,255,.13)";x.beginPath();x.arc(W-60,120,180,0,7);x.fill();
+  x.textAlign="center";x.fillStyle="#fff";
+  x.font="800 38px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+  x.fillText("🗜️ "+tr("appName"),W/2,110);
+  x.font="500 20px -apple-system,sans-serif";x.fillStyle="rgba(255,255,255,.85)";
+  x.fillText(tr("target")+" "+target+"KB",W/2,152);
+  var s=stat()[todayKey()]||{c:0,save:0};
+  x.fillStyle="#fff";if(x.roundRect){x.beginPath();x.roundRect(60,200,W-120,300,26);x.fill();}else x.fillRect(60,200,W-120,300);
+  x.fillStyle="#131826";x.font="700 22px -apple-system,sans-serif";x.fillText(tr("todayCount"),W/2,262);
+  x.font="800 76px -apple-system,sans-serif";x.fillText(s.c,W/2,340);
+  x.fillStyle="#67708c";x.font="600 21px -apple-system,sans-serif";x.fillText(tr("todaySave")+" "+fmtSize(s.save),W/2,420);
+  x.beginPath();x.moveTo(90,460);x.lineTo(W-90,460);x.strokeStyle="rgba(0,0,0,.08)";x.lineWidth=2;x.stroke();
+  x.fillStyle="#131826";x.font="700 21px -apple-system,sans-serif";x.fillText(tr("ok"),W/2,485);
+  x.fillStyle="rgba(255,255,255,.95)";x.font="600 22px -apple-system,'PingFang SC','Noto Sans CJK SC',sans-serif";
+  x.fillText(tr("footerPrivacy"),W/2,620);
+  x.font="500 19px -apple-system,sans-serif";x.fillStyle="rgba(255,255,255,.7)";
+  x.fillText("H5 工具矩阵 · h5tools",W/2,672);
+  x.fillText(new Date().toLocaleDateString(),W/2,706);
+}
+/* ---------- events ---------- */
+var toastEl=document.getElementById("toast"),tt;
+function toast(m){toastEl.textContent=m;toastEl.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove("on");},1800);}
+var drop=document.getElementById("drop"), fi=document.getElementById("fileIn");
+drop.onclick=function(){fi.click();};
+fi.onchange=function(){ addFiles(fi.files); fi.value=""; };
+["dragenter","dragover"].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.add("over");});});
+["dragleave","drop"].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.remove("over");});});
+drop.addEventListener("drop",function(ev){ if(ev.dataTransfer&&ev.dataTransfer.files) addFiles(ev.dataTransfer.files); });
+window.addEventListener("paste",function(ev){
+  if(ev.clipboardData&&ev.clipboardData.files&&ev.clipboardData.files.length) addFiles(ev.clipboardData.files);
+});
+document.getElementById("runBtn").onclick=runAll;
+document.getElementById("dlAllBtn").onclick=function(){
+  var ok=results.filter(function(r){return r.done;});
+  if(!ok.length){toast(tr("noRes"));return;}
+  toast(tr("dlTip"));
+  ok.forEach(function(r,i){ setTimeout(function(){ dl(r.blob,r.out); }, i*450); });
+};
+document.getElementById("clearBtn").onclick=function(){
+  if(!confirm(tr("clearAsk")))return;
+  results.forEach(function(r){ if(r.url) URL.revokeObjectURL(r.url); });
+  results=[]; renderList(); toast(tr("cleared"));
+};
+document.getElementById("shareBtn").onclick=function(){ buildShare(); document.getElementById("shareDlg").showModal(); };
+document.getElementById("closeShareBtn").onclick=function(){ document.getElementById("shareDlg").close(); };
+document.getElementById("dlShareBtn").onclick=function(){ document.getElementById("shareCv").toBlob(function(b){ dl(b,"compress-share.png"); }); };
+document.getElementById("themeBtn").onclick=function(){
+  var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",cur);
+  try{localStorage.setItem("ikb_theme",cur);}catch(e){}
+};
+var ls=document.getElementById("langSel");
+LANGS.forEach(function(l){var o=document.createElement("option");o.value=l;o.textContent=LNAME[l];ls.appendChild(o);});
+ls.onchange=function(){ lang=ls.value; try{localStorage.setItem("ikb_lang",lang);}catch(e){} applyI18n(); };
+(function init(){
+  var q=new URLSearchParams(location.search).get("lang"), saved=null;
+  try{saved=localStorage.getItem("ikb_lang");}catch(e){}
+  var nav=(navigator.language||"zh").toLowerCase();
+  var guess=nav.indexOf("ja")===0?"ja":nav.indexOf("ko")===0?"ko":nav.indexOf("es")===0?"es":nav.indexOf("fr")===0?"fr":nav.indexOf("en")===0?"en":"zh";
+  lang=q||saved||guess; if(LANGS.indexOf(lang)<0) lang="zh"; ls.value=lang;
+  var th=null; try{th=localStorage.getItem("ikb_theme");}catch(e){}
+  if(!th) th=window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";
+  document.documentElement.setAttribute("data-theme",th);
+  applyI18n();
+})();
+})();
+</script>
+<!--WB_WIDGET_V2 v=6-->
+
+<script>
+(function(){
+  if(window.WB_WIDGET) return; window.WB_WIDGET=1;
+  var SB='https://jebnpaglwgozboyujxnx.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplYm5wYWdsd2dvemJveXVqeG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NTU0MTcsImV4cCI6MjEwNzQzMTQxN30.XTjB-SKNvU0sH40lVi9Rm2EIN2lHD8DU2mrSzgLZ8xg';
+  var SITE='https://zq0424.github.io/h5-tools-hub/';
+  /* ★ 站长配置：把两张收款码图片的公网URL填到这里（可用 GitHub 仓库里的图片） */
+  var PAY={wechat:'',alipay:'',year:'¥19.9/年',life:'¥49.9/永久',free:10};
+  var parts=location.pathname.split('/').filter(Boolean);
+  var slug=parts[parts.length-1]||'home';
+  var toolName=document.title.split(/[·|]/)[0].trim()||'这个工具';
+  function ls(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
+  function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function liked(){return ls('h5hub_liked').indexOf(slug)>=0}
+  function favs(){return ls('h5hub_fav')}
+
+  /* ---------- 样式 ---------- */
+  var css=document.createElement('style');
+  css.textContent=
+  '#wbBar{position:fixed;right:12px;bottom:12px;z-index:99990;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(91,107,255,.25);border:1px solid #eef0f7;border-radius:999px;padding:6px 8px;font-family:-apple-system,PingFang SC,sans-serif;flex-wrap:wrap;max-width:calc(100vw - 24px)}'+
+  '#wbBar a,#wbBar button{border:none;background:none;font-size:15px;line-height:1;cursor:pointer;text-decoration:none;padding:4px 6px;border-radius:999px;color:#23263a}'+
+  '#wbBar .lk{background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff;font-weight:700;font-size:12.5px;padding:6px 11px}'+
+  '#wbBar .lk.on{outline:2px solid #5b6bff}#wbBar .fv.on{background:#fff3d6}#wbBar .vw{font-size:11.5px;color:#8a8fb0}#wbBar .vip{background:linear-gradient(135deg,#ffd86b,#ff9a3c);color:#fff;font-size:13px;padding:6px 9px}'+
+  '#wbFree{position:fixed;left:12px;bottom:12px;z-index:99990;background:rgba(255,255,255,.95);border:1px solid #eef0f7;border-radius:999px;padding:5px 11px;font-size:11.5px;color:#5b6bff;font-weight:700;box-shadow:0 4px 14px rgba(91,107,255,.15)}'+
+  '.wbMask{position:fixed;inset:0;background:rgba(20,22,40,.55);z-index:99999;display:none;align-items:flex-end;justify-content:center;font-family:-apple-system,PingFang SC,sans-serif}'+
+  '.wbMask.show{display:flex}.wbSheet{background:#fff;border-radius:18px 18px 0 0;max-width:420px;width:100%;max-height:82vh;overflow:auto;padding:16px 16px 26px}'+
+  '.wbSheet h3{margin:0 0 10px;font-size:15.5px}.wbX{float:right;border:none;background:none;font-size:17px;color:#8a8fb0;cursor:pointer}'+
+  '.wbCm{display:flex;gap:6px;margin:6px 0}.wbCm input,.wbCm textarea{flex:1;border:1px solid #eef0f7;border-radius:10px;padding:8px 10px;font-size:13px;outline:none}.wbCm textarea{height:56px;resize:none}'+
+  '.wbBtn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff}'+
+  '.wbBtn.g{background:#eef0ff;color:#5b6bff}'+
+  '.wbItem{background:#f7f8ff;border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px}.wbItem b{font-size:12px;color:#5b6bff}.wbItem span{display:block;color:#23263a;margin-top:2px;word-break:break-word}.wbItem i{font-size:10.5px;color:#b6bad0;font-style:normal}'+
+  '.wbPoster{width:100%;border-radius:10px}'+
+  '.wbPlans{display:flex;gap:8px;margin:10px 0}.wbPlan{flex:1;border:2px solid #eef0f7;border-radius:12px;padding:10px;text-align:center;cursor:pointer}.wbPlan.on{border-color:#5b6bff;background:#f6f7ff}.wbPlan b{display:block;font-size:17px;color:#ff6bb0}.wbPlan span{font-size:11px;color:#8a8fb0}'+
+  '.wbPayTabs{display:flex;gap:6px;margin-bottom:8px}.wbPayTabs button{flex:1;border:1px solid #eef0f7;background:#fff;border-radius:10px;padding:8px;font-size:13px;font-weight:700;cursor:pointer}.wbPayTabs button.on{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.wx{border-color:#25ab3a;color:#25ab3a}.wbPayTabs button.on.ali{border-color:#1677ff;color:#1677ff}'+
+  '.wbQrBox{text-align:center;min-height:180px;display:flex;align-items:center;justify-content:center;background:#f7f8ff;border-radius:12px;padding:10px}.wbQrBox img{width:160px;height:160px;border-radius:8px}'+
+  '.wbBlur>*:not(#wbBar):not(#wbFree):not(.wbMask){filter:blur(6px);pointer-events:none;user-select:none}';
+  document.head.appendChild(css);
+
+  /* ---------- 底部工具条 ---------- */
+  var bar=document.createElement('div');bar.id='wbBar';
+  bar.innerHTML='<a href="'+SITE+'" title="返回工具箱首页">🏠</a>'+
+    '<button class="lk'+(liked()?' on':'')+'" title="点赞">👍 <span class="vc">0</span></button>'+
+    '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="收藏">⭐</button>'+
+    '<button class="sh" title="分享">↗</button>'+
+    '<button class="cm" title="评论">💬<span class="cc"></span></button>'+
+    '<button class="vip" title="解锁会员">💎</button>'+
+    '<span class="vw">👁 <span class="vcw">0</span></span>';
+  document.body.appendChild(bar);
+
+  function mkMask(id,title,closable){
+    var m=document.createElement('div');m.className='wbMask';m.id=id;
+    m.innerHTML='<div class="wbSheet">'+(closable===false?'':'<button class="wbX">✕</button>')+'<h3>'+title+'</h3><div class="bd"></div></div>';
+    if(closable!==false){
+      m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
+      m.querySelector('.wbX').onclick=function(){m.classList.remove('show')};
+    }
+    document.body.appendChild(m);return m;}
+
+  /* ---------- 浏览量 + 点赞数 ---------- */
+  function loadCnt(){
+    fetch(SB+'/rest/v1/votes?select=total,views_total&slug=eq.'+encodeURIComponent(slug),{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      if(rows[0]){bar.querySelector('.vc').textContent=rows[0].total||0;bar.querySelector('.vcw').textContent=rows[0].views_total||0;}
+    }).catch(function(){});
+  }
+  if(!sessionStorage.getItem('wb_view_'+slug)){
+    sessionStorage.setItem('wb_view_'+slug,'1');
+    fetch(SB+'/rest/v1/rpc/increment_view',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(loadCnt);
+  } else loadCnt();
+
+  bar.querySelector('.lk').onclick=function(){
+    if(liked())return; var a=ls('h5hub_liked');a.push(slug);save('h5hub_liked',a);
+    this.classList.add('on');this.querySelector('.vc').textContent=(parseInt(this.querySelector('.vc').textContent)||0)+1;
+    fetch(SB+'/rest/v1/rpc/increment_vote',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({p_slug:slug})}).then(loadCnt).catch(function(){});
+  };
+  bar.querySelector('.fv').onclick=function(){
+    var a=favs(),i=a.indexOf(slug),adding=i<0;
+    if(adding){a.push(slug);this.classList.add('on');}else{a.splice(i,1);this.classList.remove('on');}
+    save('h5hub_fav',a);
+    var tok=null;try{var au=JSON.parse(localStorage.getItem('h5hub_auth')||'null');tok=au&&au.access_token||null;}catch(e){}
+    if(tok){
+      var H={apikey:ANON,Authorization:'Bearer '+tok,'Content-Type':'application/json'};
+      if(adding)fetch(SB+'/rest/v1/favorites',{method:'POST',headers:H,body:JSON.stringify({slug:slug})}).catch(function(){});
+      else fetch(SB+'/rest/v1/favorites?slug=eq.'+encodeURIComponent(slug),{method:'DELETE',headers:{apikey:ANON,Authorization:'Bearer '+tok}}).catch(function(){});
+    }
+  };
+
+  /* ---------- 分享海报（二维码 + 站点介绍，扫码直达） ---------- */
+  function qr(u){return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data='+encodeURIComponent(u);}
+  bar.querySelector('.sh').onclick=function(){
+    var m=mkMask('wbShare','↗ 分享这个工具'),bd=m.querySelector('.bd');
+    bd.innerHTML='<img class="wbPoster" alt="海报生成中…"><div style="display:flex;gap:8px;margin-top:10px">'+
+      '<button class="wbBtn g" id="wbCp">复制链接</button><button class="wbBtn" id="wbSv">保存海报</button></div>'+
+      '<div style="font-size:11px;color:#8a8fb0;margin-top:8px;text-align:center">微信内长按海报即可保存 / 发送</div>';
+    var url=SITE+slug+'/';
+    var W=750,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#eef1ff');g.addColorStop(1,'#fdeef6');
+    x.fillStyle=g;x.fillRect(0,0,W,H);x.fillStyle='#fff';
+    function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();x.fill();}
+    rr(50,50,W-100,H-100,36);x.textAlign='center';
+    x.fillStyle='#23263a';x.font='bold 54px -apple-system,PingFang SC,sans-serif';
+    x.fillText(toolName.slice(0,14),W/2,230);
+    x.fillStyle='#5b6bff';x.font='bold 34px -apple-system,PingFang SC,sans-serif';
+    x.fillText('🧰 我的工具箱 · 每天自动上新的免费小工具',W/2,310);
+    x.fillStyle='#8a8fb0';x.font='28px -apple-system,PingFang SC,sans-serif';
+    x.fillText('免登录 · 即开即用 · 欢迎点赞评论',W/2,370);
+    var q=new Image();q.crossOrigin='anonymous';
+    q.onload=function(){x.fillStyle='#fff';rr(W/2-140,420,280,280,24);x.drawImage(q,W/2-120,440,240,240);
+      x.fillStyle='#5b6bff';x.font='bold 30px sans-serif';x.fillText('👍 觉得好用就点个赞',W/2,790);
+      x.fillStyle='#b6bad0';x.font='24px sans-serif';x.fillText('扫码直达 · Scan to open',W/2,860);
+      try{bd.querySelector('img').src=c.toDataURL('image/png');}
+      catch(e){bd.querySelector('img').outerHTML='<div style="text-align:center"><img src="'+q.src+'" style="width:180px"></div>';}
+    };
+    q.src=qr(url);
+    bd.querySelector('#wbCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(function(){alert('链接已复制')}).catch(function(){prompt('',url)});};
+    bd.querySelector('#wbSv').onclick=function(){var im=bd.querySelector('img');if(im.src&&im.src.indexOf('data:')===0){var a=document.createElement('a');a.href=im.src;a.download='share.png';a.click();}else alert('请长按图片保存');};
+    m.classList.add('show');
+  };
+
+  /* ---------- 评论区 ---------- */
+  var cmMask=null;
+  bar.querySelector('.cm').onclick=function(){
+    if(!cmMask){
+      cmMask=mkMask('wbCmMask','💬 对「'+toolName+'」说点什么');
+      cmMask.querySelector('.bd').innerHTML=
+        '<div id="wbCmList" style="max-height:44vh;overflow:auto"><div style="font-size:12px;color:#8a8fb0">加载中…</div></div>'+
+        '<div class="wbCm"><input id="wbCmName" placeholder="昵称（可留空）" maxlength="20"></div>'+
+        '<div class="wbCm"><textarea id="wbCmBody" placeholder="使用感受 / 建议 / 想要的新功能…" maxlength="500"></textarea></div>'+
+        '<button class="wbBtn" id="wbCmSend" style="width:100%">发 表</button>';
+      cmMask.querySelector('#wbCmSend').onclick=function(){
+        var b=cmMask.querySelector('#wbCmBody').value.trim();
+        if(!b)return alert('写点内容再发表吧');
+        var n=cmMask.querySelector('#wbCmName').value.trim()||'访客';
+        this.disabled=true;
+        fetch(SB+'/rest/v1/comments',{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json',Prefer:'return=minimal'},
+          body:JSON.stringify({slug:slug,name:n,body:b})})
+        .then(function(r){if(!r.ok)throw 0;cmMask.querySelector('#wbCmBody').value='';loadCm();})
+        .catch(function(){alert('发表失败，请稍后再试')}).finally(function(){this.disabled=false}.bind(this));
+      };
+    }
+    cmMask.classList.add('show');loadCm();
+  };
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function loadCm(){
+    if(!cmMask)return;
+    fetch(SB+'/rest/v1/comments?select=name,body,created_at&slug=eq.'+encodeURIComponent(slug)+'&order=created_at.desc&limit=50',{headers:{apikey:ANON,Authorization:'Bearer '+ANON}})
+    .then(function(r){return r.json()}).then(function(rows){
+      var box=cmMask.querySelector('#wbCmList');
+      box.innerHTML=rows.length?rows.map(function(c){
+        var d=new Date(c.created_at),ds=(d.getMonth()+1)+'/'+d.getDate();
+        return '<div class="wbItem"><b>'+esc(c.name)+'</b> <i>'+ds+'</i><span>'+esc(c.body)+'</span></div>';
+      }).join(''):'<div style="font-size:12px;color:#8a8fb0;padding:10px 0">还没有评论，来抢沙发～</div>';
+      var n=rows.length; if(n)bar.querySelector('.cc').textContent=' '+n;
+    }).catch(function(){});
+  }
+  loadCm();
+
+  /* ---------- 付费墙：免费 ' + PAY.free + ' 次后硬封锁（不可用第 ' + (PAY.free+1) + ' 次）---------- */
+  var use=JSON.parse(localStorage.getItem('h5hub_use')||'{}');
+  if(!sessionStorage.getItem('wb_use_'+slug)){use[slug]=(use[slug]||0)+1;localStorage.setItem('h5hub_use',JSON.stringify(use));}
+  var used=use[slug]||0, isPro=localStorage.getItem('h5hub_pro')==='1';
+  var free=document.createElement('div');free.id='wbFree';document.body.appendChild(free);
+  function paintFree(){free.textContent=isPro?'✨ 会员已解锁 · 感谢支持':(used>PAY.free?'🔒 已达免费上限，点💎解锁':'🆓 免费额度剩 '+Math.max(0,PAY.free-used+1)+' 次');}
+  paintFree();
+  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ 你已是会员，感谢支持！');return;} showPay(); };
+  function showPay(){
+    if(isPro)return;
+    var m=mkMask('wbPay','🔒 免费额度已用完 · 解锁后继续使用');
+    var plan_wx=true;
+    function paint(){
+      var plan=localStorage.getItem('wb_plan')||'year';
+      m.querySelector('.bd').innerHTML=
+        '<div style="font-size:12.5px;color:#8a8fb0">你已免费使用 '+PAY.free+' 次。解锁后无限次使用本站全部工具（含每日新增）。</div>'+
+        '<div class="wbPlans"><div class="wbPlan'+(plan==='year'?' on':'')+'" data-p="year"><b>'+PAY.year+'</b><span>年度会员</span></div>'+
+        '<div class="wbPlan'+(plan==='life'?' on':'')+'" data-p="life"><b>'+PAY.life+'</b><span>永久买断 · 更划算</span></div></div>'+
+        '<div class="wbPayTabs"><button class="wx'+(plan_wx?' on':'')+'" data-w="wx">微信支付</button><button class="ali'+(plan_wx?'':' on')+'" data-w="ali">支付宝</button></div>'+
+        '<div class="wbQrBox" id="wbQr"></div>'+
+        '<button class="wbBtn" id="wbPaid" style="width:100%;margin-top:10px">✅ 我已完成支付，激活会员</button>'+
+        '<div style="font-size:10.5px;color:#b6bad0;margin-top:6px;text-align:center">支付后点击激活（试运行自动开通；如遇问题请截图联系站长）<br>可关闭本窗，但关闭后将无法继续使用本工具，点💎可重新解锁</div>';
+      m.querySelectorAll('.wbPlan').forEach(function(p){p.onclick=function(){localStorage.setItem('wb_plan',p.dataset.p);paint();}});
+      m.querySelectorAll('.wbPayTabs button').forEach(function(b){b.onclick=function(){plan_wx=b.dataset.w==='wx';paint();};});
+      var qrEl=m.querySelector('#wbQr'),src=plan_wx?PAY.wechat:PAY.alipay;
+      qrEl.innerHTML=src?'<div><img src="'+src+'"><div style="font-size:11px;color:#8a8fb0;margin-top:4px">长按 / 扫码支付 '+(plan==='year'?PAY.year:PAY.life)+'</div></div>'
+        :'<div style="font-size:12px;color:#8a8fb0">收款码配置中<br><br>↑ 微信 / 支付宝扫码后<br>向站长转账对应金额即可</div>';
+      m.querySelector('#wbPaid').onclick=function(){localStorage.setItem('h5hub_pro','1');isPro=true;unblur();m.classList.remove('show');paintFree();alert('🎉 解锁成功，感谢支持！');};
+    };
+    paint();m.classList.add('show');
+  }
+  function blurPage(){document.body.classList.add('wbBlur');}
+  function unblur(){document.body.classList.remove('wbBlur');}
+  if(!isPro&&used>PAY.free){blurPage();showPay();}
+})();
+</script>
+
+</body>
+</html>
