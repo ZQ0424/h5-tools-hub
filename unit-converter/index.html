@@ -156,7 +156,9 @@ renderTabs();renderSelects();calc();
 
 
 
-<!--WB_WIDGET_V2 v=3-->
+
+
+<!--WB_WIDGET_V2 v=4-->
 
 <script>
 (function(){
@@ -180,7 +182,7 @@ renderTabs();renderSelects();calc();
   '#wbBar{position:fixed;right:12px;bottom:12px;z-index:99990;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(91,107,255,.25);border:1px solid #eef0f7;border-radius:999px;padding:6px 8px;font-family:-apple-system,PingFang SC,sans-serif;flex-wrap:wrap;max-width:calc(100vw - 24px)}'+
   '#wbBar a,#wbBar button{border:none;background:none;font-size:15px;line-height:1;cursor:pointer;text-decoration:none;padding:4px 6px;border-radius:999px;color:#23263a}'+
   '#wbBar .lk{background:linear-gradient(135deg,#5b6bff,#ff6bb0);color:#fff;font-weight:700;font-size:12.5px;padding:6px 11px}'+
-  '#wbBar .lk.on{outline:2px solid #5b6bff}#wbBar .fv.on{background:#fff3d6}#wbBar .vw{font-size:11.5px;color:#8a8fb0}'+
+  '#wbBar .lk.on{outline:2px solid #5b6bff}#wbBar .fv.on{background:#fff3d6}#wbBar .vw{font-size:11.5px;color:#8a8fb0}#wbBar .vip{background:linear-gradient(135deg,#ffd86b,#ff9a3c);color:#fff;font-size:13px;padding:6px 9px}'+
   '#wbFree{position:fixed;left:12px;bottom:12px;z-index:99990;background:rgba(255,255,255,.95);border:1px solid #eef0f7;border-radius:999px;padding:5px 11px;font-size:11.5px;color:#5b6bff;font-weight:700;box-shadow:0 4px 14px rgba(91,107,255,.15)}'+
   '.wbMask{position:fixed;inset:0;background:rgba(20,22,40,.55);z-index:99999;display:none;align-items:flex-end;justify-content:center;font-family:-apple-system,PingFang SC,sans-serif}'+
   '.wbMask.show{display:flex}.wbSheet{background:#fff;border-radius:18px 18px 0 0;max-width:420px;width:100%;max-height:82vh;overflow:auto;padding:16px 16px 26px}'+
@@ -203,13 +205,17 @@ renderTabs();renderSelects();calc();
     '<button class="fv'+(favs().indexOf(slug)>=0?' on':'')+'" title="收藏">⭐</button>'+
     '<button class="sh" title="分享">↗</button>'+
     '<button class="cm" title="评论">💬<span class="cc"></span></button>'+
+    '<button class="vip" title="解锁会员">💎</button>'+
     '<span class="vw">👁 <span class="vcw">0</span></span>';
   document.body.appendChild(bar);
 
-  function mkMask(id,title){var m=document.createElement('div');m.className='wbMask';m.id=id;
-    m.innerHTML='<div class="wbSheet"><button class="wbX">✕</button><h3>'+title+'</h3><div class="bd"></div></div>';
-    m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
-    m.querySelector('.wbX').onclick=function(){m.classList.remove('show')};
+  function mkMask(id,title,closable){
+    var m=document.createElement('div');m.className='wbMask';m.id=id;
+    m.innerHTML='<div class="wbSheet">'+(closable===false?'':'<button class="wbX">✕</button>')+'<h3>'+title+'</h3><div class="bd"></div></div>';
+    if(closable!==false){
+      m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
+      m.querySelector('.wbX').onclick=function(){m.classList.remove('show')};
+    }
     document.body.appendChild(m);return m;}
 
   /* ---------- 浏览量 + 点赞数 ---------- */
@@ -305,16 +311,17 @@ renderTabs();renderSelects();calc();
   }
   loadCm();
 
-  /* ---------- 付费墙：免费 ' + PAY.free + ' 次后解锁 ---------- */
+  /* ---------- 付费墙：免费 ' + PAY.free + ' 次后硬封锁（不可用第 ' + (PAY.free+1) + ' 次）---------- */
   var use=JSON.parse(localStorage.getItem('h5hub_use')||'{}');
   if(!sessionStorage.getItem('wb_use_'+slug)){use[slug]=(use[slug]||0)+1;localStorage.setItem('h5hub_use',JSON.stringify(use));}
   var used=use[slug]||0, isPro=localStorage.getItem('h5hub_pro')==='1';
   var free=document.createElement('div');free.id='wbFree';document.body.appendChild(free);
-  function paintFree(){free.textContent=isPro?'✨ 会员已解锁 · 感谢支持':(used>PAY.free?'🔓 已达免费上限':'🆓 免费额度剩 '+Math.max(0,PAY.free-used+1)+' 次');}
+  function paintFree(){free.textContent=isPro?'✨ 会员已解锁 · 感谢支持':(used>PAY.free?'🔒 已达免费上限，点💎解锁':'🆓 免费额度剩 '+Math.max(0,PAY.free-used+1)+' 次');}
   paintFree();
+  bar.querySelector('.vip').onclick=function(){ if(isPro){alert('✨ 你已是会员，感谢支持！');return;} showPay(); };
   function showPay(){
     if(isPro)return;
-    var m=mkMask('wbPay','🔒 免费额度已用完，解锁全部工具');
+    var m=mkMask('wbPay','🔒 免费额度已用完 · 解锁全部工具',false);
     var plan_wx=true;
     function paint(){
       var plan=localStorage.getItem('wb_plan')||'year';
