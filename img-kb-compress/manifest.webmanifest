@@ -1,0 +1,15 @@
+{
+  "name": "图片压缩到指定KB",
+  "short_name": "图片压缩",
+  "description": "把图片批量压缩到 20KB/50KB/100KB 等目标大小，本机处理不上传。",
+  "start_url": "./?utm_source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f7fa",
+  "theme_color": "#0ea5e9",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
